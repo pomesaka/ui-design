@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ja" data-theme="luma-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UI Design — 状態一覧</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/components/controls.css">
+  <link rel="stylesheet" href="/catalog/catalog.css">
+  <script type="module" src="/catalog/catalog.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="wordmark" href="/">ui-design<span>Catalog</span></a>
+    <nav aria-label="カタログ"><a href="#states" aria-current="page">状態一覧</a></nav>
+  </aside>
+  <main id="states">
+    <header class="toolbar">
+      <div><h1>状態一覧</h1><p>操作の状態を固定して比較</p></div>
+      <div class="view-switch" role="group" aria-label="テーマの表示"></div>
+    </header>
+    <p id="catalog-error" role="alert" hidden></p>
+    <div id="themes" class="themes"></div>
+  </main>
+</body>
+</html>

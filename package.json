@@ -1,0 +1,10 @@
+{
+  "name": "ui-design",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:themes": "bun scripts/check-themes.mjs",
+    "test": "bun test scripts/check-themes.test.mjs",
+    "catalog": "bun scripts/serve-catalog.mjs"
+  }
+}

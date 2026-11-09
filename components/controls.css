@@ -1,0 +1,121 @@
+/* Framework-neutral control recipes. The catalog pins transient states through
+ * data-preview-state; native interaction and previews share each declaration. */
+.ui-button, .ui-choice, .ui-field {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: var(--control-height);
+  border: 1px solid transparent;
+  border-radius: var(--radius-field);
+  font: var(--weight-control) var(--text-action) / var(--text-action-line-height) var(--font-control);
+}
+.ui-button, .ui-choice {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--duration-standard) var(--ease-standard),
+    transform var(--duration-release) var(--ease-release);
+}
+.ui-button {
+  --button-fill: var(--primary);
+  --button-text: var(--primary-foreground);
+  --button-hover: var(--primary-hover);
+  --button-pressed: var(--primary-pressed);
+  color: var(--button-text);
+  background: var(--button-fill);
+}
+.ui-button[data-variant="secondary"] {
+  --button-fill: var(--secondary);
+  --button-text: var(--secondary-foreground);
+  --button-hover: var(--secondary-hover);
+  --button-pressed: var(--secondary-pressed);
+}
+.ui-button[data-variant="destructive"] {
+  --button-fill: var(--destructive);
+  --button-text: var(--destructive-foreground);
+  --button-hover: var(--destructive-hover);
+  --button-pressed: var(--destructive-pressed);
+}
+.ui-button:not(:disabled):not([aria-busy="true"]):where(:hover, [data-preview-state~="hover"]) {
+  background: var(--button-hover);
+}
+.ui-button:not(:disabled):not([aria-busy="true"]):where(:active, [data-preview-state~="pressed"]) {
+  background: var(--button-pressed);
+  transform: translateY(var(--press-depth));
+  transition-duration: var(--duration-press);
+}
+.ui-button:disabled, .ui-choice:disabled, .ui-field:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+.ui-button[aria-busy="true"] { cursor: progress; }
+.ui-progress {
+  width: 0.8em;
+  height: 0.8em;
+  flex: 0 0 auto;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-full);
+  animation: ui-spin 900ms linear infinite;
+}
+@keyframes ui-spin { to { transform: rotate(1turn); } }
+.ui-choice {
+  border-color: var(--input);
+  background: transparent;
+  color: var(--control-foreground);
+}
+.ui-choice:not(:disabled):not([aria-pressed="true"]):not([aria-current="page"]):where(:hover, [data-preview-state~="hover"]) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.ui-choice:where([aria-pressed="true"], [aria-current="page"]) {
+  background: var(--selected);
+  color: var(--selected-foreground);
+  border-color: var(--selected-border);
+}
+.ui-choice:not(:disabled):where(:active, [data-preview-state~="pressed"]) {
+  transform: translateY(var(--press-depth));
+}
+.ui-field {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  color: var(--card-foreground);
+  background: var(--card);
+  border-color: var(--input);
+  font-weight: var(--weight-body);
+  transition: border-color var(--duration-standard) var(--ease-standard);
+}
+.ui-field::placeholder { color: var(--muted-foreground); opacity: 1; }
+.ui-field:not(:disabled):not([readonly]):not([aria-invalid="true"]):where(:hover, [data-preview-state~="hover"]) {
+  border-color: var(--control-foreground);
+}
+.ui-field[readonly] { background: var(--muted); color: var(--muted-foreground); }
+.ui-field[aria-invalid="true"] { border-color: var(--destructive); }
+.ui-button, .ui-choice, .ui-field { outline: none; }
+/* Focus is independent of selection/error; keep it last so both remain visible. */
+:is(.ui-button, .ui-choice, .ui-field):not(:disabled):where(:focus-visible, [data-preview-state~="focus"]) {
+  outline: var(--focus-outline-width) solid var(--ring);
+  outline-offset: var(--focus-outline-offset);
+}
+.ui-notice {
+  --notice-color: var(--info);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--notice-color);
+  border-radius: var(--radius-card);
+  color: var(--notice-color);
+  background: var(--card);
+  font: var(--text-action) / var(--text-action-line-height) var(--font-control);
+}
+.ui-notice[data-tone="success"] { --notice-color: var(--success); }
+.ui-notice[data-tone="warning"] { --notice-color: var(--warning); }
+.ui-notice[data-tone="error"] { --notice-color: var(--destructive); }
+@media (prefers-reduced-motion: reduce) {
+  .ui-button, .ui-choice, .ui-field { transition: none; }
+  .ui-progress { animation: none; }
+}
