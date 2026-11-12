@@ -40,7 +40,7 @@ export function Notice({ tone = "info", title, children, action, className }: No
       <div className="flex min-w-0 flex-[1_1_16rem] gap-3 self-start">
         <Icon className={cn("mt-0.5 size-4 shrink-0", style.text)} />
         <div className="flex min-w-0 flex-col gap-1">
-          <p className={cn("font-control text-action", style.text)}>{title}</p>
+          <p className={cn("font-control text-body [font-weight:var(--weight-control)]", style.text)}>{title}</p>
           {children && <div className="font-body text-body">{children}</div>}
         </div>
       </div>

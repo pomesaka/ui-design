@@ -89,6 +89,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
   const [confirmError, setConfirmError] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
   const membersHeading = useRef<HTMLHeadingElement>(null);
+  const searchInput = useRef<HTMLInputElement>(null);
   const invitationsHeading = useRef<HTMLHeadingElement>(null);
   // Where focus goes after a confirmed removal; null keeps the dialog default (its trigger).
   const focusAfterRemove = useRef<HTMLElement | null>(null);
@@ -119,7 +120,11 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
   const admins = members.filter((member) => member.role === "admin");
   const inactive = members.filter((member) => isInactive(member) && member.id !== currentUserId);
 
-  const visible = useMemo(() => {
+  // The order is decided when the person sorts, filters or searches, or when
+  // people join or leave. A role change keeps its row in place, so the result
+  // stays where it was made instead of jumping elsewhere in the list.
+  const memberIds = members.map((member) => member.id).join(",");
+  const order = useMemo(() => {
     const words = query.trim().toLowerCase();
     const filtered = members.filter(
       (member) =>
@@ -128,12 +133,18 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
     );
     const byName = (a: Member, b: Member) => a.name.localeCompare(b.name, "ja");
     const lastActive = (member: Member) => (member.lastActiveAt === null ? 0 : new Date(member.lastActiveAt).getTime());
-    return filtered.sort((a, b) => {
-      if (sort === "role") return roleOrder[a.role] - roleOrder[b.role] || byName(a, b);
-      if (sort === "inactive") return lastActive(a) - lastActive(b) || byName(a, b);
-      return byName(a, b);
-    });
-  }, [members, query, roleFilter, sort]);
+    return filtered
+      .sort((a, b) => {
+        if (sort === "role") return roleOrder[a.role] - roleOrder[b.role] || byName(a, b);
+        if (sort === "inactive") return lastActive(a) - lastActive(b) || byName(a, b);
+        return byName(a, b);
+      })
+      .map((member) => member.id);
+    // `members` is read only for its ids and the values at the moment of sorting.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [memberIds, query, roleFilter, sort]);
+  const byId = new Map(members.map((member) => [member.id, member]));
+  const visible = order.flatMap((id) => byId.get(id) ?? []);
 
   /** Which action is running on a row, so only that button shows progress. */
   function setRowPending(id: string, action: string | null) {
@@ -231,7 +242,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
       announce(`${invitation.email}への招待を取り消しました`);
     } catch (error) {
       const message = error instanceof ActionError ? error.message : "予期しないエラーが起きました";
-      setRowError(invitation.id, { message: `${message}。招待のリンクはまだ使えます。`, retry: () => revoke(invitation) });
+      setRowError(invitation.id, { message: `${message}。招待のリンクはまだ使えます。`, retry: () => revoke(invitation, trigger) });
       announce(message, { priority: "assertive" });
     } finally {
       setRowPending(invitation.id, null);
@@ -310,7 +321,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
             <Notice
               tone="warning"
               title={`${inactiveDays}日以上利用のないメンバーが${inactive.length}人います`}
-              action={<Button variant="secondary" size="sm" onClick={() => { clearFilters(); setSort("inactive"); }}>利用が古い順に並べる</Button>}
+              action={<Button variant="secondary" size="sm" onClick={() => { clearFilters(); setSort("inactive"); announce("利用が古い順に並べました"); focusSoon(membersHeading.current); }}>利用が古い順に並べる</Button>}
             >
               退職や異動でチームを離れた人がいれば、チームから外してください。
             </Notice>
@@ -320,7 +331,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
             <div className="flex flex-wrap items-end gap-3">
               <Field className="flex-[1_1_16rem]">
                 <FieldLabel>名前・メールで探す</FieldLabel>
-                <Input type="search" value={query} onValueChange={setQuery} autoComplete="off" />
+                <Input ref={searchInput} type="search" value={query} onValueChange={setQuery} autoComplete="off" />
               </Field>
               <Field className="flex-[1_1_10rem] sm:flex-none">
                 <Select items={filterItems} value={roleFilter} onValueChange={(value) => isRoleFilter(value) && setRoleFilter(value)}>
@@ -358,7 +369,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
           {visible.length === 0 && members.length > 1 && (
             <div className="flex flex-wrap items-center gap-3 border-t border-border py-6">
               <p className="font-body text-body text-muted-foreground">条件に合うメンバーはいません。</p>
-              <Button variant="secondary" size="sm" onClick={clearFilters}>条件をクリア</Button>
+              <Button variant="secondary" size="sm" onClick={() => { clearFilters(); focusSoon(searchInput.current); }}>条件をクリア</Button>
             </div>
           )}
 
@@ -467,14 +478,15 @@ type MemberRowProps = {
 
 function MemberRow({ member, canManage, isOnlyAdmin, pending, error, onRoleChange, onRemove, onDismissError }: MemberRowProps) {
   const isSelf = member.id === currentUserId;
-  const inactive = isInactive(member) && !isSelf;
+  // Only managers get the explanation (the notice above), so only they see the mark.
+  const inactive = canManage && isInactive(member) && !isSelf;
   return (
     <ListItem
       title={<>{member.name}{isSelf && <span className="text-reading-secondary">(あなた)</span>}</>}
       description={member.email}
       meta={
         <>
-          {inactive && <WarningIcon className="shrink-0 text-warning" />}
+          {inactive && <><WarningIcon className="shrink-0 text-warning" /><span className="sr-only">{inactiveDays}日以上利用なし。</span></>}
           {member.lastActiveAt === null ? "参加後の利用なし" : `最終利用 ${relativeDay(member.lastActiveAt)}`}
         </>
       }
@@ -482,7 +494,7 @@ function MemberRow({ member, canManage, isOnlyAdmin, pending, error, onRoleChang
         canManage ? (
           <>
             <Select items={roleItems} value={member.role} readOnly={pending} onValueChange={(value) => isRole(value) && onRoleChange(value)}>
-              <SelectTrigger size="sm" aria-label={`${member.name}さんの権限`} aria-busy={pending || undefined} className="w-36" />
+              <SelectTrigger size="sm" data-list-action="role" aria-label={`${member.name}さんの権限`} aria-busy={pending || undefined} className="w-36" />
               <SelectContent>
                 {roles.map((role) => (
                   <SelectItem key={role} value={role} disabled={isOnlyAdmin && role !== "admin"}>
@@ -517,8 +529,8 @@ function MemberRow({ member, canManage, isOnlyAdmin, pending, error, onRoleChang
           title={error.message}
           action={
             <div className="flex gap-2">
-              <Button variant="secondary" size="sm" onClick={error.retry}>もう一度試す</Button>
-              <Button variant="secondary" size="sm" onClick={onDismissError}>閉じる</Button>
+              <Button variant="secondary" size="sm" onClick={error.retry} aria-label={`${member.name}さんの操作をもう一度試す`}>もう一度試す</Button>
+              <Button variant="secondary" size="sm" onClick={(event) => dismissRowError(event.currentTarget, onDismissError)} aria-label={`${member.name}さんのエラー表示を閉じる`}>閉じる</Button>
             </div>
           }
         />
@@ -563,7 +575,7 @@ function InvitationSection({ headingRef, invitations, pending, rowErrors, onRese
               actions={
                 <>
                   {/* Buttons stay in place while busy so keyboard focus is not lost. */}
-                  <Button variant="secondary" size="sm" pending={busy === "resend"} disabled={busy !== undefined} onClick={() => onResend(invitation)} aria-label={`${invitation.email}に招待を再送`}>
+                  <Button variant="secondary" size="sm" data-list-action="resend" pending={busy === "resend"} disabled={busy !== undefined} onClick={() => onResend(invitation)} aria-label={`${invitation.email}に招待を再送`}>
                     再送
                   </Button>
                   <Button variant="secondary" size="sm" pending={busy === "revoke"} data-list-action="revoke" disabled={busy !== undefined} onClick={(event) => onRevoke(invitation, event.currentTarget)} aria-label={`${invitation.email}への招待を取り消す`}>
@@ -578,8 +590,8 @@ function InvitationSection({ headingRef, invitations, pending, rowErrors, onRese
                   title={error.message}
                   action={
                     <div className="flex gap-2">
-                      <Button variant="secondary" size="sm" onClick={error.retry}>もう一度試す</Button>
-                      <Button variant="secondary" size="sm" onClick={() => onDismissError(invitation.id)}>閉じる</Button>
+                      <Button variant="secondary" size="sm" onClick={error.retry} aria-label={`${invitation.email}の操作をもう一度試す`}>もう一度試す</Button>
+                      <Button variant="secondary" size="sm" onClick={(event) => dismissRowError(event.currentTarget, () => onDismissError(invitation.id))} aria-label={`${invitation.email}のエラー表示を閉じる`}>閉じる</Button>
                     </div>
                   }
                 />
@@ -686,4 +698,19 @@ function InviteDialog({ open, onOpenChange, members, invitations, onInvite }: In
       </DialogContent>
     </Dialog>
   );
+}
+
+/** Focus an element after the current render, when the pressed control may be gone. */
+function focusSoon(target: HTMLElement | null) {
+  requestAnimationFrame(() => target?.focus());
+}
+
+/** Close a row's message and return focus to the row's first action, which stays in place. */
+function dismissRowError(button: HTMLElement, dismiss: () => void) {
+  const row = button.closest("li");
+  dismiss();
+  requestAnimationFrame(() => {
+    const target = row?.querySelector("[data-list-action]");
+    if (target instanceof HTMLElement) target.focus();
+  });
 }

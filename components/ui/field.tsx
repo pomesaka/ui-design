@@ -72,7 +72,9 @@ export const fieldControlStyles = cn(
 );
 
 export function Input({ className, ...props }: WithClassName<BaseInput.Props>) {
-  return <BaseInput {...props} className={cn(fieldControlStyles, "h-control", className)} />;
+  // The browser's own clear button in search fields ignores the theme; offer a
+  // clear action in the screen instead when one is needed.
+  return <BaseInput {...props} className={cn(fieldControlStyles, "h-control [&::-webkit-search-cancel-button]:appearance-none", className)} />;
 }
 
 export type TextareaProps = WithClassName<Omit<BaseField.Control.Props, "render">> & { rows?: number };
