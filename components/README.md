@@ -30,6 +30,7 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 | `Field`・`Input`・`Textarea` | 入力。label・説明・errorの関連付けを`Field`が行う。ブラウザの検査には`match`付きの`FieldError`、サーバーや項目間の規則によるerrorは`Field`の`error` |
 | `Checkbox`・`Switch`・`RadioGroup` | 選択。`children`がlabelになり、行全体が操作領域になる。即時に反映する設定は`Switch`、送信までの選択は`Checkbox` |
 | `Select` | ラジオでは長すぎる単一選択。`items`を渡し、`Field`で包んで`SelectLabel`で名前を付ける |
+| `Table` ほか | 行と列で値を比べる表。`caption`で名前を付け、行の見出しは`TableHead scope="row"`、数値は`numeric`で右揃え。狭い幅では表だけが横にscrollする |
 | `List`・`ListItem` | 同じ種類の項目の並び。行は区切り線で分け、識別・状態・操作の列に揃える。行の操作は二つまで |
 | `Menu` | 二次的な操作の一覧。頻繁な操作は画面に出す |
 | `Dialog`・`AlertDialog` | 背景を止める作業・確認。確認ボタンは操作名で書き、処理中は閉じさせない |
