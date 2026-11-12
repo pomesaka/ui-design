@@ -1,11 +1,33 @@
+import { readdirSync } from "node:fs";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
+
+// The catalog and every screen example are separate pages of one dev server.
+const examples = readdirSync("examples", { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => `examples/${entry.name}/index.html`);
+
+const openCatalog: Plugin = {
+  name: "open-catalog",
+  configureServer(server) {
+    server.middlewares.use((request, response, next) => {
+      if (request.url !== "/") return next();
+      response.statusCode = 302;
+      response.setHeader("Location", "/catalog/");
+      response.end();
+    });
+  },
+};
 
 export default defineConfig({
-  root: "catalog",
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), openCatalog],
   server: { host: "127.0.0.1", port: Number(process.env.CATALOG_PORT ?? 4318), strictPort: true },
-  // The catalog is a local tool, so one bundle is fine.
-  build: { outDir: "../dist/catalog", emptyOutDir: true, chunkSizeWarningLimit: 1000 },
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
+    rolldownOptions: { input: ["catalog/index.html", ...examples] },
+    // These are local tools, so one bundle per page is fine.
+    chunkSizeWarningLimit: 1000,
+  },
 });

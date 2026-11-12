@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogClose,
@@ -12,6 +12,7 @@ import {
 import { useAnnounce } from "../components/ui/announcer";
 import { Banner } from "../components/ui/banner";
 import { Button } from "../components/ui/button";
+import { Form, FormActions } from "../components/ui/form";
 import { Checkbox } from "../components/ui/checkbox";
 import {
   Dialog,
@@ -55,8 +56,7 @@ export function Playground({ theme }: { theme: string }) {
 
   // The saved time next to the button is the visible result; success needs no
   // extra message, only an announcement. Failure stays in a banner until resolved.
-  async function save(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function save() {
     if (saving) return;
     setSaving(true);
     await wait(900);
@@ -88,9 +88,9 @@ export function Playground({ theme }: { theme: string }) {
           30日以内ならゴミ箱から元に戻せます。
         </Banner>
       )}
-      <form onSubmit={save} className="flex max-w-[32rem] flex-col gap-4" aria-label={`${theme}のフォーム`}>
+      <Form onFormSubmit={save} className="max-w-[32rem]" aria-label={`${theme}のフォーム`}>
         {saveFailed && (
-          <Banner tone="error" title="保存できませんでした" action={<Button type="submit" variant="outline" size="sm" pending={saving}>再試行</Button>}>
+          <Banner tone="error" title="保存できませんでした" action={<Button type="submit" variant="secondary" size="sm" pending={saving}>再試行</Button>}>
             通信が切れました。入力内容は残っています。
           </Banner>
         )}
@@ -116,7 +116,7 @@ export function Playground({ theme }: { theme: string }) {
           <Switch name="autosave">自動保存</Switch>
           <Switch checked={failNextSave} onCheckedChange={setFailNextSave}>保存の失敗を再現する(カタログ用)</Switch>
         </div>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <FormActions>
           <Button type="submit" pending={saving}>{saving ? "保存中" : "保存"}</Button>
           <Toggle>お気に入り</Toggle>
           <span className="font-control text-caption text-reading-secondary">
@@ -124,12 +124,12 @@ export function Playground({ theme }: { theme: string }) {
               ? `未保存の変更があります${savedAt ? `(最終保存 ${savedAt})` : ""}`
               : `${savedAt}に保存済み`}
           </span>
-        </div>
-      </form>
+        </FormActions>
+      </Form>
 
       <div className="flex flex-wrap items-center gap-2">
         <Menu>
-          <MenuTrigger render={<Button variant="outline" />}>
+          <MenuTrigger render={<Button variant="secondary" />}>
             その他の操作 <ChevronDownIcon />
           </MenuTrigger>
           <MenuContent container={portal}>

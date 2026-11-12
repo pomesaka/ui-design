@@ -21,11 +21,13 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 
 | 部品 | 使う場面 |
 | --- | --- |
-| `Button` | 操作の実行。`variant`で主・補助・枠線・控えめ・破壊を分け、主操作は一画面に一つを基本にする。処理中は`pending`。linkの見た目は`buttonStyles`で`<a>`へ付ける |
+| `Button` | 操作の実行。`variant`で主(`primary`)・補助(`secondary`)・破壊(`destructive`、確定の場所だけ)・形で分かる場所用(`ghost`)を分け、主操作は一つの操作領域(ページ・Dialog)に一つ。`size="sm"`は密な行やツールバー用で、タッチ端末では44pxに戻る。処理中は`pending`。linkの見た目は`buttonStyles`で`<a>`へ付ける |
 | `Toggle` | 押下状態が残る切替(お気に入り等)。画面遷移には使わない |
-| `Field`・`Input`・`Textarea` | 入力。label・説明・errorの関連付けを`Field`が行う。外部で決まったerrorは`Field invalid`と`<FieldError match>` |
+| `Form`・`FormActions` | 送信する入力のまとまり。送信時に検査し、errorを各項目の横に出して最初の誤りへfocusを移す。送信全体の失敗はフォーム上部の`Banner` |
+| `Field`・`Input`・`Textarea` | 入力。label・説明・errorの関連付けを`Field`が行う。ブラウザの検査には`match`付きの`FieldError`、サーバーや項目間の規則によるerrorは`Field`の`error` |
 | `Checkbox`・`Switch`・`RadioGroup` | 選択。`children`がlabelになり、行全体が操作領域になる。即時に反映する設定は`Switch`、送信までの選択は`Checkbox` |
-| `Select` | ラジオでは長すぎる単一選択。`items`を渡し、`SelectLabel`で名前を付ける |
+| `Select` | ラジオでは長すぎる単一選択。`items`を渡し、`Field`で包んで`SelectLabel`で名前を付ける |
+| `List`・`ListItem` | 同じ種類の項目の並び。行は区切り線で分け、識別・状態・操作の列に揃える。行の操作は二つまで |
 | `Menu` | 二次的な操作の一覧。頻繁な操作は画面に出す |
 | `Dialog`・`AlertDialog` | 背景を止める作業・確認。確認ボタンは操作名で書き、処理中は閉じさせない |
 | `Tabs` | 同じ対象の見方の切替。ページ間の移動はlinkにする |

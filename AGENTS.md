@@ -1,7 +1,7 @@
 # ui-design agent instructions
 
 作業前に[README](README.md)から目的と文書の入口を確認し、[配置と責務](ARCHITECTURE.md)・[開発方針](docs/development.md)を読む。
-UIの設計・実装・レビューでは、最初に[DESIGN](DESIGN.md)を読み、情報階層・操作の発見性・状態と復帰・アクセシビリティを設計段階から確認する。専門家も同じ文書を直接読む。
+UIの設計・実装・レビューでは、最初に[DESIGN](DESIGN.md)を読み、情報階層・操作の発見性・状態と復帰・アクセシビリティを設計段階から確認する。画面を組み立てるときは[画面の組み立て方](docs/composition.md)の手順と確認に従う。専門家も同じ文書を直接読む。
 
 - このrepository内の文書を正本とし、個人のdotfilesや外部skillの導入を前提にしない。
 - VCSはJujutsu、探索はfd・rgを使う。commit・push・PR操作はユーザーの指示を受けて行う。

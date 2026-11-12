@@ -47,6 +47,8 @@
   --color-secondary-pressed: var(--secondary-pressed);
   --color-destructive-hover: var(--destructive-hover);
   --color-destructive-pressed: var(--destructive-pressed);
+  --color-destructive-subtle: var(--destructive-subtle);
+  --color-destructive-subtle-foreground: var(--destructive-subtle-foreground);
   --color-selected: var(--selected);
   --color-selected-foreground: var(--selected-foreground);
   --color-sidebar: var(--sidebar);

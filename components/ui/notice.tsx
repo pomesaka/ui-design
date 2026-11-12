@@ -34,13 +34,17 @@ export function Notice({ tone = "info", title, children, action, className }: No
   const Icon = toneIcon[tone];
   const style = toneStyles[tone];
   return (
-    <div className={cn("flex gap-3 rounded-card border bg-card p-3 text-card-foreground", style.edge, className)}>
-      <Icon className={cn("mt-0.5 size-4 shrink-0", style.text)} />
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <p className={cn("font-control text-action", style.text)}>{title}</p>
-        {children && <div className="font-body text-body">{children}</div>}
+    // Like Banner, the action wraps below the text when the row is narrow,
+    // so a long action label never squeezes the message into a thin column.
+    <div className={cn("flex flex-wrap items-center gap-x-3 gap-y-2 rounded-card border bg-card p-3 text-card-foreground", style.edge, className)}>
+      <div className="flex min-w-0 flex-[1_1_16rem] gap-3 self-start">
+        <Icon className={cn("mt-0.5 size-4 shrink-0", style.text)} />
+        <div className="flex min-w-0 flex-col gap-1">
+          <p className={cn("font-control text-body [font-weight:var(--weight-control)]", style.text)}>{title}</p>
+          {children && <div className="font-body text-body">{children}</div>}
+        </div>
       </div>
-      {action && <div className="shrink-0 self-center">{action}</div>}
+      {action && <div className="ml-auto shrink-0">{action}</div>}
     </div>
   );
 }

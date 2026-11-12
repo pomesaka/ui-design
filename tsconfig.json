@@ -14,5 +14,5 @@
     "noEmit": true,
     "types": ["bun", "vite/client"]
   },
-  "include": ["components", "catalog", "scripts", "test", "vite.config.ts"]
+  "include": ["components", "catalog", "examples", "scripts", "test", "vite.config.ts"]
 }

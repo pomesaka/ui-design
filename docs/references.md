@@ -3,6 +3,17 @@
 設計判断の出典と、必要になったときに辿る外部資料。通常の作業で読む必要はない。規則として採用したものは`DESIGN.md`等へ書き、ここから写して使わない。
 文章やコードを取り込む場合は、利用条件を一次情報で確認し、[開発方針](development.md)に従って出典を残す。
 
+## 考え方の出典
+
+[画面の組み立て方](composition.md)の「利用者から始める」が依拠する、広く使われる枠組み。
+
+| 資料 | 内容 | 対応する箇所 |
+| --- | --- | --- |
+| ISO 9241-11(ユーザビリティの定義)・ISO 9241-210(人間中心設計) | 特定の利用者が特定の利用状況で特定の目的を達成する際の有効さ・効率・満足度。利用状況の把握と検証の繰り返し | 誰が・どんな状況で・何をしたいか、叶えられるか・阻害していないか |
+| Don Norman『誰のためのデザイン?』 | 実行の溝(何をすればよいか)と評価の溝(結果が分かるか) | 迷わないか |
+| [Nielsen Norman Group: 10 Usability Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) | システム状態の可視化、誤りの防止、記憶より認識等のレビュー観点 | 確認 |
+| ペルソナ・シナリオ・Jobs to be Done | 利用者像、利用の流れ、利用者が片付けたい用事から考える方法 | 利用者のストーリー |
+
 ## エージェント向けのデザイン指針・スキル
 
 | 資料 | 内容 | 参考にする点 | 利用条件 |
@@ -32,6 +43,15 @@
 | [Primer: Accessible notifications and messages](https://primer.style/accessibility/toasts/) | トーストを推奨しない理由(WCAG 2.2.1・1.3.2・4.1.3・1.4.4等)と、場面別の代替 | トーストを用意しない判断の根拠、成功は画面の変化で伝える方針 | 未確認 |
 | [Primer: Notification messaging](https://primer.style/product/ui-patterns/notification-messaging/) | Banner・InlineMessage・Dialogの使い分け | 場所に応じた選択、Dialog内ではBannerで結果を出す | 未確認 |
 | [Adam Silver: Can toast messages be accessible?](https://adam-silver-2.kit.com/posts/can-toast-messages-be-accessible) | トーストの是非についての反対意見を含む議論 | 判断を見直すときの論点 | 未確認 |
+
+## 破壊操作
+
+| 資料 | 参考にする点 |
+| --- | --- |
+| [Primer: Delete pattern](https://primer.style/product/scenario-patterns/delete) | 確定ボタンに`danger`と操作名、手間を被害の大きさに合わせる、Remove/Deleteの使い分け |
+| [Visa: Button usage](https://design.visa.com/components/button/usage/) | 破壊操作のボタンは控えめに使う |
+| [Pleo: Action menu](https://telescope.pleo.io/components/action-menu/action-menu.guidelines)・[Mirakl: Deletion](https://design.mirakl.com/design/patterns/deletion) | 行の破壊操作をメニューの最後へ置く |
+| [Shopify Polaris: Common actions](https://polaris-react.shopify.com/patterns/common-actions/overview) | 行の削除を右端の控えめなボタンで置く |
 
 ## トークン・部品の基盤
 

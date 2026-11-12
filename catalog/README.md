@@ -1,6 +1,6 @@
 # カタログ
 
-repository rootで`bun install`の後、`bun run catalog`を実行し、表示されたローカルURLを開く。認証・外部APIは不要。portは`CATALOG_PORT`で指定できる(既定4318)。
+repository rootで`bun install`の後、`bun run catalog`を実行し、表示されたローカルURLの`/catalog/`を開く。認証・外部APIは不要。portは`CATALOG_PORT`で指定できる(既定4318)。
 
 初期表示は全テーマの比較。画面上部の切替で一つにも絞れ、URLの`?theme=`に残る。広い画面ではテーマを横並び、狭い画面では縦に並べる。`themes/`のCSSは自動で読み込まれる。
 

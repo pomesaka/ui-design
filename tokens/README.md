@@ -11,7 +11,7 @@
 
 ## 色の役割
 
-変数は`--primary`のように定義する。shadcnに合わせ、面は`primary`、その上の文字・iconは`primary-foreground`という対で扱い、面の名前に`-background`を足さない。
+変数は`--primary`のように定義する。shadcnに合わせ、面は`primary`、その上の文字・iconは`primary-foreground`という対で扱い、面の名前に`-background`を足さない。面と文字は同じ対の中で組み合わせ、別の対の面と文字(`secondary`の面に`destructive`の文字等)を混ぜない。必要な組合せは対として契約に加え、各テーマで値とcontrastを確かめる。
 
 | 種類 | 基本の名前 |
 | --- | --- |
@@ -22,7 +22,7 @@
 | 補助操作 | `secondary` / `secondary-foreground` |
 | 弱い面とフォーム等の補助 | `muted` / `muted-foreground` |
 | 対話のハイライト | `accent` / `accent-foreground` |
-| 破壊操作・入力不正の強調 | `destructive` |
+| 破壊操作の確定・入力不正の強調 | `destructive` |
 | 境界・入力・focus | `border` / `input` / `ring` |
 | グラフ | `chart-1`〜`chart-5` |
 | サイドバー | `sidebar` / `sidebar-foreground`、`sidebar-primary` / `sidebar-primary-foreground`、`sidebar-accent` / `sidebar-accent-foreground`、`sidebar-border` / `sidebar-ring` |
@@ -39,6 +39,7 @@
 | `reading-secondary` / `control-foreground` | 前者は時刻・件数等の読書metadata、後者は独自の面を持たない操作icon・文言。filled操作はその面のforegroundを使う。役割を分けて調整でき、テーマ内の初期値は同値でもよい |
 | `selected` / `selected-foreground` / `selected-border` | 一覧等の継続した選択の面・文字・縁。主操作や押下中の色と区別する |
 | `success` / `success-foreground`、`warning` / `warning-foreground`、`info` / `info-foreground` | 成功・注意・情報のfeedback。Lumaの既存定義をそのまま移したものではなく、共通契約として加える役割 |
+| `destructive-subtle` / `destructive-subtle-foreground` | 一覧の行等に繰り返し並ぶ、控えめな破壊操作の面と文字。確定に使う`destructive`の塗りと段階を分ける |
 | `primary-hover` / `primary-pressed`、`secondary-hover` / `secondary-pressed`、`destructive-hover` / `destructive-pressed` | 主操作・補助操作・破壊操作で、独立して調整する状態の面。文字は元のforegroundと組にして確認する |
 
 Lumaの`selection`・`selection-surface`・`selection-edge`の分離は、ここでは`selected-*`の役割へ整理する。文字列の選択`::selection`とは区別する。混雑・天気・地図・リアクション等の業務上の色はサービス側の拡張で持つ。
@@ -56,7 +57,7 @@ Lumaの`selection`・`selection-surface`・`selection-edge`の分離は、ここ
 | focus-visible | `ring`と共通のoutline幅・offsetで示す。選択中や入力不正と同時でもfocusを識別できるようにする |
 | disabled | 操作不可。共通のdisabled-opacityと実際の無効化を合わせる。見た目だけ無効にしない |
 | pending | 処理中。表示中の役割を保ち、進捗・busy・必要な操作抑止で示す。警告色に置き換えず、disabledと同じ意味にしない |
-| invalid / error | 入力不正には`destructive`と理由を使う。取得失敗等は原因と復帰操作を示し、すべてを赤い面にしない |
+| invalid / error | 入力不正には`destructive`と理由を使う。取得失敗等は原因と復帰操作を示し、すべてを`destructive`の面にしない |
 | success / warning / info | 内容に対応するfeedbackの役割を使う。色だけで結果を伝えない |
 | empty / unavailable / read-only | 内容なし・利用不可・編集不可の意味と可能な操作を明確にする。disabledにまとめず、専用色を一律に要求しない |
 

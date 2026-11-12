@@ -33,6 +33,9 @@
   --secondary-pressed: color-mix(in srgb, var(--secondary) 88%, var(--secondary-foreground));
   --destructive-hover: color-mix(in srgb, var(--destructive) 90%, var(--foreground));
   --destructive-pressed: color-mix(in srgb, var(--destructive) 80%, var(--foreground));
+  /* Low-emphasis destructive pair, for actions repeated on many rows. */
+  --destructive-subtle: color-mix(in srgb, var(--destructive) 14%, var(--background));
+  --destructive-subtle-foreground: color-mix(in srgb, var(--destructive) 85%, var(--foreground));
   --selected: color-mix(in srgb, var(--selected-border) 8%, transparent);
   --selected-foreground: var(--foreground);
   --sidebar: var(--card);
