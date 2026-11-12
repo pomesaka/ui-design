@@ -11,7 +11,7 @@
 
 ## 色の役割
 
-変数は`--primary`のように定義する。shadcnに合わせ、面は`primary`、その上の文字・iconは`primary-foreground`という対で扱い、面の名前に`-background`を足さない。
+変数は`--primary`のように定義する。shadcnに合わせ、面は`primary`、その上の文字・iconは`primary-foreground`という対で扱い、面の名前に`-background`を足さない。面と文字は同じ対の中で組み合わせ、別の対の面と文字(`secondary`の面に`destructive`の文字等)を混ぜない。必要な組合せは対として契約に加え、各テーマで値とcontrastを確かめる。
 
 | 種類 | 基本の名前 |
 | --- | --- |
@@ -22,7 +22,7 @@
 | 補助操作 | `secondary` / `secondary-foreground` |
 | 弱い面とフォーム等の補助 | `muted` / `muted-foreground` |
 | 対話のハイライト | `accent` / `accent-foreground` |
-| 破壊操作・入力不正の強調 | `destructive` |
+| 破壊操作の確定・入力不正の強調 | `destructive` |
 | 境界・入力・focus | `border` / `input` / `ring` |
 | グラフ | `chart-1`〜`chart-5` |
 | サイドバー | `sidebar` / `sidebar-foreground`、`sidebar-primary` / `sidebar-primary-foreground`、`sidebar-accent` / `sidebar-accent-foreground`、`sidebar-border` / `sidebar-ring` |
@@ -57,7 +57,7 @@ Lumaの`selection`・`selection-surface`・`selection-edge`の分離は、ここ
 | focus-visible | `ring`と共通のoutline幅・offsetで示す。選択中や入力不正と同時でもfocusを識別できるようにする |
 | disabled | 操作不可。共通のdisabled-opacityと実際の無効化を合わせる。見た目だけ無効にしない |
 | pending | 処理中。表示中の役割を保ち、進捗・busy・必要な操作抑止で示す。警告色に置き換えず、disabledと同じ意味にしない |
-| invalid / error | 入力不正には`destructive`と理由を使う。取得失敗等は原因と復帰操作を示し、すべてを赤い面にしない |
+| invalid / error | 入力不正には`destructive`と理由を使う。取得失敗等は原因と復帰操作を示し、すべてを`destructive`の面にしない |
 | success / warning / info | 内容に対応するfeedbackの役割を使う。色だけで結果を伝えない |
 | empty / unavailable / read-only | 内容なし・利用不可・編集不可の意味と可能な操作を明確にする。disabledにまとめず、専用色を一律に要求しない |
 
