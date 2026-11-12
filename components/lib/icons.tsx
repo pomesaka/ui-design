@@ -27,6 +27,10 @@ function Icon({ children, ...props }: IconProps) {
 export const CheckIcon = (props: IconProps) => <Icon {...props}><path d="m3.5 8.5 3 3 6-7" /></Icon>;
 export const MinusIcon = (props: IconProps) => <Icon {...props}><path d="M4 8h8" /></Icon>;
 export const ChevronDownIcon = (props: IconProps) => <Icon {...props}><path d="m4.5 6.5 3.5 3.5 3.5-3.5" /></Icon>;
+export const ChevronLeftIcon = (props: IconProps) => <Icon {...props}><path d="m9.5 4.5-3.5 3.5 3.5 3.5" /></Icon>;
+export const ChevronRightIcon = (props: IconProps) => <Icon {...props}><path d="m6.5 4.5 3.5 3.5-3.5 3.5" /></Icon>;
+/** For links that leave the product. Pair with text such as "(新しいタブ)" when the link opens one. */
+export const ExternalLinkIcon = (props: IconProps) => <Icon {...props}><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3" /></Icon>;
 export const ChevronsUpDownIcon = (props: IconProps) => <Icon {...props}><path d="m5 6 3-3 3 3M5 10l3 3 3-3" /></Icon>;
 export const XIcon = (props: IconProps) => <Icon {...props}><path d="m4.5 4.5 7 7m0-7-7 7" /></Icon>;
 export const InfoIcon = (props: IconProps) => <Icon {...props}><circle cx="8" cy="8" r="6" /><path d="M8 7.25v3.5M8 5v.01" /></Icon>;

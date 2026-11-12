@@ -19,7 +19,7 @@ description: 画面・部品・UIの変更を、ui-designの文書に照らし�
 ## 手順
 
 1. 利用者ごとのストーリーを書き、[三つの問い](../../docs/composition.md#利用者から始める)を評価の軸にする。
-2. 描画して撮る。このファイルと同じ場所の`node scripts/capture.mjs <出力先> <URL>... --themes <テーマ,...> --wait <描画完了のselector>`で幅390・768・1280px × 各テーマを撮り、全画像を見る。空・失敗・長い内容・大量の件数等の状態はURLを並べて撮る。`--text-scale 2`で文字200%も撮る。
+2. 描画して撮る。このファイルと同じ場所の`node scripts/capture.mjs <出力先> <URL>... --themes <テーマ,...> --wait <描画完了のselector>`で幅390・768・1280px × 各テーマを撮り、全画像を見る。空・失敗・長い内容・大量の件数等の状態はURLを並べて撮る。`--text-scale 2`で文字200%も撮る。ログインが要る画面は`--storage-state`、内側の要素がスクロールする画面は`--scroll <selector>`を使う。Playwrightが見つからないworkspaceでは、Playwrightを依存に持つpackageから実行するか`NODE_PATH`を渡す。
 3. 操作する。Playwright等で実際に操作し、値で確かめる。
    - keyboardだけで主操作まで届くか。操作で要素が消えたり閉じたりした後、`document.activeElement`がbodyに落ちず意味のある場所にあるか。
    - 結果の伝わり方。画面の変化、Banner・Notice、live regionに入った文言。

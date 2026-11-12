@@ -7,7 +7,7 @@
 - 各テーマだけで、共通部品の通常状態・操作状態・feedbackを表現できる値を一式持つ。light/darkも`luma-light`・`luma-dark`のように独立したテーマとし、どちらも同じ名前を満たす。
 - サービスはテーマを一つ選んで読み込み、必要な色・書体・密度・角丸・材質・motionの値を上書きする。token名や部品の状態判定をサービスごとに作り直さない。
 - 状態別の値も各テーマが供給する。色の派生計算を使う場合は、サービスが変更した基準色から導出される定義にする。値を単に固定コピーして上書きに追従しなくしない。
-- 正本は通常のCSS custom propertiesとし、frameworkへ依存させない。Tailwindとの対応表は[tailwind/theme.css](../tailwind/theme.css)に置き、値の定義から分ける。
+- 正本は通常のCSS custom propertiesとし、frameworkへ依存させない。Tailwindとの対応表は[tailwind/tokens.css](../tailwind/tokens.css)に置き、値の定義から分ける。
 
 ## 色の役割
 
@@ -37,12 +37,23 @@
 | --- | --- |
 | `destructive-foreground` | destructiveの面に載せる文字・icon |
 | `reading-secondary` / `control-foreground` | 前者は時刻・件数等の読書metadata、後者は独自の面を持たない操作icon・文言。filled操作はその面のforegroundを使う。役割を分けて調整でき、テーマ内の初期値は同値でもよい |
+| `header` / `header-foreground`、`header-muted-foreground`、`header-accent` / `header-accent-foreground`、`header-border` | 上部のナビ帯。`sidebar-*`と同じく帯の面・文字と、現在でない項目の文字、現在の項目の面と文字、帯の境界。現在の項目は`aria-current`と`header-accent`の対で示し、hoverは文字を`header-foreground`へ上げるだけにして現在の項目と区別する |
 | `selected` / `selected-foreground` / `selected-border` | 一覧等の継続した選択の面・文字・縁。主操作や押下中の色と区別する |
 | `success` / `success-foreground`、`warning` / `warning-foreground`、`info` / `info-foreground` | 成功・注意・情報のfeedback。Lumaの既存定義をそのまま移したものではなく、共通契約として加える役割 |
 | `destructive-subtle` / `destructive-subtle-foreground` | 一覧の行等に繰り返し並ぶ、控えめな破壊操作の面と文字。確定に使う`destructive`の塗りと段階を分ける |
 | `primary-hover` / `primary-pressed`、`secondary-hover` / `secondary-pressed`、`destructive-hover` / `destructive-pressed` | 主操作・補助操作・破壊操作で、独立して調整する状態の面。文字は元のforegroundと組にして確認する |
 
 Lumaの`selection`・`selection-surface`・`selection-edge`の分離は、ここでは`selected-*`の役割へ整理する。文字列の選択`::selection`とは区別する。混雑・天気・地図・リアクション等の業務上の色はサービス側の拡張で持つ。
+
+### サービスで役割を足す
+
+業務の意味を持つ色(判定の結果等)はサービス側で足し、共通契約には入れない。
+
+- 名前は業務の意味で付け、面と文字を対にする:`<名前>` / `<名前>-foreground`。控えめな面が要れば`<名前>-subtle` / `<名前>-subtle-foreground`も対で足す。共通契約の名前と重ねない。
+- 値はテーマごとに上書きCSS(`*theme.css`)へ書き、基準の色から`color-mix`で導出して上書きに追従させる。
+- Tailwindへは[tokens.css](../tailwind/tokens.css)と同じく`@theme inline reference { --color-<名前>: var(--<名前>); }`で対応させる。
+- contrastは[contrast.mjs](../skills/setup/scripts/contrast.mjs)で確かめる。`X` / `X-foreground`の対は自動で測られる。
+- 色だけで意味を伝えず、文言やiconを併用する。
 
 ## 状態と表現
 

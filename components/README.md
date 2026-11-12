@@ -15,6 +15,9 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 @source "./components";
 ```
 
+4. 複製した`components/`・`tailwind/`・`themes/`は、採用先のlint・formatの対象から外す。書式を変えるとui-designとの差分を取りにくくなる。
+5. サービスで値を調整する上書きCSSは、ファイル名を`*theme.css`にするか`themes/`に置く。棚卸し([inventory](../skills/setup/scripts/inventory.mjs))はそこに書いた色を直接指定として数えない。
+
 複製後の変更は採用先の判断で行う。共通にしたい改善はこのrepositoryへ戻す。テーマを`<html>`以外へ付ける場合、popupの`container`へテーマ領域内の要素を渡す。portalはbody直下へ描画され、テーマの値を受け取れないため。
 
 ## 部品と使いどころ
@@ -27,6 +30,7 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 | `Field`・`Input`・`Textarea` | 入力。label・説明・errorの関連付けを`Field`が行う。ブラウザの検査には`match`付きの`FieldError`、サーバーや項目間の規則によるerrorは`Field`の`error` |
 | `Checkbox`・`Switch`・`RadioGroup` | 選択。`children`がlabelになり、行全体が操作領域になる。即時に反映する設定は`Switch`、送信までの選択は`Checkbox` |
 | `Select` | ラジオでは長すぎる単一選択。`items`を渡し、`Field`で包んで`SelectLabel`で名前を付ける |
+| `Table` ほか | 行と列で値を比べる表。`caption`で名前を付け、行の見出しは`TableHead scope="row"`、数値は`numeric`で右揃え。狭い幅では表だけが横にscrollする |
 | `List`・`ListItem` | 同じ種類の項目の並び。行は区切り線で分け、識別・状態・操作の列に揃える。行の操作は二つまで |
 | `Menu` | 二次的な操作の一覧。頻繁な操作は画面に出す |
 | `Dialog`・`AlertDialog` | 背景を止める作業・確認。確認ボタンは操作名で書き、処理中は閉じさせない |
@@ -57,7 +61,7 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 
 Base UIに該当する部品があれば、その上に作る。`node_modules/@base-ui/react/docs/`に版と一致する説明がある。
 
-- 色・寸法・角丸・影・動きは`tailwind/theme.css`のutilityで指定する。token外の値が必要なら、先に共通契約へ足すかを判断する。
+- 色・寸法・角丸・影・動きは`tailwind/tokens.css`が作るutilityで指定する。token外の値が必要なら、先に共通契約へ足すかを判断する。
 - 状態はBase UIのdata属性(`data-disabled`・`data-checked`・`data-highlighted`等)で表す。focusは`focus-visible:focus-ring`、無効の見た目は`disabled-dim`を使う。
 - `className`は文字列で受け、`cn`で後勝ちに合成する。状態ごとのclassName関数は使わない。
 - 動きには`motion-reduce:`での代替を付ける。

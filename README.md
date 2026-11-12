@@ -19,6 +19,7 @@
 
 - [デザインの判断基準](DESIGN.md)
 - [画面の組み立て方](docs/composition.md)
+- [既存プロジェクトの移行](docs/migration.md)
 - [共通トークンの契約](tokens/README.md)
 - [テーマの利用・調整](themes/README.md)
 - [部品の使い方と一覧](components/README.md)

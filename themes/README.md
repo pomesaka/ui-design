@@ -1,7 +1,7 @@
 # テーマ
 
 テーマは、[共通トークン契約](../tokens/README.md)の値を一式埋めたもの。light/darkも別のテーマとして管理する。
-名前の正本は[contract.json](../tokens/contract.json)、値の正本は各CSS。`luma-light`は温かい紙色と深緑の文字、`luma-dark`は深緑の面と淡い文字を持つ。
+名前の正本は[contract.json](../tokens/contract.json)、値の正本は各CSS。`template`は新しいテーマの出発点になる中立のlightテーマ。`luma-light`(温かい紙色と深緑の文字)と`luma-dark`(深緑の面と淡い文字)は作例。
 
 ## 使う
 
@@ -37,6 +37,6 @@ CSS変数の派生値は定義した要素で計算される。子要素へ基�
 
 ## テーマを追加する
 
-`<名前>.css`に`[data-theme="<名前>"]`の単一ruleで全tokenを定義する。他テーマの値の継承を前提にせず、同じ名前を独立した配色や材質・motionで満たす。定義漏れ・余分な名前・未定義参照・循環参照はrepository rootで`bun run check:themes`を実行して確認する。この検査はCSSの構文・値の型・contrastの適合を保証するものではない。
+[template.css](template.css)を`<名前>.css`へ複製し、selectorを`[data-theme="<名前>"]`に変えて始める。templateは冒頭の基本の色だけを変えれば残りが導出される中立のlightテーマで、Lumaは作例の一つにすぎない。テーマは`<名前>.css`に`[data-theme="<名前>"]`の単一ruleで全tokenを定義する。他テーマの値の継承を前提にせず、同じ名前を独立した配色や材質・motionで満たす。定義漏れ・余分な名前・未定義参照・循環参照はrepository rootで`bun run check:themes`を実行して確認する。この検査はCSSの構文・値の型を保証しない。contrastは[contrast.mjs](../skills/setup/scripts/contrast.mjs)で、文字は4.5、境界とfocusは`--min 3`で確かめる。
 
 Lumaから既存の汎用配色・文字・寸法・focus・押下の値を引き継いだ。lightの入力境界とfocus色は、紙色の上で識別しやすい濃さに補正した。popover・sidebar・chart・feedback・一部の状態色・共通shadowは、契約を埋めるための追加または派生。hover色は元アプリの固定値の単純コピーにせず、サービスが変えた基準色に追従する。部品固有の多層反射・光源追従・reduced motionの動作は部品側が担当する。

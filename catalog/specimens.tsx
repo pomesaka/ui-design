@@ -8,6 +8,7 @@ import { Notice } from "../components/ui/notice";
 import { Radio, RadioGroup } from "../components/ui/radio-group";
 import { Select, SelectTrigger } from "../components/ui/select";
 import { Switch } from "../components/ui/switch";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import { Tabs, TabsList, TabsTab } from "../components/ui/tabs";
 import { Toggle } from "../components/ui/toggle";
 import { Section } from "./app";
@@ -157,6 +158,53 @@ export function Specimens() {
         </Spec>
       </Section>
 
+      <Section title="表">
+        <Spec label="数値の比較。狭い幅では表だけが横にscrollする">
+          <Table caption="サイトごとの1泊のレート">
+            <TableHeader>
+              <TableRow>
+                <TableHead>サイト</TableHead>
+                {rateDates.map((date) => <TableHead key={date} numeric>{date}</TableHead>)}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rateRows.map(([site, ...rates]) => (
+                <TableRow key={site}>
+                  <TableHead scope="row">{site}</TableHead>
+                  {rates.map((rate, index) => (
+                    <TableCell key={rateDates[index]} numeric>{rate}<span className="sr-only">円</span></TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Spec>
+      </Section>
+
+      <Section title="上部のナビ帯">
+        <Spec label="現在の項目・通常・ホバー・フォーカス">
+          <header className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-header-border bg-header px-4 py-2 text-header-foreground">
+            <span className="font-heading text-section">サービス名</span>
+            <nav aria-label="ナビ帯の例">
+              <ul className="flex flex-wrap gap-1">
+                {headerItems.map(([label, state]) => (
+                  <li key={label}>
+                    <a
+                      href="#states"
+                      aria-current={state === "current" ? "page" : undefined}
+                      data-preview-state={state === "current" ? undefined : state}
+                      className="inline-flex h-control items-center rounded-field px-3 font-control text-action text-header-muted-foreground outline-none hover:text-header-foreground focus-visible:focus-ring aria-[current=page]:bg-header-accent aria-[current=page]:text-header-accent-foreground"
+                    >
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </header>
+        </Spec>
+      </Section>
+
       <Section title="タブ">
         <Spec label="選択中・ホバー・フォーカス">
           <Tabs defaultValue="overview">
@@ -199,6 +247,20 @@ export function Specimens() {
     </>
   );
 }
+
+const rateDates = ["11/14(金)", "11/15(土)", "11/16(日)", "11/17(月)", "11/18(火)"];
+const rateRows: string[][] = [
+  ["自社サイト", "12,800", "18,400", "15,200", "11,000", "11,000"],
+  ["予約サイトA", "13,500", "19,800", "16,000", "11,600", "11,600"],
+  ["予約サイトB", "13,200", "19,200", "15,800", "11,400", "11,300"],
+];
+
+const headerItems: [string, string][] = [
+  ["カレンダー", "current"],
+  ["予約", "default"],
+  ["レポート", "hover"],
+  ["設定", "focus"],
+];
 
 const fruits = [
   { value: "apple", label: "りんご" },

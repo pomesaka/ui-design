@@ -1,0 +1,3 @@
+/* Clears the Tailwind default palette and scales, so only contract values
+ * remain as utilities. Must come before tokens.css; theme.css imports both. */
+
