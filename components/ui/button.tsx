@@ -2,7 +2,7 @@ import { Button as BaseButton } from "@base-ui/react/button";
 import { cn, type WithClassName } from "../lib/cn";
 import { Spinner } from "./spinner";
 
-export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "destructive";
+export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "destructive" | "ghost-destructive";
 export type ButtonSize = "md" | "sm" | "icon";
 
 const variants: Record<ButtonVariant, string> = {
@@ -11,12 +11,15 @@ const variants: Record<ButtonVariant, string> = {
   destructive: "bg-destructive text-destructive-foreground hover:not-data-disabled:bg-destructive-hover active:not-data-disabled:bg-destructive-pressed",
   outline: "border-input bg-transparent text-control-foreground hover:not-data-disabled:bg-accent hover:not-data-disabled:text-accent-foreground active:not-data-disabled:bg-accent",
   ghost: "bg-transparent text-control-foreground hover:not-data-disabled:bg-accent hover:not-data-disabled:text-accent-foreground active:not-data-disabled:bg-accent",
+  // A low-emphasis destructive action, such as "削除" repeated on every row.
+  "ghost-destructive": "bg-transparent text-destructive hover:not-data-disabled:bg-accent active:not-data-disabled:bg-accent",
 };
 
 const sizes: Record<ButtonSize, string> = {
-  // md keeps the 44px hit size; sm is for dense desktop toolbars only.
+  // md keeps the 44px hit size. sm is for dense rows and toolbars; it grows
+  // back to the hit size on touch (coarse pointer) devices.
   md: "h-control px-4",
-  sm: "h-8 px-3",
+  sm: "h-8 px-3 pointer-coarse:h-control",
   icon: "size-control p-0 text-[length:var(--icon-size-action)]",
 };
 

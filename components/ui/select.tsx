@@ -10,20 +10,28 @@ import { fieldControlStyles } from "./field";
  */
 export const Select = BaseSelect.Root;
 
-/** Visible name of the select. Use it instead of FieldLabel for a Select. */
+/**
+ * Visible name of the select. Use it instead of FieldLabel for a Select, and
+ * wrap the Select in Field so its label, description and spacing match inputs.
+ */
 export function SelectLabel({ className, ...props }: WithClassName<BaseSelect.Label.Props>) {
   return <BaseSelect.Label {...props} className={cn("w-fit font-control text-action text-foreground", className)} />;
 }
 
-export type SelectTriggerProps = WithClassName<BaseSelect.Trigger.Props> & { placeholder?: string };
+export type SelectTriggerProps = WithClassName<BaseSelect.Trigger.Props> & {
+  placeholder?: string;
+  /** sm for dense rows; it grows back to the hit size on touch devices. */
+  size?: "md" | "sm";
+};
 
-export function SelectTrigger({ className, placeholder, ...props }: SelectTriggerProps) {
+export function SelectTrigger({ className, placeholder, size = "md", ...props }: SelectTriggerProps) {
   return (
     <BaseSelect.Trigger
       {...props}
       className={cn(
         fieldControlStyles,
-        "flex h-control cursor-pointer items-center justify-between gap-2 text-left data-popup-open:border-control-foreground",
+        "flex cursor-pointer items-center justify-between gap-2 text-left data-popup-open:border-control-foreground",
+        size === "md" ? "h-control" : "h-8 pointer-coarse:h-control",
         className,
       )}
     >

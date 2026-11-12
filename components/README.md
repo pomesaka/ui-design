@@ -21,11 +21,11 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 
 | 部品 | 使う場面 |
 | --- | --- |
-| `Button` | 操作の実行。`variant`で主・補助・枠線・控えめ・破壊を分け、主操作は一画面に一つを基本にする。処理中は`pending`。linkの見た目は`buttonStyles`で`<a>`へ付ける |
+| `Button` | 操作の実行。`variant`で主・補助・枠線・控えめ・破壊・控えめな破壊を分け、主操作は一つの操作領域(ページ・Dialog)に一つ。`size="sm"`は密な行やツールバー用で、タッチ端末では44pxに戻る。処理中は`pending`。linkの見た目は`buttonStyles`で`<a>`へ付ける |
 | `Toggle` | 押下状態が残る切替(お気に入り等)。画面遷移には使わない |
 | `Field`・`Input`・`Textarea` | 入力。label・説明・errorの関連付けを`Field`が行う。外部で決まったerrorは`Field invalid`と`<FieldError match>` |
 | `Checkbox`・`Switch`・`RadioGroup` | 選択。`children`がlabelになり、行全体が操作領域になる。即時に反映する設定は`Switch`、送信までの選択は`Checkbox` |
-| `Select` | ラジオでは長すぎる単一選択。`items`を渡し、`SelectLabel`で名前を付ける |
+| `Select` | ラジオでは長すぎる単一選択。`items`を渡し、`Field`で包んで`SelectLabel`で名前を付ける |
 | `Menu` | 二次的な操作の一覧。頻繁な操作は画面に出す |
 | `Dialog`・`AlertDialog` | 背景を止める作業・確認。確認ボタンは操作名で書き、処理中は閉じさせない |
 | `Tabs` | 同じ対象の見方の切替。ページ間の移動はlinkにする |

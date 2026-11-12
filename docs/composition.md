@@ -22,10 +22,19 @@
 
 ## このrepositoryの決定
 
-- 強弱は位置 → 余白 → 文字 → 色の順で付ける。主操作(`primary`)は一つの領域に一つ。
-- 文字の段は、ページ見出し`font-heading text-heading`、区画見出し`font-heading text-reading`、本文`font-body text-body`、補足`text-caption text-reading-secondary`に限る。
-- 余白はtokenの段(`1`・`2`・`3`・`4`・`6`・`8`・`12`、`panel`)から選び、グループ内 < グループ間(`gap-6`) < 区画間(`gap-8`以上)に広げる。段外の値と任意値は検査で落ちる。
-- 区切りは余白 → 区切り線 → 面の順に検討する。カード(面)は一つの対象を選ぶ・比べる・操作するときだけ使い、入れ子にしない。影はpopupとDialogだけが持つ。
+- 強弱は位置 → 余白 → 文字 → 色の順で付ける。主操作(`primary`)はページ・Dialog等の一つの操作領域に一つ。
+- 文字の段は、ページ見出し`font-heading text-heading`、区画見出し`font-heading text-reading`、本文`font-body text-body`、補足`font-control text-caption text-reading-secondary`に限る。labelと操作の文字は部品に任せる。
+- 余白はtokenの段(`1`・`2`・`3`・`4`・`6`・`8`・`12`、`panel`・`reading`)から選ぶ。段外の値と任意値は検査で落ちる。既定は次のとおり。
+
+| 関係 | 既定 |
+| --- | --- |
+| 同じグループの項目、見出しと補足 | `gap-1`〜`gap-3` |
+| 区画見出しと中身、グループ間 | `gap-4`〜`gap-6` |
+| ページ直下の区画間 | `gap-12` |
+| 一覧の行 | 区切り線と`py-3`。行の操作は`size="sm"` |
+| 本文の幅 | 業務画面は`max-w-5xl`〜`max-w-6xl`、文章が主なら`max-w-prose` |
+
+- 区切りは余白 → 区切り線 → 面の順に検討する。一覧の行は区切り線で分ける。カード(面)は一つの対象を選ぶ・比べるときに使い、入れ子にしない。Banner・Notice等の部品が持つ面はこの判断に含めない。影はpopupとDialogだけが持つ。
 - `primary`と状態色(`success`・`warning`・`destructive`・`info`)は意味があるときだけ使い、面積の大半は`background`・`card`・`foreground`にする。
 - 結果は時間で消える表示で伝えない。[結果の伝え方](../components/README.md#結果の伝え方)に従う。
 - ボタンは結果を表す動詞で書き、日本語UIに英字の飾りlabelを混ぜない。

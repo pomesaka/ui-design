@@ -19,7 +19,7 @@ export function Toggle({ className, size = "md", ...props }: ToggleProps) {
         "active:not-data-disabled:translate-y-(--press-depth)",
         "data-pressed:border-selected-border data-pressed:bg-selected data-pressed:text-selected-foreground",
         "data-disabled:cursor-not-allowed data-disabled:disabled-dim",
-        size === "md" ? "h-control px-4" : "h-8 px-3",
+        size === "md" ? "h-control px-4" : "h-8 px-3 pointer-coarse:h-control",
         className,
       )}
     />
