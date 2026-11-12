@@ -11,3 +11,4 @@
 - [部品と状態のカタログ](catalog/README.md)
 - [配置と責務の境界](ARCHITECTURE.md)
 - [追加・検証・文書の方針](docs/development.md)
+- [参考文献](docs/references.md)(必要時のみ)
