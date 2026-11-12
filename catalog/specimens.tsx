@@ -17,7 +17,7 @@ import { Section } from "./app";
  */
 function Spec({ label, children, wide = false }: { label: string; children: ReactNode; wide?: boolean }) {
   return (
-    <div className={wide ? "flex min-w-0 flex-col gap-1.5 sm:col-span-2" : "flex min-w-0 flex-col gap-1.5"}>
+    <div className={wide ? "flex min-w-0 flex-col gap-2 sm:col-span-2" : "flex min-w-0 flex-col gap-2"}>
       <span className="font-control text-caption text-reading-secondary">{label}</span>
       <div inert className="pointer-events-none flex min-w-0 flex-col [&_*]:transition-none [&_*]:animate-none">
         {children}

@@ -79,7 +79,7 @@ function ThemePanel({ theme, children }: { theme: string; children: ReactNode })
 /** A titled group of specimens. */
 export function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="flex flex-col gap-4 border-t border-border pt-5">
+    <section className="flex flex-col gap-4 border-t border-border pt-6">
       <h3 className="font-control text-action">{title}</h3>
       {children}
     </section>
