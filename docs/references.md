@@ -30,3 +30,5 @@
 | 資料 | 内容 |
 | --- | --- |
 | [shadcn/ui Theming](https://ui.shadcn.com/docs/theming#theme-tokens) | 色の役割名の土台。[共通トークン契約](../tokens/README.md)で参照 |
+| [Base UI](https://base-ui.com) | 部品の振る舞いの土台(MIT)。導入した版の説明は`node_modules/@base-ui/react/docs/` |
+| [Tailwind CSS: Theme variables](https://tailwindcss.com/docs/theme) | `@theme`の名前空間と`inline`・`reference`。[対応表](../tailwind/theme.css)の仕組み |
