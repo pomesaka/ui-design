@@ -90,7 +90,7 @@ export function Playground({ theme }: { theme: string }) {
       )}
       <Form onFormSubmit={save} className="max-w-[32rem]" aria-label={`${theme}のフォーム`}>
         {saveFailed && (
-          <Banner tone="error" title="保存できませんでした" action={<Button type="submit" variant="outline" size="sm" pending={saving}>再試行</Button>}>
+          <Banner tone="error" title="保存できませんでした" action={<Button type="submit" variant="secondary" size="sm" pending={saving}>再試行</Button>}>
             通信が切れました。入力内容は残っています。
           </Banner>
         )}
@@ -129,7 +129,7 @@ export function Playground({ theme }: { theme: string }) {
 
       <div className="flex flex-wrap items-center gap-2">
         <Menu>
-          <MenuTrigger render={<Button variant="outline" />}>
+          <MenuTrigger render={<Button variant="secondary" />}>
             その他の操作 <ChevronDownIcon />
           </MenuTrigger>
           <MenuContent container={portal}>

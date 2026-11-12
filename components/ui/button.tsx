@@ -2,20 +2,20 @@ import { Button as BaseButton } from "@base-ui/react/button";
 import { cn, type WithClassName } from "../lib/cn";
 import { Spinner } from "./spinner";
 
-export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "destructive" | "outline-destructive";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive" | "secondary-destructive";
 export type ButtonSize = "md" | "sm" | "icon";
 
 const variants: Record<ButtonVariant, string> = {
   primary: "bg-primary text-primary-foreground hover:not-data-disabled:bg-primary-hover active:not-data-disabled:bg-primary-pressed",
   secondary: "bg-secondary text-secondary-foreground hover:not-data-disabled:bg-secondary-hover active:not-data-disabled:bg-secondary-pressed",
   destructive: "bg-destructive text-destructive-foreground hover:not-data-disabled:bg-destructive-hover active:not-data-disabled:bg-destructive-pressed",
-  outline: "border-input bg-transparent text-control-foreground hover:not-data-disabled:bg-accent hover:not-data-disabled:text-accent-foreground active:not-data-disabled:bg-accent",
   // No surface or border: only where the shape or place already says "button"
   // (an icon button with a label, a dialog's close mark, a toolbar).
   ghost: "bg-transparent text-control-foreground hover:not-data-disabled:bg-accent hover:not-data-disabled:text-accent-foreground active:not-data-disabled:bg-accent",
   // A lower-emphasis destructive action, such as "削除" repeated on every row.
-  // It keeps a border: text-only buttons are hard to tell apart from text.
-  "outline-destructive": "border-input bg-transparent text-destructive hover:not-data-disabled:border-destructive hover:not-data-disabled:bg-accent active:not-data-disabled:bg-accent",
+  // It turns into the full destructive fill on hover, so the danger is clear
+  // before pressing and the text keeps its contrast in every state.
+  "secondary-destructive": "bg-secondary text-destructive hover:not-data-disabled:bg-destructive hover:not-data-disabled:text-destructive-foreground active:not-data-disabled:bg-destructive-pressed active:not-data-disabled:text-destructive-foreground",
 };
 
 const sizes: Record<ButtonSize, string> = {

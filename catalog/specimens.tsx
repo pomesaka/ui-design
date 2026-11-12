@@ -32,10 +32,9 @@ const grid = "grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 lg:grid-cols-4";
 const buttonVariants: [ButtonVariant, string][] = [
   ["primary", "主操作"],
   ["secondary", "補助操作"],
-  ["outline", "枠線"],
   ["ghost", "控えめ"],
   ["destructive", "破壊操作"],
-  ["outline-destructive", "枠線の破壊操作"],
+  ["secondary-destructive", "控えめな破壊操作"],
 ];
 
 const buttonStates: [string, string][] = [
@@ -146,13 +145,13 @@ export function Specimens() {
               title="阿部 誠"
               description="makoto.abe@example.com"
               meta="最終利用 2日前"
-              actions={<><Button variant="outline" size="sm">権限を変更</Button><Button variant="outline-destructive" size="sm">削除</Button></>}
+              actions={<><Button variant="secondary" size="sm">権限を変更</Button><Button variant="secondary-destructive" size="sm">削除</Button></>}
             />
             <ListItem
               title="高橋 ルイス・アレハンドロ・フェルナンデス"
               description="luis.alejandro.fernandez.takahashi@long-subsidiary-name.example.co.jp"
               meta="最終利用 4か月前"
-              actions={<Button variant="outline-destructive" size="sm">削除</Button>}
+              actions={<Button variant="secondary-destructive" size="sm">削除</Button>}
             />
           </List>
         </Spec>
@@ -177,7 +176,7 @@ export function Specimens() {
         </p>
         <div className="flex flex-col gap-3">
           <Spec label="Banner 失敗(解決まで閉じられない)">
-            <Banner tone="error" title="保存できませんでした" action={<Button variant="outline" size="sm">再試行</Button>}>
+            <Banner tone="error" title="保存できませんでした" action={<Button variant="secondary" size="sm">再試行</Button>}>
               通信が切れました。入力内容は残っています。
             </Banner>
           </Spec>

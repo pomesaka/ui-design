@@ -280,7 +280,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
         <Banner
           tone="error"
           title="メンバーを読み込めませんでした"
-          action={<Button variant="outline" size="sm" onClick={() => setAttempt((n) => n + 1)}>再読み込み</Button>}
+          action={<Button variant="secondary" size="sm" onClick={() => setAttempt((n) => n + 1)}>再読み込み</Button>}
         >
           通信が途切れた可能性があります。接続を確かめてから、もう一度読み込んでください。
         </Banner>
@@ -290,7 +290,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
         <Banner
           tone="warning"
           title="最新の状態を取得できませんでした"
-          action={<Button variant="outline" size="sm" onClick={() => setAttempt((n) => n + 1)}>再読み込み</Button>}
+          action={<Button variant="secondary" size="sm" onClick={() => setAttempt((n) => n + 1)}>再読み込み</Button>}
         >
           表示は{loadedAt}時点の内容です。他の管理者が行った変更が反映されていない場合があります。
         </Banner>
@@ -310,7 +310,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
             <Notice
               tone="warning"
               title={`${inactiveDays}日以上利用のないメンバーが${inactive.length}人います`}
-              action={<Button variant="outline" size="sm" onClick={() => { clearFilters(); setSort("inactive"); }}>利用が古い順に並べる</Button>}
+              action={<Button variant="secondary" size="sm" onClick={() => { clearFilters(); setSort("inactive"); }}>利用が古い順に並べる</Button>}
             >
               退職や異動でチームを離れた人がいれば、チームから削除してください。
             </Notice>
@@ -358,7 +358,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
           {visible.length === 0 && members.length > 1 && (
             <div className="flex flex-wrap items-center gap-3 border-t border-border py-6">
               <p className="font-body text-body text-muted-foreground">条件に合うメンバーはいません。</p>
-              <Button variant="outline" size="sm" onClick={clearFilters}>条件をクリア</Button>
+              <Button variant="secondary" size="sm" onClick={clearFilters}>条件をクリア</Button>
             </div>
           )}
 
@@ -499,7 +499,7 @@ function MemberRow({ member, canManage, isOnlyAdmin, pending, error, onRoleChang
                 </span>
               )}
               {!pending && !isSelf && !isOnlyAdmin && (
-                <Button variant="outline-destructive" size="sm" data-list-action="remove" onClick={(event) => onRemove(event.currentTarget)} aria-label={`${member.name}さんをチームから削除`}>
+                <Button variant="secondary-destructive" size="sm" data-list-action="remove" onClick={(event) => onRemove(event.currentTarget)} aria-label={`${member.name}さんをチームから削除`}>
                   削除
                 </Button>
               )}
@@ -517,8 +517,8 @@ function MemberRow({ member, canManage, isOnlyAdmin, pending, error, onRoleChang
           title={error.message}
           action={
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={error.retry}>もう一度試す</Button>
-              <Button variant="outline" size="sm" onClick={onDismissError}>閉じる</Button>
+              <Button variant="secondary" size="sm" onClick={error.retry}>もう一度試す</Button>
+              <Button variant="secondary" size="sm" onClick={onDismissError}>閉じる</Button>
             </div>
           }
         />
@@ -563,10 +563,10 @@ function InvitationSection({ headingRef, invitations, pending, rowErrors, onRese
               actions={
                 <>
                   {/* Buttons stay in place while busy so keyboard focus is not lost. */}
-                  <Button variant="outline" size="sm" pending={busy === "resend"} disabled={busy !== undefined} onClick={() => onResend(invitation)} aria-label={`${invitation.email}に招待を再送`}>
+                  <Button variant="secondary" size="sm" pending={busy === "resend"} disabled={busy !== undefined} onClick={() => onResend(invitation)} aria-label={`${invitation.email}に招待を再送`}>
                     再送
                   </Button>
-                  <Button variant="outline-destructive" size="sm" pending={busy === "revoke"} data-list-action="revoke" disabled={busy !== undefined} onClick={(event) => onRevoke(invitation, event.currentTarget)} aria-label={`${invitation.email}への招待を取り消す`}>
+                  <Button variant="secondary-destructive" size="sm" pending={busy === "revoke"} data-list-action="revoke" disabled={busy !== undefined} onClick={(event) => onRevoke(invitation, event.currentTarget)} aria-label={`${invitation.email}への招待を取り消す`}>
                     取り消す
                   </Button>
                 </>
@@ -578,8 +578,8 @@ function InvitationSection({ headingRef, invitations, pending, rowErrors, onRese
                   title={error.message}
                   action={
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={error.retry}>もう一度試す</Button>
-                      <Button variant="outline" size="sm" onClick={() => onDismissError(invitation.id)}>閉じる</Button>
+                      <Button variant="secondary" size="sm" onClick={error.retry}>もう一度試す</Button>
+                      <Button variant="secondary" size="sm" onClick={() => onDismissError(invitation.id)}>閉じる</Button>
                     </div>
                   }
                 />

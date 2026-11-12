@@ -37,6 +37,6 @@ export function AlertDialogDescription({ className, ...props }: WithClassName<Ba
 
 export type AlertDialogCloseProps = WithClassName<BaseAlertDialog.Close.Props> & { variant?: ButtonVariant };
 
-export function AlertDialogClose({ className, variant = "outline", ...props }: AlertDialogCloseProps) {
+export function AlertDialogClose({ className, variant = "secondary", ...props }: AlertDialogCloseProps) {
   return <BaseAlertDialog.Close {...props} className={buttonStyles({ variant, className })} />;
 }

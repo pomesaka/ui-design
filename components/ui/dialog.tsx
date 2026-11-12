@@ -68,6 +68,6 @@ export function DialogFooter({ className, children }: { className?: string; chil
 
 export type DialogCloseProps = WithClassName<BaseDialog.Close.Props> & { variant?: ButtonVariant };
 
-export function DialogClose({ className, variant = "outline", ...props }: DialogCloseProps) {
+export function DialogClose({ className, variant = "secondary", ...props }: DialogCloseProps) {
   return <BaseDialog.Close {...props} className={buttonStyles({ variant, className })} />;
 }

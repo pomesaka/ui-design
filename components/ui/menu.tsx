@@ -5,7 +5,7 @@ import { floatingSurface, listItem } from "../lib/styles";
 /**
  * A list of actions opened from a trigger. Put frequent actions on the page;
  * the menu holds secondary ones. Style the trigger by rendering a Button:
- * `<MenuTrigger render={<Button variant="outline" />}>`.
+ * `<MenuTrigger render={<Button variant="secondary" />}>`.
  */
 export const Menu = BaseMenu.Root;
 export const MenuTrigger = BaseMenu.Trigger;
