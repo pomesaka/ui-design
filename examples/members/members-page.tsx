@@ -499,7 +499,7 @@ function MemberRow({ member, canManage, isOnlyAdmin, pending, error, onRoleChang
                 </span>
               )}
               {!pending && !isSelf && !isOnlyAdmin && (
-                <Button variant="secondary-destructive" size="sm" data-list-action="remove" onClick={(event) => onRemove(event.currentTarget)} aria-label={`${member.name}さんをチームから削除`}>
+                <Button variant="secondary" size="sm" data-list-action="remove" onClick={(event) => onRemove(event.currentTarget)} aria-label={`${member.name}さんをチームから削除`}>
                   削除
                 </Button>
               )}
@@ -566,7 +566,7 @@ function InvitationSection({ headingRef, invitations, pending, rowErrors, onRese
                   <Button variant="secondary" size="sm" pending={busy === "resend"} disabled={busy !== undefined} onClick={() => onResend(invitation)} aria-label={`${invitation.email}に招待を再送`}>
                     再送
                   </Button>
-                  <Button variant="secondary-destructive" size="sm" pending={busy === "revoke"} data-list-action="revoke" disabled={busy !== undefined} onClick={(event) => onRevoke(invitation, event.currentTarget)} aria-label={`${invitation.email}への招待を取り消す`}>
+                  <Button variant="secondary" size="sm" pending={busy === "revoke"} data-list-action="revoke" disabled={busy !== undefined} onClick={(event) => onRevoke(invitation, event.currentTarget)} aria-label={`${invitation.email}への招待を取り消す`}>
                     取り消す
                   </Button>
                 </>

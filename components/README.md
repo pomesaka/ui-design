@@ -21,7 +21,7 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 
 | 部品 | 使う場面 |
 | --- | --- |
-| `Button` | 操作の実行。`variant`で主(`primary`)・補助(`secondary`)・破壊(`destructive`)・控えめな破壊(`secondary-destructive`)・形で分かる場所用(`ghost`)を分け、主操作は一つの操作領域(ページ・Dialog)に一つ。`size="sm"`は密な行やツールバー用で、タッチ端末では44pxに戻る。処理中は`pending`。linkの見た目は`buttonStyles`で`<a>`へ付ける |
+| `Button` | 操作の実行。`variant`で主(`primary`)・補助(`secondary`)・破壊(`destructive`、確定の場所だけ)・形で分かる場所用(`ghost`)を分け、主操作は一つの操作領域(ページ・Dialog)に一つ。`size="sm"`は密な行やツールバー用で、タッチ端末では44pxに戻る。処理中は`pending`。linkの見た目は`buttonStyles`で`<a>`へ付ける |
 | `Toggle` | 押下状態が残る切替(お気に入り等)。画面遷移には使わない |
 | `Form`・`FormActions` | 送信する入力のまとまり。送信時に検査し、errorを各項目の横に出して最初の誤りへfocusを移す。送信全体の失敗はフォーム上部の`Banner` |
 | `Field`・`Input`・`Textarea` | 入力。label・説明・errorの関連付けを`Field`が行う。ブラウザの検査には`match`付きの`FieldError`、サーバーや項目間の規則によるerrorは`Field`の`error` |

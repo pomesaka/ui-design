@@ -2,7 +2,7 @@ import { Button as BaseButton } from "@base-ui/react/button";
 import { cn, type WithClassName } from "../lib/cn";
 import { Spinner } from "./spinner";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive" | "secondary-destructive";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive";
 export type ButtonSize = "md" | "sm" | "icon";
 
 const variants: Record<ButtonVariant, string> = {
@@ -12,10 +12,6 @@ const variants: Record<ButtonVariant, string> = {
   // No surface or border: only where the shape or place already says "button"
   // (an icon button with a label, a dialog's close mark, a toolbar).
   ghost: "bg-transparent text-control-foreground hover:not-data-disabled:bg-accent hover:not-data-disabled:text-accent-foreground active:not-data-disabled:bg-accent",
-  // A lower-emphasis destructive action, such as "削除" repeated on every row.
-  // It turns into the full destructive fill on hover, so the danger is clear
-  // before pressing and the text keeps its contrast in every state.
-  "secondary-destructive": "bg-secondary text-destructive hover:not-data-disabled:bg-destructive hover:not-data-disabled:text-destructive-foreground active:not-data-disabled:bg-destructive-pressed active:not-data-disabled:text-destructive-foreground",
 };
 
 const sizes: Record<ButtonSize, string> = {
