@@ -39,6 +39,7 @@
 | `reading-secondary` / `control-foreground` | 前者は時刻・件数等の読書metadata、後者は独自の面を持たない操作icon・文言。filled操作はその面のforegroundを使う。役割を分けて調整でき、テーマ内の初期値は同値でもよい |
 | `selected` / `selected-foreground` / `selected-border` | 一覧等の継続した選択の面・文字・縁。主操作や押下中の色と区別する |
 | `success` / `success-foreground`、`warning` / `warning-foreground`、`info` / `info-foreground` | 成功・注意・情報のfeedback。Lumaの既存定義をそのまま移したものではなく、共通契約として加える役割 |
+| `destructive-subtle` / `destructive-subtle-foreground` | 一覧の行等に繰り返し並ぶ、控えめな破壊操作の面と文字。確定に使う`destructive`の塗りと段階を分ける |
 | `primary-hover` / `primary-pressed`、`secondary-hover` / `secondary-pressed`、`destructive-hover` / `destructive-pressed` | 主操作・補助操作・破壊操作で、独立して調整する状態の面。文字は元のforegroundと組にして確認する |
 
 Lumaの`selection`・`selection-surface`・`selection-edge`の分離は、ここでは`selected-*`の役割へ整理する。文字列の選択`::selection`とは区別する。混雑・天気・地図・リアクション等の業務上の色はサービス側の拡張で持つ。

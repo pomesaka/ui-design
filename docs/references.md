@@ -44,6 +44,15 @@
 | [Primer: Notification messaging](https://primer.style/product/ui-patterns/notification-messaging/) | Banner・InlineMessage・Dialogの使い分け | 場所に応じた選択、Dialog内ではBannerで結果を出す | 未確認 |
 | [Adam Silver: Can toast messages be accessible?](https://adam-silver-2.kit.com/posts/can-toast-messages-be-accessible) | トーストの是非についての反対意見を含む議論 | 判断を見直すときの論点 | 未確認 |
 
+## 破壊操作
+
+| 資料 | 参考にする点 |
+| --- | --- |
+| [Primer: Delete pattern](https://primer.style/product/scenario-patterns/delete) | 確定ボタンに`danger`と操作名、手間を被害の大きさに合わせる、Remove/Deleteの使い分け |
+| [Visa: Button usage](https://design.visa.com/components/button/usage/) | 破壊操作のボタンは控えめに使う |
+| [Pleo: Action menu](https://telescope.pleo.io/components/action-menu/action-menu.guidelines)・[Mirakl: Deletion](https://design.mirakl.com/design/patterns/deletion) | 行の破壊操作をメニューの最後へ置く |
+| [Shopify Polaris: Common actions](https://polaris-react.shopify.com/patterns/common-actions/overview) | 行の削除を右端の控えめなボタンで置く |
+
 ## トークン・部品の基盤
 
 | 資料 | 内容 |

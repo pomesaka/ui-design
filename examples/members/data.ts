@@ -13,7 +13,7 @@ export const roleLabel: Record<Role, string> = { admin: "管理者", editor: "�
 
 // Assumed meaning of each role; only the member management rights are given.
 export const roleDescription: Record<Role, string> = {
-  admin: "メンバーの招待・権限の変更・削除と、チームの設定ができる",
+  admin: "メンバーの招待・権限の変更・チームから外すことと、チームの設定ができる",
   editor: "チームの内容を作成・編集できる",
   viewer: "チームの内容とメンバー一覧を見られる",
 };

@@ -27,6 +27,8 @@
     "secondary-pressed",
     "destructive-hover",
     "destructive-pressed",
+    "destructive-subtle",
+    "destructive-subtle-foreground",
     "selected",
     "selected-foreground",
     "sidebar",

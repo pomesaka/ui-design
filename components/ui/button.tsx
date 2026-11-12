@@ -2,13 +2,16 @@ import { Button as BaseButton } from "@base-ui/react/button";
 import { cn, type WithClassName } from "../lib/cn";
 import { Spinner } from "./spinner";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive" | "destructive-subtle";
 export type ButtonSize = "md" | "sm" | "icon";
 
 const variants: Record<ButtonVariant, string> = {
   primary: "bg-primary text-primary-foreground hover:not-data-disabled:bg-primary-hover active:not-data-disabled:bg-primary-pressed",
   secondary: "bg-secondary text-secondary-foreground hover:not-data-disabled:bg-secondary-hover active:not-data-disabled:bg-secondary-pressed",
   destructive: "bg-destructive text-destructive-foreground hover:not-data-disabled:bg-destructive-hover active:not-data-disabled:bg-destructive-pressed",
+  // Destructive but repeated (a remove action on every row): a quiet red pair
+  // that turns into the full destructive fill on hover and press.
+  "destructive-subtle": "bg-destructive-subtle text-destructive-subtle-foreground hover:not-data-disabled:bg-destructive hover:not-data-disabled:text-destructive-foreground active:not-data-disabled:bg-destructive-pressed active:not-data-disabled:text-destructive-foreground",
   // No surface or border: only where the shape or place already says "button"
   // (an icon button with a label, a dialog's close mark, a toolbar).
   ghost: "bg-transparent text-control-foreground hover:not-data-disabled:bg-accent hover:not-data-disabled:text-accent-foreground active:not-data-disabled:bg-accent",

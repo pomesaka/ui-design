@@ -34,6 +34,7 @@ const buttonVariants: [ButtonVariant, string][] = [
   ["secondary", "補助操作"],
   ["ghost", "控えめ"],
   ["destructive", "破壊操作"],
+  ["destructive-subtle", "控えめな破壊操作"],
 ];
 
 const buttonStates: [string, string][] = [

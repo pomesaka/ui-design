@@ -189,14 +189,14 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
     setConfirmPending(true);
     setConfirmError(null);
     try {
-      await simulate(scenario, "削除できませんでした");
+      await simulate(scenario, "チームから外せませんでした");
       focusAfterRemove.current = focusTargetAfterRemoval(removeTrigger.current, membersHeading.current);
       setMembers((current) => current.filter((m) => m.id !== member.id));
       setConfirm(null);
-      announce(`${member.name}さんをチームから削除しました`);
+      announce(`${member.name}さんをチームから外しました`);
     } catch {
-      setConfirmError("通信が途切れたため、削除できませんでした。メンバーはチームに残っています。");
-      announce("削除できませんでした", { priority: "assertive" });
+      setConfirmError("通信が途切れたため、チームから外せませんでした。メンバーはチームに残っています。");
+      announce("チームから外せませんでした", { priority: "assertive" });
     } finally {
       setConfirmPending(false);
     }
@@ -312,7 +312,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
               title={`${inactiveDays}日以上利用のないメンバーが${inactive.length}人います`}
               action={<Button variant="secondary" size="sm" onClick={() => { clearFilters(); setSort("inactive"); }}>利用が古い順に並べる</Button>}
             >
-              退職や異動でチームを離れた人がいれば、チームから削除してください。
+              退職や異動でチームを離れた人がいれば、チームから外してください。
             </Notice>
           )}
 
@@ -401,15 +401,15 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
           {shownConfirm?.kind === "remove" && (
             <>
               <AlertDialogHeader>
-                <AlertDialogTitle>{shownConfirm.member.name}さんをチームから削除しますか</AlertDialogTitle>
+                <AlertDialogTitle>{shownConfirm.member.name}さんをチームから外しますか</AlertDialogTitle>
                 <AlertDialogDescription>
                   チームの内容を見たり編集したりできなくなります。作成した内容はチームに残ります。もう一度参加するには、新しく招待してください。
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              {confirmError && <Banner tone="error" title="削除できませんでした">{confirmError}</Banner>}
+              {confirmError && <Banner tone="error" title="チームから外せませんでした">{confirmError}</Banner>}
               <AlertDialogFooter>
                 <AlertDialogClose disabled={confirmPending}>キャンセル</AlertDialogClose>
-                <Button variant="destructive" pending={confirmPending} onClick={runConfirm}>チームから削除</Button>
+                <Button variant="destructive" pending={confirmPending} onClick={runConfirm}>チームから外す</Button>
               </AlertDialogFooter>
             </>
           )}
@@ -418,7 +418,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
               <AlertDialogHeader>
                 <AlertDialogTitle>自分の権限を{roleLabel[shownConfirm.role]}に変えますか</AlertDialogTitle>
                 <AlertDialogDescription>
-                  変えると、あなたはメンバーの招待・権限の変更・削除ができなくなります。元に戻すには、他の管理者に依頼してください。
+                  変えると、あなたはメンバーの招待・権限の変更・チームから外す操作ができなくなります。元に戻すには、他の管理者に依頼してください。
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -499,8 +499,8 @@ function MemberRow({ member, canManage, isOnlyAdmin, pending, error, onRoleChang
                 </span>
               )}
               {!pending && !isSelf && !isOnlyAdmin && (
-                <Button variant="secondary" size="sm" data-list-action="remove" onClick={(event) => onRemove(event.currentTarget)} aria-label={`${member.name}さんをチームから削除`}>
-                  削除
+                <Button variant="destructive-subtle" size="sm" data-list-action="remove" onClick={(event) => onRemove(event.currentTarget)} aria-label={`${member.name}さんをチームから外す`}>
+                  外す
                 </Button>
               )}
               {!pending && isOnlyAdmin && <span className="font-control text-caption text-reading-secondary">唯一の管理者</span>}
