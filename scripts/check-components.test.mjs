@@ -3,7 +3,7 @@ import { readFile, readdir } from "node:fs/promises";
 
 const root = new URL("../", import.meta.url);
 const contract = JSON.parse(await readFile(new URL("tokens/contract.json", root), "utf8"));
-const mapping = await readFile(new URL("tailwind/theme.css", root), "utf8");
+const mapping = await readFile(new URL("tailwind/tokens.css", root), "utf8");
 
 test("every contract color is a Tailwind color utility", () => {
   const missing = contract.color.filter((name) => !mapping.includes(`--color-${name}: var(--${name});`));

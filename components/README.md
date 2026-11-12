@@ -60,7 +60,7 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 
 Base UIに該当する部品があれば、その上に作る。`node_modules/@base-ui/react/docs/`に版と一致する説明がある。
 
-- 色・寸法・角丸・影・動きは`tailwind/theme.css`のutilityで指定する。token外の値が必要なら、先に共通契約へ足すかを判断する。
+- 色・寸法・角丸・影・動きは`tailwind/tokens.css`が作るutilityで指定する。token外の値が必要なら、先に共通契約へ足すかを判断する。
 - 状態はBase UIのdata属性(`data-disabled`・`data-checked`・`data-highlighted`等)で表す。focusは`focus-visible:focus-ring`、無効の見た目は`disabled-dim`を使う。
 - `className`は文字列で受け、`cn`で後勝ちに合成する。状態ごとのclassName関数は使わない。
 - 動きには`motion-reduce:`での代替を付ける。
