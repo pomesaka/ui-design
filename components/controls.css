@@ -56,8 +56,10 @@
   width: 0.8em;
   height: 0.8em;
   flex: 0 0 auto;
-  border: 1.5px solid currentColor;
-  border-right-color: transparent;
+  /* A faint full track keeps the stopped indicator (reduced motion, snapshots)
+   * reading as progress rather than as a glyph such as "C". */
+  border: 1.5px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-top-color: currentColor;
   border-radius: var(--radius-full);
   animation: ui-spin 900ms linear infinite;
 }
