@@ -1,0 +1,19 @@
+{
+  "name": "ui-design",
+  "displayName": "ui-design",
+  "description": "ui-designのtoken・部品・文書を使ってUIを導入・組み立て・レビューするスキル",
+  "author": {
+    "name": "pomesaka"
+  },
+  "repository": "https://github.com/pomesaka/ui-design",
+  "keywords": [
+    "design-system",
+    "ui",
+    "review",
+    "tailwind",
+    "react"
+  ],
+  "experimental": {
+    "themes": []
+  }
+}

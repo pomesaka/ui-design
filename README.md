@@ -4,6 +4,17 @@
 対象はデザイントークン、質感・モーションを含むコンポーネント、エージェント用スキルと、それらを触って確かめるカタログ。
 部品はReact・Tailwind CSS v4・Base UIで作り、採用先へ複製して使う。
 
+## Claude Codeで使う
+
+スキルはClaude Codeのpluginとして入れられる。repositoryを参照できる権限があれば、次の二行で入る。
+
+```
+/plugin marketplace add pomesaka/ui-design
+/plugin install ui-design@pomesaka-ui-design
+```
+
+スキルは`/ui-design:setup`(導入)・`/ui-design:review`(レビュー)として使える。pluginにはこのrepository全体が入り、スキルは同梱の文書を参照する。部品とテーマのソースもこのrepositoryから複製する。更新は`/plugin marketplace update pomesaka-ui-design`で取り込む。
+
 ## Documentation Map
 
 - [デザインの判断基準](DESIGN.md)

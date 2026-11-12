@@ -1,0 +1,12 @@
+{
+  "name": "pomesaka-ui-design",
+  "description": "ui-designのスキル",
+  "owner": { "name": "pomesaka" },
+  "plugins": [
+    {
+      "name": "ui-design",
+      "source": "./",
+      "description": "ui-designのtoken・部品・文書を使ってUIを導入・組み立て・レビューするスキル"
+    }
+  ]
+}

@@ -15,5 +15,5 @@ repository rootで`bun run catalog`を実行し、`/examples/<名前>/`を開く
 | `state=loading`・`state=error`・`state=refresh-error`・`state=empty` | 初回読み込み・取得失敗・既存内容の更新失敗・空 |
 | `fail=1` | 変更の操作が失敗する |
 
-レビューでは状態ごとのURLを[撮影スクリプト](../skills/ui-design-review/scripts/capture.mjs)へ並べて渡す。
+レビューでは状態ごとのURLを[撮影スクリプト](../skills/review/scripts/capture.mjs)へ並べて渡す。
 
