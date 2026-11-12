@@ -10,7 +10,7 @@
 
 ## 検証する
 
-`bun install`の後、`bun run check`でテーマの名前・参照、型、テスト、カタログのbuildをまとめて確認する。個別には`bun run check:themes`・`bun run typecheck`・`bun test`・`bun run build:catalog`。テストには、部品の操作の約束と、部品・カタログがtoken外の色やTailwind既定paletteを使っていないことの検査を含む。[テーマの手順](../themes/README.md)に従い、CSSの計算値・contrast・実操作は別に確認する。
+`bun install`の後、`bun run check`でテーマの名前・参照、型、テスト、カタログのbuildをまとめて確認する。個別には`bun run check:themes`・`bun run typecheck`・`bun test`・`bun run build:catalog`。テストには、部品の操作の約束と、部品・カタログがtoken外の色やTailwind既定paletteを使っていないこと、画面(カタログ)の余白がtokenの段に収まっていることの検査を含む。[テーマの手順](../themes/README.md)に従い、CSSの計算値・contrast・実操作は別に確認する。
 
 - 文書・指示だけの変更は内容・参照・整合を確認する。
 - 実装は型検査・テストと、変更に関係する振る舞いを確認する。新しいcommandは`package.json`のscriptsに定義する。

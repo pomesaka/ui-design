@@ -24,3 +24,17 @@ for (const dir of ["components/ui", "components/lib", "catalog"]) {
     expect(text.match(paletteClass)?.[0]).toBeUndefined();
   });
 }
+
+// Screens use the spacing steps that exist as tokens (docs/composition.md).
+// Component internals may fine-tune, so only screen code is checked here.
+const spacingUtility = /(?:^|[\s"'`:])-?(gap-x|gap-y|gap|space-x|space-y|px|py|pt|pr|pb|pl|ps|pe|p|mx|my|mt|mr|mb|ml|ms|me|m)-([^\s"'`]+)/g;
+const spacingSteps = new Set(["0", "1", "2", "3", "4", "6", "8", "12", "panel", "reading", "auto"]);
+const screenFiles = (await readdir(new URL("catalog/", root))).filter((file) => file.endsWith(".tsx"));
+
+test.each(screenFiles)("catalog/%s uses only the spacing steps", async (file) => {
+  const text = await readFile(new URL(`catalog/${file}`, root), "utf8");
+  const offScale = [...text.matchAll(spacingUtility)]
+    .filter(([, , value]) => !spacingSteps.has(value))
+    .map(([match]) => match.replace(/^[\s"'`:]/, ""));
+  expect(offScale).toEqual([]);
+});
