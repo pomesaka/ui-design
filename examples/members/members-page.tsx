@@ -313,7 +313,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
 
       {ready && (
         <section aria-labelledby="members-heading" className="flex flex-col gap-4">
-          <h2 id="members-heading" ref={membersHeading} tabIndex={-1} className="font-heading text-reading outline-none">
+          <h2 id="members-heading" ref={membersHeading} tabIndex={-1} className="font-heading text-section outline-none">
             参加しているメンバー
           </h2>
 
@@ -553,7 +553,7 @@ function InvitationSection({ headingRef, invitations, pending, rowErrors, onRese
   return (
     <section aria-labelledby="invitations-heading" className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <h2 id="invitations-heading" ref={headingRef} tabIndex={-1} className="font-heading text-reading outline-none">承認待ちの招待</h2>
+        <h2 id="invitations-heading" ref={headingRef} tabIndex={-1} className="font-heading text-section outline-none">承認待ちの招待</h2>
         <p className="font-control text-caption text-reading-secondary">招待のリンクは送ってから{invitationValidDays}日間有効です。</p>
       </div>
       <List aria-labelledby="invitations-heading">

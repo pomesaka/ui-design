@@ -102,6 +102,9 @@
   --text-heading: var(--text-heading);
   --text-heading--line-height: var(--text-heading-line-height);
   --text-heading--font-weight: var(--weight-heading);
+  --text-section: var(--text-section);
+  --text-section--line-height: var(--text-section-line-height);
+  --text-section--font-weight: var(--weight-heading);
 
   /* spacing: numeric utilities are multiples of space-1 (p-3 = space-3) */
   --spacing: var(--space-1);

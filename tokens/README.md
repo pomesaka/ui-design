@@ -67,7 +67,7 @@ Lumaの`selection`・`selection-surface`・`selection-edge`の分離は、ここ
 
 | 種類 | 定義するもの |
 | --- | --- |
-| 文字 | `font-sans` / `font-serif` / `font-mono`と、本文・補足・操作等のsize / line-height / weight |
+| 文字 | `font-sans` / `font-serif` / `font-mono`と、ページ見出し(`text-heading`)・区画見出し(`text-section`)・本文・補足・操作等のsize / line-height / weight |
 | 寸法 | 余白のscale、control・iconのsize。見える形と操作領域を分ける |
 | 形・影 | shadcnの`radius`を土台に、field・card・dialog・drawerの役割別角丸、共通のshadow |
 | 操作状態 | `disabled-opacity`、`press-depth`、`focus-outline-width` / `focus-outline-offset` |

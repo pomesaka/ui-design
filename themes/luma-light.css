@@ -78,12 +78,15 @@
   --text-detail-line-height: 1.6;
   --text-reading: 1.125rem;
   --text-reading-line-height: 1.75rem;
-  --text-caption: 0.75rem;
+  /* 13px: 12px read too small for secondary lines such as emails and metadata. */
+  --text-caption: 0.8125rem;
   --text-caption-line-height: 1.25rem;
   --text-action: 0.8125rem;
   --text-action-line-height: 1.25rem;
   --text-heading: 1.5rem;
   --text-heading-line-height: 1.3;
+  --text-section: 1.125rem;
+  --text-section-line-height: 1.5;
   --weight-body: 400;
   --weight-heading: 500;
   --weight-control: 500;
