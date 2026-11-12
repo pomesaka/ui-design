@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Banner } from "../components/ui/banner";
 import { Button, type ButtonVariant } from "../components/ui/button";
 import { Checkbox } from "../components/ui/checkbox";
 import { Field, FieldDescription, FieldError, FieldLabel, Input, Textarea } from "../components/ui/field";
@@ -149,16 +150,30 @@ export function Specimens() {
         </Spec>
       </Section>
 
-      <Section title="お知らせ">
-        <div className="grid gap-3 lg:grid-cols-2">
-          <Spec label="情報"><Notice tone="info" title="更新があります">新しい項目が3件追加されました。</Notice></Spec>
-          <Spec label="成功"><Notice tone="success" title="保存しました" /></Spec>
-          <Spec label="注意"><Notice tone="warning" title="容量が残り少なくなっています">不要なファイルを削除すると空きを増やせます。</Notice></Spec>
-          <Spec label="失敗と復帰">
-            <Notice tone="error" title="保存できませんでした" action={<Button variant="outline" size="sm">再試行</Button>}>
+      <Section title="結果とお知らせ">
+        <p className="font-body text-body text-reading-secondary">
+          ページや領域の上部にはBanner、特定の場所の横にはNoticeを置く。どちらも時間で消さない。
+        </p>
+        <div className="flex flex-col gap-3">
+          <Spec label="Banner 失敗(解決まで閉じられない)">
+            <Banner tone="error" title="保存できませんでした" action={<Button variant="outline" size="sm">再試行</Button>}>
               通信が切れました。入力内容は残っています。
-            </Notice>
+            </Banner>
           </Spec>
+          <Spec label="Banner 画面に表れない結果(閉じられる)">
+            <Banner tone="success" title="32件のメンバーを招待しました" onDismiss={() => undefined}>
+              承認された人から順にメンバー一覧に表示されます。
+            </Banner>
+          </Spec>
+          <Spec label="Banner システムからのお知らせ">
+            <Banner tone="warning" title="30分後にメンテナンスを開始します" action={<Button variant="ghost" size="sm">詳細</Button>}>
+              作業中の内容は開始前に保存してください。
+            </Banner>
+          </Spec>
+        </div>
+        <div className="grid gap-3 lg:grid-cols-2">
+          <Spec label="Notice 情報"><Notice tone="info" title="新しい項目が3件あります">一覧を更新すると表示されます。</Notice></Spec>
+          <Spec label="Notice 注意"><Notice tone="warning" title="容量が残り少なくなっています">不要なファイルを削除すると空きを増やせます。</Notice></Spec>
         </div>
       </Section>
     </>

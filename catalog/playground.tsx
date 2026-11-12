@@ -9,6 +9,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../components/ui/alert-dialog";
+import { useAnnounce } from "../components/ui/announcer";
+import { Banner } from "../components/ui/banner";
 import { Button } from "../components/ui/button";
 import { Checkbox } from "../components/ui/checkbox";
 import {
@@ -26,7 +28,6 @@ import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from "../comp
 import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger } from "../components/ui/select";
 import { Switch } from "../components/ui/switch";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "../components/ui/tabs";
-import { useToast } from "../components/ui/toast";
 import { Toggle } from "../components/ui/toggle";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/ui/tooltip";
 import { ChevronDownIcon } from "../components/lib/icons";
@@ -43,31 +44,56 @@ const roles = [
 
 export function Playground({ theme }: { theme: string }) {
   const portal = usePortal();
-  const toast = useToast();
+  const announce = useAnnounce();
   const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [saveFailed, setSaveFailed] = useState(false);
+  const [failNextSave, setFailNextSave] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  // The saved time next to the button is the visible result; success needs no
+  // extra message, only an announcement. Failure stays in a banner until resolved.
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (saving) return;
     setSaving(true);
     await wait(900);
     setSaving(false);
-    toast.add({ type: "success", title: "保存しました", description: "変更はすぐに反映されます。" });
+    if (failNextSave) {
+      setSaveFailed(true);
+      announce("保存できませんでした。入力内容は残っています。", { priority: "assertive" });
+      return;
+    }
+    setSaveFailed(false);
+    setSavedAt(new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" }));
+    announce("保存しました");
   }
 
+  // Nothing on screen shows the deletion, so a dismissible banner reports it.
   async function remove() {
     setDeleting(true);
     await wait(900);
     setDeleting(false);
     setConfirmOpen(false);
-    toast.add({ type: "info", title: "プロジェクトを削除しました" });
+    setDeleted(true);
+    announce("プロジェクトを削除しました");
   }
 
   return (
     <Section title="操作して確認">
+      {deleted && (
+        <Banner tone="info" title="プロジェクトを削除しました" onDismiss={() => setDeleted(false)}>
+          30日以内ならゴミ箱から元に戻せます。
+        </Banner>
+      )}
       <form onSubmit={save} className="flex max-w-[32rem] flex-col gap-4" aria-label={`${theme}のフォーム`}>
+        {saveFailed && (
+          <Banner tone="error" title="保存できませんでした" action={<Button type="submit" variant="outline" size="sm" pending={saving}>再試行</Button>}>
+            通信が切れました。入力内容は残っています。
+          </Banner>
+        )}
         <Field name="name">
           <FieldLabel>名前</FieldLabel>
           <Input required placeholder="例:山田 花子" />
@@ -88,10 +114,16 @@ export function Playground({ theme }: { theme: string }) {
         <div className="flex flex-col gap-1">
           <Checkbox name="notify" defaultChecked>更新をメールで受け取る</Checkbox>
           <Switch name="autosave">自動保存</Switch>
+          <Switch checked={failNextSave} onCheckedChange={setFailNextSave}>保存の失敗を再現する(カタログ用)</Switch>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <Button type="submit" pending={saving}>{saving ? "保存中" : "保存"}</Button>
           <Toggle>お気に入り</Toggle>
+          <span className="font-control text-caption text-reading-secondary">
+            {saveFailed || !savedAt
+              ? `未保存の変更があります${savedAt ? `(最終保存 ${savedAt})` : ""}`
+              : `${savedAt}に保存済み`}
+          </span>
         </div>
       </form>
 
@@ -131,10 +163,6 @@ export function Playground({ theme }: { theme: string }) {
           <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="ヘルプ" />}>?</TooltipTrigger>
           <TooltipContent container={portal}>使い方を表示します</TooltipContent>
         </Tooltip>
-
-        <Button variant="ghost" onClick={() => toast.add({ type: "warning", title: "容量が残り少なくなっています" })}>
-          通知を表示
-        </Button>
       </div>
 
       <AlertDialog open={confirmOpen} onOpenChange={(open) => !deleting && setConfirmOpen(open)}>

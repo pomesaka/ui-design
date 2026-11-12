@@ -26,9 +26,9 @@ export type NoticeProps = {
 };
 
 /**
- * Inline message tied to a place on the page. It is static: when it appears
- * as the result of an action, render it inside a live region (role="status",
- * or role="alert" for errors that block the task) or use a toast.
+ * Inline message next to the thing it is about (a field group, a list, a
+ * button). For a whole page, section or dialog, use Banner. Both are visual
+ * only: when one appears as the result of an action, also call announce().
  */
 export function Notice({ tone = "info", title, children, action, className }: NoticeProps) {
   const Icon = toneIcon[tone];
