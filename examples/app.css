@@ -1,0 +1,14 @@
+/* Same setup an adopting project uses: no catalog-only state pinning. */
+@import "tailwindcss";
+@import "../tailwind/theme.css";
+@import "../themes/luma-light.css";
+@import "../themes/luma-dark.css";
+@source "../components";
+@source "./";
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+}
