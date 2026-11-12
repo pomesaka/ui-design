@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { Toggle } from "../components/ui/toggle";
-import { ToastProvider } from "../components/ui/toast";
+import { AnnouncerProvider } from "../components/ui/announcer";
 import { TooltipProvider } from "../components/ui/tooltip";
 import { Playground } from "./playground";
 import { Specimens } from "./specimens";
@@ -31,31 +31,33 @@ export function App() {
   const shown = view === "all" ? themes : [view];
 
   return (
-    <TooltipProvider>
-      <div className="mx-auto flex max-w-[110rem] flex-col gap-6 p-4 sm:p-6">
-        <header className="flex flex-wrap items-end justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <h1 className="font-heading text-heading">ui-design カタログ</h1>
-            <p className="font-control text-caption text-reading-secondary">部品の状態を固定して並べ、末尾で実際に操作する</p>
-          </div>
-          <div role="group" aria-label="表示するテーマ" className="flex flex-wrap gap-2">
-            {["all", ...themes].map((id) => (
-              <Toggle key={id} size="sm" pressed={view === id} onPressedChange={() => setView(id)}>
-                {id === "all" ? "並べて比較" : id}
-              </Toggle>
+    <AnnouncerProvider>
+      <TooltipProvider>
+        <div className="mx-auto flex max-w-[110rem] flex-col gap-6 p-4 sm:p-6">
+          <header className="flex flex-wrap items-end justify-between gap-4">
+            <div className="flex flex-col gap-1">
+              <h1 className="font-heading text-heading">ui-design カタログ</h1>
+              <p className="font-control text-caption text-reading-secondary">部品の状態を固定して並べ、末尾で実際に操作する</p>
+            </div>
+            <div role="group" aria-label="表示するテーマ" className="flex flex-wrap gap-2">
+              {["all", ...themes].map((id) => (
+                <Toggle key={id} size="sm" pressed={view === id} onPressedChange={() => setView(id)}>
+                  {id === "all" ? "並べて比較" : id}
+                </Toggle>
+              ))}
+            </div>
+          </header>
+          <div className={shown.length > 1 ? "grid gap-6 min-[90rem]:grid-cols-2" : "mx-auto grid w-full max-w-[56rem]"}>
+            {shown.map((theme) => (
+              <ThemePanel key={theme} theme={theme}>
+                <Specimens />
+                <Playground theme={theme} />
+              </ThemePanel>
             ))}
           </div>
-        </header>
-        <div className={shown.length > 1 ? "grid gap-6 min-[90rem]:grid-cols-2" : "mx-auto grid w-full max-w-[56rem]"}>
-          {shown.map((theme) => (
-            <ThemePanel key={theme} theme={theme}>
-              <Specimens />
-              <Playground theme={theme} />
-            </ThemePanel>
-          ))}
         </div>
-      </div>
-    </TooltipProvider>
+      </TooltipProvider>
+    </AnnouncerProvider>
   );
 }
 
@@ -68,9 +70,7 @@ function ThemePanel({ theme, children }: { theme: string; children: ReactNode })
       className="flex min-w-0 flex-col gap-8 rounded-dialog border border-border bg-background p-4 text-foreground sm:p-6"
     >
       <h2 id={`${theme}-title`} className="font-heading text-heading">{theme}</h2>
-      <PortalContext value={portal}>
-        <ToastProvider container={portal ?? undefined}>{children}</ToastProvider>
-      </PortalContext>
+      <PortalContext value={portal}>{children}</PortalContext>
       <div ref={setPortal} />
     </section>
   );

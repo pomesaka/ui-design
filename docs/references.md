@@ -25,6 +25,14 @@
 | [SmartHR Design System ライティング](https://smarthr.design/products/contents/) | 用字用語、UIテキスト、エラーメッセージ、ヘルプの指針 | 文言の判断基準(一貫性・統一感・検索性等)、エラーメッセージの型 | 未確認 |
 | [デジタル庁デザインシステム](https://www.digital.go.jp/policies/servicedesign/designsystem) | 行政サービス向けのデザインシステム(β)。JIS X 8341-3・WCAG 2.2準拠 | 日本語の組版、アクセシビリティの実装指針 | デザインデータCC BY 4.0、コードMITと紹介されている。未確認 |
 
+## 通知・メッセージ
+
+| 資料 | 内容 | 参考にする点 | 利用条件 |
+| --- | --- | --- | --- |
+| [Primer: Accessible notifications and messages](https://primer.style/accessibility/toasts/) | トーストを推奨しない理由(WCAG 2.2.1・1.3.2・4.1.3・1.4.4等)と、場面別の代替 | トーストを用意しない判断の根拠、成功は画面の変化で伝える方針 | 未確認 |
+| [Primer: Notification messaging](https://primer.style/product/ui-patterns/notification-messaging/) | Banner・InlineMessage・Dialogの使い分け | 場所に応じた選択、Dialog内ではBannerで結果を出す | 未確認 |
+| [Adam Silver: Can toast messages be accessible?](https://adam-silver-2.kit.com/posts/can-toast-messages-be-accessible) | トーストの是非についての反対意見を含む議論 | 判断を見直すときの論点 | 未確認 |
+
 ## トークン・部品の基盤
 
 | 資料 | 内容 |
