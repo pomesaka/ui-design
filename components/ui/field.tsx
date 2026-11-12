@@ -2,13 +2,26 @@ import { Field as BaseField } from "@base-ui/react/field";
 import { Input as BaseInput } from "@base-ui/react/input";
 import { cn, type WithClassName } from "../lib/cn";
 
+export type FieldProps = WithClassName<BaseField.Root.Props> & {
+  /**
+   * An error decided outside the browser's checks: a server response or a
+   * cross-field rule ("このアドレスは既にメンバーです"). It marks the field
+   * invalid and shows the message under it. Clear it when the value changes.
+   */
+  error?: string | null;
+};
+
 /**
  * Field connects one control with its label, description and error, so
  * ids, aria-describedby and aria-invalid never have to be wired by hand.
- * Set `invalid` for errors decided outside the browser (such as the server).
  */
-export function Field({ className, ...props }: WithClassName<BaseField.Root.Props>) {
-  return <BaseField.Root {...props} className={cn("flex min-w-0 flex-col gap-1.5", className)} />;
+export function Field({ className, error, invalid, children, ...props }: FieldProps) {
+  return (
+    <BaseField.Root {...props} invalid={invalid || Boolean(error) || undefined} className={cn("flex min-w-0 flex-col gap-1.5", className)}>
+      {children}
+      {error && <FieldError match>{error}</FieldError>}
+    </BaseField.Root>
+  );
 }
 
 export function FieldLabel({ className, ...props }: WithClassName<BaseField.Label.Props>) {
@@ -31,10 +44,10 @@ export function FieldDescription({ className, ...props }: WithClassName<BaseFiel
 }
 
 /**
- * Shown while the field is invalid. Say what is wrong and how to fix it.
- * Use `match` for a specific validity state ("valueMissing" etc.). For an
- * error decided elsewhere, set Field `invalid` and render `<FieldError match>`
- * only while it applies: `match` true always shows the message.
+ * Message for one browser check, such as `match="valueMissing"` for a
+ * required field. Say what is wrong and how to fix it. Always pass `match`:
+ * without it the browser's own (often English) message appears. Errors from
+ * elsewhere go through Field `error`.
  */
 export function FieldError({ className, ...props }: WithClassName<BaseField.Error.Props>) {
   return (

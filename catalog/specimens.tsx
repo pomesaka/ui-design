@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { Banner } from "../components/ui/banner";
 import { Button, type ButtonVariant } from "../components/ui/button";
 import { Checkbox } from "../components/ui/checkbox";
-import { Field, FieldDescription, FieldError, FieldLabel, Input, Textarea } from "../components/ui/field";
+import { Field, FieldDescription, FieldLabel, Input, Textarea } from "../components/ui/field";
+import { List, ListItem } from "../components/ui/list";
 import { Notice } from "../components/ui/notice";
 import { Radio, RadioGroup } from "../components/ui/radio-group";
 import { Select, SelectTrigger } from "../components/ui/select";
@@ -34,6 +35,7 @@ const buttonVariants: [ButtonVariant, string][] = [
   ["outline", "枠線"],
   ["ghost", "控えめ"],
   ["destructive", "破壊操作"],
+  ["outline-destructive", "枠線の破壊操作"],
 ];
 
 const buttonStates: [string, string][] = [
@@ -61,7 +63,7 @@ export function Specimens() {
                     disabled={state === "disabled"}
                     pending={state === "pending"}
                   >
-                    {variant === "destructive" ? "削除" : "保存"}
+                    {variant.includes("destructive") ? "削除" : "保存"}
                   </Button>
                 </Spec>
               ))}
@@ -137,6 +139,25 @@ export function Specimens() {
         </div>
       </Section>
 
+      <Section title="一覧">
+        <Spec label="行(識別・状態・操作)。狭い幅では縦に積む">
+          <List aria-label="メンバーの例">
+            <ListItem
+              title="阿部 誠"
+              description="makoto.abe@example.com"
+              meta="最終利用 2日前"
+              actions={<><Button variant="outline" size="sm">権限を変更</Button><Button variant="outline-destructive" size="sm">削除</Button></>}
+            />
+            <ListItem
+              title="高橋 ルイス・アレハンドロ・フェルナンデス"
+              description="luis.alejandro.fernandez.takahashi@long-subsidiary-name.example.co.jp"
+              meta="最終利用 4か月前"
+              actions={<Button variant="outline-destructive" size="sm">削除</Button>}
+            />
+          </List>
+        </Spec>
+      </Section>
+
       <Section title="タブ">
         <Spec label="選択中・ホバー・フォーカス">
           <Tabs defaultValue="overview">
@@ -200,10 +221,9 @@ function FieldSample({
   readOnly?: boolean;
 }) {
   return (
-    <Field invalid={invalid} disabled={disabled}>
+    <Field error={invalid ? "名前を入力してください" : null} disabled={disabled}>
       <FieldLabel>名前</FieldLabel>
       <Input defaultValue={value} placeholder="例:山田 花子" readOnly={readOnly} data-preview-state={state} />
-      {invalid && <FieldError match>名前を入力してください</FieldError>}
     </Field>
   );
 }

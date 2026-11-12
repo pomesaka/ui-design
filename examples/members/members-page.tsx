@@ -1,8 +1,9 @@
 import { useEffect, useId, useMemo, useRef, useState, type RefObject } from "react";
-import { Form } from "@base-ui/react/form";
 import { useAnnounce } from "../../components/ui/announcer";
 import { Banner } from "../../components/ui/banner";
 import { Button } from "../../components/ui/button";
+import { Form } from "../../components/ui/form";
+import { focusTargetAfterRemoval, List, ListItem } from "../../components/ui/list";
 import { Notice } from "../../components/ui/notice";
 import { Spinner } from "../../components/ui/spinner";
 import { Field, FieldError, FieldLabel, Input } from "../../components/ui/field";
@@ -89,7 +90,9 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
   const [inviteOpen, setInviteOpen] = useState(false);
   const membersHeading = useRef<HTMLHeadingElement>(null);
   const invitationsHeading = useRef<HTMLHeadingElement>(null);
-  const removedRef = useRef(false);
+  // Where focus goes after a confirmed removal; null keeps the dialog default (its trigger).
+  const focusAfterRemove = useRef<HTMLElement | null>(null);
+  const removeTrigger = useRef<HTMLElement | null>(null);
   // Keep the last content while the dialog animates out after `confirm` clears.
   const lastConfirm = useRef<Confirm | null>(null);
   if (confirm) lastConfirm.current = confirm;
@@ -187,7 +190,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
     setConfirmError(null);
     try {
       await simulate(scenario, "削除できませんでした");
-      removedRef.current = true;
+      focusAfterRemove.current = focusTargetAfterRemoval(removeTrigger.current, membersHeading.current);
       setMembers((current) => current.filter((m) => m.id !== member.id));
       setConfirm(null);
       announce(`${member.name}さんをチームから削除しました`);
@@ -216,14 +219,15 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
     }
   }
 
-  async function revoke(invitation: Invitation) {
+  async function revoke(invitation: Invitation, trigger: HTMLElement | null = null) {
     setRowError(invitation.id, null);
     setRowPending(invitation.id, "revoke");
     try {
       await simulate(scenario, "招待を取り消せませんでした");
+      // The pressed button leaves with its row; continue from the next row's same action.
+      const target = focusTargetAfterRemoval(trigger, invitationsHeading.current ?? membersHeading.current);
       setInvitations((current) => current.filter((i) => i.id !== invitation.id));
-      // The pressed button disappears with its row; continue from the section heading.
-      requestAnimationFrame(() => (invitationsHeading.current ?? membersHeading.current)?.focus());
+      requestAnimationFrame(() => (target?.isConnected ? target : invitationsHeading.current ?? membersHeading.current)?.focus());
       announce(`${invitation.email}への招待を取り消しました`);
     } catch (error) {
       const message = error instanceof ActionError ? error.message : "予期しないエラーが起きました";
@@ -359,7 +363,7 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
           )}
 
           {visible.length > 0 && (
-            <ul className="flex flex-col border-t border-border">
+            <List aria-labelledby="members-heading">
               {visible.map((member) => (
                 <MemberRow
                   key={member.id}
@@ -369,11 +373,11 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
                   pending={pending.has(member.id)}
                   error={rowErrors[member.id]}
                   onRoleChange={(role) => requestRoleChange(member, role)}
-                  onRemove={() => { setConfirmError(null); setConfirm({ kind: "remove", member }); }}
+                  onRemove={(trigger) => { removeTrigger.current = trigger; setConfirmError(null); setConfirm({ kind: "remove", member }); }}
                   onDismissError={() => setRowError(member.id, null)}
                 />
               ))}
-            </ul>
+            </List>
           )}
         </section>
       )}
@@ -389,9 +393,9 @@ export function MembersPage({ scenario }: { scenario: Scenario }) {
       <AlertDialog open={confirm !== null} onOpenChange={(open) => { if (!open && !confirmPending) setConfirm(null); }}>
         <AlertDialogContent
           finalFocus={() => {
-            if (!removedRef.current) return true;
-            removedRef.current = false;
-            return membersHeading.current;
+            const target = focusAfterRemove.current;
+            focusAfterRemove.current = null;
+            return target ?? true;
           }}
         >
           {shownConfirm?.kind === "remove" && (
@@ -457,63 +461,56 @@ type MemberRowProps = {
   pending: boolean;
   error: RowError | undefined;
   onRoleChange: (role: Role) => void;
-  onRemove: () => void;
+  onRemove: (trigger: HTMLElement) => void;
   onDismissError: () => void;
 };
 
 function MemberRow({ member, canManage, isOnlyAdmin, pending, error, onRoleChange, onRemove, onDismissError }: MemberRowProps) {
   const isSelf = member.id === currentUserId;
-  const nameId = useId();
   const inactive = isInactive(member) && !isSelf;
   return (
-    <li aria-labelledby={nameId} className="flex flex-col gap-3 border-b border-border py-3">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
-        <div className="flex min-w-0 flex-1 flex-col">
-          <p id={nameId} className="font-body text-body break-words">
-            {member.name}
-            {isSelf && <span className="text-reading-secondary">(あなた)</span>}
-          </p>
-          <p className="font-control text-caption text-reading-secondary break-all">{member.email}</p>
-        </div>
-        <p className="flex items-center gap-1 font-control text-caption text-reading-secondary md:w-44">
+    <ListItem
+      title={<>{member.name}{isSelf && <span className="text-reading-secondary">(あなた)</span>}</>}
+      description={member.email}
+      meta={
+        <>
           {inactive && <WarningIcon className="shrink-0 text-warning" />}
-          {member.lastActiveAt === null
-            ? "参加後の利用なし"
-            : `最終利用 ${relativeDay(member.lastActiveAt)}`}
-        </p>
-        <div className="flex flex-wrap items-center gap-2 md:w-72 md:flex-nowrap md:justify-end">
-          {canManage ? (
-            <>
-              <Select items={roleItems} value={member.role} readOnly={pending} onValueChange={(value) => isRole(value) && onRoleChange(value)}>
-                <SelectTrigger size="sm" aria-label={`${member.name}さんの権限`} aria-busy={pending || undefined} className="w-36" />
-                <SelectContent>
-                  {roles.map((role) => (
-                    <SelectItem key={role} value={role} disabled={isOnlyAdmin && role !== "admin"}>
-                      {roleLabel[role]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {/* Fixed slot so every role select lines up, with or without a remove button. */}
-              <div className="flex min-w-20 items-center">
-                {pending && (
-                  <span className="flex items-center gap-1 font-control text-caption text-reading-secondary">
-                    <Spinner />変更中
-                  </span>
-                )}
-                {!pending && !isSelf && !isOnlyAdmin && (
-                  <Button variant="ghost-destructive" size="sm" onClick={onRemove} aria-label={`${member.name}さんをチームから削除`}>
-                    削除
-                  </Button>
-                )}
-                {!pending && isOnlyAdmin && <span className="font-control text-caption text-reading-secondary">唯一の管理者</span>}
-              </div>
-            </>
-          ) : (
-            <p className="font-body text-body">{roleLabel[member.role]}</p>
-          )}
-        </div>
-      </div>
+          {member.lastActiveAt === null ? "参加後の利用なし" : `最終利用 ${relativeDay(member.lastActiveAt)}`}
+        </>
+      }
+      actions={
+        canManage ? (
+          <>
+            <Select items={roleItems} value={member.role} readOnly={pending} onValueChange={(value) => isRole(value) && onRoleChange(value)}>
+              <SelectTrigger size="sm" aria-label={`${member.name}さんの権限`} aria-busy={pending || undefined} className="w-36" />
+              <SelectContent>
+                {roles.map((role) => (
+                  <SelectItem key={role} value={role} disabled={isOnlyAdmin && role !== "admin"}>
+                    {roleLabel[role]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {/* Fixed slot so every role select lines up, with or without a remove button. */}
+            <div className="flex min-w-20 items-center">
+              {pending && (
+                <span className="flex items-center gap-1 font-control text-caption text-reading-secondary">
+                  <Spinner />変更中
+                </span>
+              )}
+              {!pending && !isSelf && !isOnlyAdmin && (
+                <Button variant="outline-destructive" size="sm" data-list-action="remove" onClick={(event) => onRemove(event.currentTarget)} aria-label={`${member.name}さんをチームから削除`}>
+                  削除
+                </Button>
+              )}
+              {!pending && isOnlyAdmin && <span className="font-control text-caption text-reading-secondary">唯一の管理者</span>}
+            </div>
+          </>
+        ) : (
+          <p className="font-body text-body">{roleLabel[member.role]}</p>
+        )
+      }
+    >
       {error && (
         <Notice
           tone="error"
@@ -521,12 +518,12 @@ function MemberRow({ member, canManage, isOnlyAdmin, pending, error, onRoleChang
           action={
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={error.retry}>もう一度試す</Button>
-              <Button variant="ghost" size="sm" onClick={onDismissError}>閉じる</Button>
+              <Button variant="outline" size="sm" onClick={onDismissError}>閉じる</Button>
             </div>
           }
         />
       )}
-    </li>
+    </ListItem>
   );
 }
 
@@ -536,7 +533,7 @@ type InvitationSectionProps = {
   pending: ReadonlyMap<string, string>;
   rowErrors: Record<string, RowError>;
   onResend: (invitation: Invitation) => void;
-  onRevoke: (invitation: Invitation) => void;
+  onRevoke: (invitation: Invitation, trigger: HTMLElement) => void;
   onDismissError: (id: string) => void;
 };
 
@@ -547,32 +544,34 @@ function InvitationSection({ headingRef, invitations, pending, rowErrors, onRese
         <h2 id="invitations-heading" ref={headingRef} tabIndex={-1} className="font-heading text-reading outline-none">承認待ちの招待</h2>
         <p className="font-control text-caption text-reading-secondary">招待のリンクは送ってから{invitationValidDays}日間有効です。</p>
       </div>
-      <ul className="flex flex-col border-t border-border">
+      <List aria-labelledby="invitations-heading">
         {invitations.map((invitation) => {
           const expired = isExpired(invitation);
           const busy = pending.get(invitation.id);
           const error = rowErrors[invitation.id];
           return (
-            <li key={invitation.id} aria-label={invitation.email} className="flex flex-col gap-3 border-b border-border py-3">
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <p className="font-body text-body break-all">{invitation.email}</p>
-                  <p className="font-control text-caption text-reading-secondary">{roleLabel[invitation.role]}として招待</p>
-                </div>
-                <p className="flex items-center gap-1 font-control text-caption text-reading-secondary md:w-44">
+            <ListItem
+              key={invitation.id}
+              title={invitation.email}
+              description={`${roleLabel[invitation.role]}として招待`}
+              meta={
+                <>
                   {expired && <WarningIcon className="shrink-0 text-warning" />}
                   {expired ? `期限切れ(${formatDate(invitation.sentAt)}に送信)` : `${relativeDay(invitation.sentAt)}に送信`}
-                </p>
-                <div className="flex flex-wrap items-center gap-2 md:w-72 md:justify-end">
+                </>
+              }
+              actions={
+                <>
                   {/* Buttons stay in place while busy so keyboard focus is not lost. */}
                   <Button variant="outline" size="sm" pending={busy === "resend"} disabled={busy !== undefined} onClick={() => onResend(invitation)} aria-label={`${invitation.email}に招待を再送`}>
                     再送
                   </Button>
-                  <Button variant="ghost-destructive" size="sm" pending={busy === "revoke"} disabled={busy !== undefined} onClick={() => onRevoke(invitation)} aria-label={`${invitation.email}への招待を取り消す`}>
+                  <Button variant="outline-destructive" size="sm" pending={busy === "revoke"} data-list-action="revoke" disabled={busy !== undefined} onClick={(event) => onRevoke(invitation, event.currentTarget)} aria-label={`${invitation.email}への招待を取り消す`}>
                     取り消す
                   </Button>
-                </div>
-              </div>
+                </>
+              }
+            >
               {error && (
                 <Notice
                   tone="error"
@@ -580,15 +579,15 @@ function InvitationSection({ headingRef, invitations, pending, rowErrors, onRese
                   action={
                     <div className="flex gap-2">
                       <Button variant="outline" size="sm" onClick={error.retry}>もう一度試す</Button>
-                      <Button variant="ghost" size="sm" onClick={() => onDismissError(invitation.id)}>閉じる</Button>
+                      <Button variant="outline" size="sm" onClick={() => onDismissError(invitation.id)}>閉じる</Button>
                     </div>
                   }
                 />
               )}
-            </li>
+            </ListItem>
           );
         })}
-      </ul>
+      </List>
     </section>
   );
 }
@@ -608,6 +607,7 @@ function InviteDialog({ open, onOpenChange, members, invitations, onInvite }: In
   const [failure, setFailure] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const roleLabelId = useId();
+  const emailInput = useRef<HTMLInputElement>(null);
 
   function reset() {
     setEmail("");
@@ -621,10 +621,12 @@ function InviteDialog({ open, onOpenChange, members, invitations, onInvite }: In
     const normalized = email.trim().toLowerCase();
     if (members.some((member) => member.email.toLowerCase() === normalized)) {
       setDuplicate("このメールアドレスの人は、すでにメンバーです。");
+      emailInput.current?.focus();
       return;
     }
     if (invitations.some((invitation) => invitation.email.toLowerCase() === normalized)) {
       setDuplicate("このメールアドレスには招待を送っています。届いていない場合は、一覧から再送してください。");
+      emailInput.current?.focus();
       return;
     }
     setSending(true);
@@ -648,10 +650,11 @@ function InviteDialog({ open, onOpenChange, members, invitations, onInvite }: In
           <DialogDescription>招待した人には、参加用のリンクをメールで送ります。</DialogDescription>
         </DialogHeader>
         {failure && <Banner tone="error" title="招待を送れませんでした">{failure}</Banner>}
-        <Form onFormSubmit={submit} className="flex flex-col gap-6">
-          <Field invalid={duplicate !== null || undefined}>
+        <Form onFormSubmit={submit}>
+          <Field name="email" error={duplicate}>
             <FieldLabel>メールアドレス</FieldLabel>
             <Input
+              ref={emailInput}
               type="email"
               required
               autoComplete="off"
@@ -660,7 +663,6 @@ function InviteDialog({ open, onOpenChange, members, invitations, onInvite }: In
             />
             <FieldError match="valueMissing">メールアドレスを入力してください。</FieldError>
             <FieldError match="typeMismatch">メールアドレスの形式で入力してください(例: name@example.com)。</FieldError>
-            {duplicate && <FieldError match>{duplicate}</FieldError>}
           </Field>
           <div className="flex flex-col gap-2">
             <p id={roleLabelId} className="font-control text-action">権限</p>
