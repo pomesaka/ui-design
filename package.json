@@ -3,8 +3,31 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "catalog": "vite",
+    "build:catalog": "vite build",
+    "typecheck": "tsc -p .",
     "check:themes": "bun scripts/check-themes.mjs",
-    "test": "bun test scripts/check-themes.test.mjs",
-    "catalog": "bun scripts/serve-catalog.mjs"
+    "test": "bun test",
+    "check": "bun run check:themes && bun run typecheck && bun test && vite build"
+  },
+  "dependencies": {
+    "@base-ui/react": "1.9.0",
+    "clsx": "2.1.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tailwind-merge": "3.7.0"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "21.0.4",
+    "@tailwindcss/vite": "4.3.3",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.8",
+    "@types/bun": "1.4.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
   }
 }

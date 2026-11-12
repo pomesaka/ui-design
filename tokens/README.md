@@ -7,7 +7,7 @@
 - 各テーマだけで、共通部品の通常状態・操作状態・feedbackを表現できる値を一式持つ。light/darkも`luma-light`・`luma-dark`のように独立したテーマとし、どちらも同じ名前を満たす。
 - サービスはテーマを一つ選んで読み込み、必要な色・書体・密度・角丸・材質・motionの値を上書きする。token名や部品の状態判定をサービスごとに作り直さない。
 - 状態別の値も各テーマが供給する。色の派生計算を使う場合は、サービスが変更した基準色から導出される定義にする。値を単に固定コピーして上書きに追従しなくしない。
-- 正本は通常のCSS custom propertiesとし、ReactやSvelteへ依存させない。Tailwind等との対応表は値の定義から分ける。
+- 正本は通常のCSS custom propertiesとし、frameworkへ依存させない。Tailwindとの対応表は[tailwind/theme.css](../tailwind/theme.css)に置き、値の定義から分ける。
 
 ## 色の役割
 

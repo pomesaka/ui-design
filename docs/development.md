@@ -10,10 +10,10 @@
 
 ## 検証する
 
-テーマを追加・変更したら`bun run check:themes`で名前の過不足・参照を確認する。検査スクリプトの回帰は`bun test scripts/check-themes.test.mjs`で確認できる。どちらも追加依存は不要。[テーマの手順](../themes/README.md)に従い、CSS構文・計算値・contrast・実操作は別に確認する。
+`bun install`の後、`bun run check`でテーマの名前・参照、型、テスト、カタログのbuildをまとめて確認する。個別には`bun run check:themes`・`bun run typecheck`・`bun test`・`bun run build:catalog`。テストには、部品の操作の約束と、部品・カタログがtoken外の色やTailwind既定paletteを使っていないことの検査を含む。[テーマの手順](../themes/README.md)に従い、CSSの計算値・contrast・実操作は別に確認する。
 
 - 文書・指示だけの変更は内容・参照・整合を確認する。
-- 実装は採用したtoolの静的検査と、変更に関係する振る舞いを確認する。起動・build・検査のcommandは、実装に合わせてrepository内に定義する。
+- 実装は型検査・テストと、変更に関係する振る舞いを確認する。新しいcommandは`package.json`のscriptsに定義する。
 - UIは実部品のカタログで、表示だけでなく選択・入力・focus・scroll・閉じる操作を確認する。touch・端末権限・性能は、必要なbrowserや実機で確かめる。
 - テストは防ぎたい不具合を説明できる境界へ置き、実装やCSS classの写しを増やさない。条件比較は可能ならtable drivenにする。
 - スキルは代表的な依頼で試し、手順を読めることと、期待する判断・出力が得られることを分けて確認する。

@@ -1,7 +1,47 @@
-# 共通のcontrol recipe
+# 部品
 
-`controls.css`はテーマのCSS変数を読む、framework非依存のstyle。`ui-button`はnative button、`ui-field`はinput、`ui-choice`はtoggle buttonまたは現在の項目へのlink、`ui-notice`はfeedbackの外観に使う。variantはbuttonの`data-variant="secondary|destructive"`、noticeの`data-tone="success|warning|error"`で指定する。未指定はそれぞれprimary・info。
+React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原本。採用先へ複製して使う。focus管理・keyboard操作・ARIAはBase UIが担い、ここでは見た目・状態表現・使いどころを持つ。
 
-選択は`aria-pressed`、現在のlinkは`aria-current="page"`、無効化はnativeの`disabled`、入力不正は`aria-invalid`、読み取り専用は`readonly`を使う。入力label・errorとの関連付け・通知のlive region・pending時の二重実行抑止等の操作契約は、採用先の描画とevent処理が担当する。`aria-busy`やCSSだけでは操作は無効にならない。
+## 採用先で使う
 
-`data-preview-state`は[カタログ](../catalog/README.md)でhover・pressed・focusを固定するための属性。採用先で状態を判定するAPIにしない。カタログは同じCSSで全状態を並べ、実操作も確認できる。
+1. `@base-ui/react`・`clsx`・`tailwind-merge`を依存に加える(版は[package.json](../package.json)に合わせる)。
+2. `components/lib/`と、使う`components/ui/*.tsx`を同じ相対配置で複製する。部品同士の参照(`dialog`→`button`等)も一緒に複製する。
+3. CSSで読み込む。テーマは一つ選び、適用する要素の`data-theme`へ指定する。
+
+```css
+@import "tailwindcss";
+@import "./tailwind/theme.css";
+@import "./themes/luma-light.css";
+@source "./components";
+```
+
+複製後の変更は採用先の判断で行う。共通にしたい改善はこのrepositoryへ戻す。テーマを`<html>`以外へ付ける場合、popupの`container`へテーマ領域内の要素を渡す。portalはbody直下へ描画され、テーマの値を受け取れないため。
+
+## 部品と使いどころ
+
+| 部品 | 使う場面 |
+| --- | --- |
+| `Button` | 操作の実行。`variant`で主・補助・枠線・控えめ・破壊を分け、主操作は一画面に一つを基本にする。処理中は`pending`。linkの見た目は`buttonStyles`で`<a>`へ付ける |
+| `Toggle` | 押下状態が残る切替(お気に入り等)。画面遷移には使わない |
+| `Field`・`Input`・`Textarea` | 入力。label・説明・errorの関連付けを`Field`が行う。外部で決まったerrorは`Field invalid`と`<FieldError match>` |
+| `Checkbox`・`Switch`・`RadioGroup` | 選択。`children`がlabelになり、行全体が操作領域になる。即時に反映する設定は`Switch`、送信までの選択は`Checkbox` |
+| `Select` | ラジオでは長すぎる単一選択。`items`を渡し、`SelectLabel`で名前を付ける |
+| `Menu` | 二次的な操作の一覧。頻繁な操作は画面に出す |
+| `Dialog`・`AlertDialog` | 背景を止める作業・確認。確認ボタンは操作名で書き、処理中は閉じさせない |
+| `Tabs` | 同じ対象の見方の切替。ページ間の移動はlinkにする |
+| `Tooltip` | iconボタン等の補足。唯一の情報源にしない。triggerには別に名前を付ける |
+| `Notice` | 場所に結び付いた結果・警告。原因と復帰を書く |
+| `Toast`(`ToastProvider`・`useToast`) | 操作の短い結果。対応が必要なerrorは原因の近くに出す |
+| `Spinner` | 進行中の表示。名前やbusy状態と併用する |
+
+各部品の制約と理由はファイル先頭のコメントにある。
+
+## 部品を追加・変更する
+
+Base UIに該当する部品があれば、その上に作る。`node_modules/@base-ui/react/docs/`に版と一致する説明がある。
+
+- 色・寸法・角丸・影・動きは`tailwind/theme.css`のutilityで指定する。token外の値が必要なら、先に共通契約へ足すかを判断する。
+- 状態はBase UIのdata属性(`data-disabled`・`data-checked`・`data-highlighted`等)で表す。focusは`focus-visible:focus-ring`、無効の見た目は`disabled-dim`を使う。
+- `className`は文字列で受け、`cn`で後勝ちに合成する。状態ごとのclassName関数は使わない。
+- 動きには`motion-reduce:`での代替を付ける。
+- [カタログ](../catalog/README.md)へ状態一覧と操作例を加え、壊したくない操作の約束はテストにする。
