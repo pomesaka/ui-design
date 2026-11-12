@@ -23,7 +23,7 @@
 ## このrepositoryの決定
 
 - 強弱は位置 → 余白 → 文字 → 色の順で付ける。主操作(`primary`)はページ・Dialog等の一つの操作領域に一つ。
-- 文字の段は、ページ見出し`font-heading text-heading`、区画見出し`font-heading text-reading`、本文`font-body text-body`、補足`font-control text-caption text-reading-secondary`に限る。labelと操作の文字は部品に任せる。
+- 文字の段は、ページ見出し`font-heading text-heading`、区画見出し`font-heading text-section`、本文`font-body text-body`、補足`font-control text-caption text-reading-secondary`に限る。labelと操作の文字は部品に任せる。
 - 余白はtokenの段(`1`・`2`・`3`・`4`・`6`・`8`・`12`、`panel`・`reading`)から選ぶ。段外の値と任意値は検査で落ちる。既定は次のとおり。
 
 | 関係 | 既定 |

@@ -77,6 +77,8 @@
     "text-action-line-height",
     "text-heading",
     "text-heading-line-height",
+    "text-section",
+    "text-section-line-height",
     "weight-body",
     "weight-heading",
     "weight-control"

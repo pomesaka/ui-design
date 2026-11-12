@@ -6,7 +6,7 @@ import { extendTailwindMerge } from "tailwind-merge";
 const merge = extendTailwindMerge({
   extend: {
     theme: {
-      text: ["body", "detail", "reading", "caption", "action", "heading"],
+      text: ["body", "detail", "reading", "caption", "action", "heading", "section"],
       radius: ["field", "card", "dialog", "drawer", "full"],
       shadow: ["sm", "md", "lg"],
       font: ["sans", "serif", "mono", "body", "heading", "control"],
