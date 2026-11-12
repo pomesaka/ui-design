@@ -1,9 +1,15 @@
+import type { ReactNode } from "react";
 import { AlertDialog as BaseAlertDialog } from "@base-ui/react/alert-dialog";
 import { cn, type WithClassName } from "../lib/cn";
 import { buttonStyles, type ButtonVariant } from "./button";
 import { backdropStyles, modalSurface } from "./dialog";
 
-export { DialogFooter as AlertDialogFooter, DialogHeader as AlertDialogHeader } from "./dialog";
+export { DialogFooter as AlertDialogFooter } from "./dialog";
+
+/** Title and description group. No room is reserved on the right: there is no close mark. */
+export function AlertDialogHeader({ className, children }: { className?: string; children: ReactNode }) {
+  return <div className={cn("flex flex-col gap-1.5", className)}>{children}</div>;
+}
 
 /**
  * Confirmation that needs an explicit answer, such as a destructive action.

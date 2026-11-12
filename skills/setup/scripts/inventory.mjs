@@ -15,8 +15,11 @@ const option = (name) => {
   const index = args.indexOf(`--${name}`);
   return index > 0 ? args[index + 1] : undefined;
 };
-// Theme files define the values on purpose, so they are not counted by default.
+// Theme files and service theme overrides (`*theme.css`) define values on
+// purpose, so they are not counted. Copies of ui-design itself are excluded
+// with --ignore (for example --ignore src/components/ui,src/components/lib).
 const ignore = ["node_modules", ".git", "dist", "build", ".next", "coverage", "themes/", ...(option("ignore")?.split(",") ?? [])];
+const isThemeFile = (name) => /theme\.css$/.test(name);
 const extensions = /\.(tsx?|jsx?|mjs|css|scss|sass|less|html|vue|svelte|astro)$/;
 
 const checks = {
@@ -34,7 +37,7 @@ async function* walk(dir) {
     const rel = relative(root, path) + (entry.isDirectory() ? "/" : "");
     if (ignore.some((part) => rel.includes(part))) continue;
     if (entry.isDirectory()) yield* walk(path);
-    else if (extensions.test(entry.name)) yield path;
+    else if (extensions.test(entry.name) && !isThemeFile(entry.name)) yield path;
   }
 }
 

@@ -56,6 +56,40 @@ function slug(url) {
   return name || "page";
 }
 
+// Runs in the page. Finds the elements that actually widen the document:
+// among those whose right edge passes the viewport, hide each briefly and keep
+// the deepest ones whose removal shrinks the page. Elements clipped inside a
+// scrolling wrapper do not count; an absolutely positioned element (such as
+// sr-only text) whose ancestors set no position, and so escapes it, does.
+function findOverflow() {
+  const root = document.documentElement;
+  const limit = window.innerWidth;
+  const width = () => root.scrollWidth;
+  const full = width();
+  if (full <= limit) return null;
+  const depth = (element) => { let n = 0; for (let e = element; e; e = e.parentElement) n++; return n; };
+  const candidates = [...document.body.querySelectorAll("*")]
+    .filter((element) => element.getBoundingClientRect().right > limit + 1)
+    .sort((a, b) => depth(b) - depth(a))
+    .slice(0, 300);
+  const causes = [];
+  for (const element of candidates) {
+    if (causes.some((cause) => element.contains(cause))) continue;
+    const previous = element.style.getPropertyValue("display");
+    element.style.setProperty("display", "none", "important");
+    const shrinks = width() < full;
+    element.style.setProperty("display", previous);
+    if (shrinks) causes.push(element);
+  }
+  const describe = (element) => {
+    const id = element.id ? `#${element.id}` : "";
+    const classes = [...element.classList].slice(0, 3).map((name) => `.${name}`).join("");
+    const text = (element.textContent ?? "").trim().slice(0, 20);
+    return `${element.tagName.toLowerCase()}${id}${classes}${text ? ` "${text}"` : ""}`;
+  };
+  return causes.slice(0, 5).map(describe).join(", ") || "not found (check elements outside the body)";
+}
+
 await mkdir(outDir, { recursive: true });
 const browser = await chromium.launch();
 const problems = [];
@@ -73,9 +107,8 @@ try {
           if (textScale !== 1) document.documentElement.style.fontSize = `${textScale * 100}%`;
         }, { theme, textScale });
         await page.waitForTimeout(200);
-        if (await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) {
-          problems.push(`${label}: horizontal scroll`);
-        }
+        const overflow = await page.evaluate(findOverflow);
+        if (overflow) problems.push(`${label}: horizontal scroll caused by ${overflow}`);
         const height = await page.evaluate(() => document.documentElement.scrollHeight);
         const file = join(outDir, `${slug(url)}-${theme ?? "default"}-${width}${textScale !== 1 ? `-text${textScale}` : ""}.png`);
         await page.screenshot({ path: file, fullPage: true, clip: { x: 0, y: 0, width, height: Math.min(height, maxHeight) } });
