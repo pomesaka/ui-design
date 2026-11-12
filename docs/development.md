@@ -5,7 +5,7 @@
 用途・必要な状態・操作・アクセシビリティを説明でき、製品固有の用語・データ・画面遷移へ依存しない範囲を収める。採用先の条件まで多数のoptionへ押し込まず、実利用から共通の境界を見つける。
 
 部品には、カタログで実際に触れる代表例と、スクリーンショットで一度に比較できる状態一覧を用意する。hover・pressed・focus-visible等は操作せず見える固定見本を並べ、実操作と同じstyleを使う。明暗・幅・長い内容・pending・empty・error等から、その部品に意味のある状態を選ぶ。使いどころ・制約は原本の近くに残す。
-スキルには利用場面・必要な入力・手順・期待する出力を記し、デザイン基準は`DESIGN.md`を参照する。プロンプトは利用するskillのそばに置く。スキルは`skills/ui-design-<作業>/`に置けばpluginに含まれ、このrepository内で使うために`.claude/skills/`へlinkを置く。`.claude-plugin/`を変えたら`claude plugin validate .`を通す。pluginはrepository全体を含むので、rootの`themes/`等はmanifestでClaude Code側の読み込みを止めている。
+スキルには利用場面・必要な入力・手順・期待する出力を記し、デザイン基準は`DESIGN.md`を参照する。プロンプトは利用するskillのそばに置く。スキルは`skills/<作業>/`に置けばpluginに含まれ、このrepository内で使うために`.claude/skills/`へlinkを置く。`.claude-plugin/`を変えたら`claude plugin validate .`を通す。pluginはrepository全体を含むので、rootの`themes/`等はmanifestでClaude Code側の読み込みを止めている。
 外部のコードや素材を取り込む場合は、出典と利用条件を確認し、必要な表示・文書を保持する。
 
 ## 検証する

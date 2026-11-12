@@ -13,7 +13,7 @@
 /plugin install ui-design@pomesaka-ui-design
 ```
 
-スキルは`/ui-design:ui-design-setup`(導入)・`/ui-design:ui-design-review`(レビュー)として使える。pluginにはこのrepository全体が入り、スキルは同梱の文書を参照する。部品とテーマのソースもこのrepositoryから複製する。更新は`/plugin marketplace update pomesaka-ui-design`で取り込む。
+スキルは`/ui-design:setup`(導入)・`/ui-design:review`(レビュー)として使える。pluginにはこのrepository全体が入り、スキルは同梱の文書を参照する。部品とテーマのソースもこのrepositoryから複製する。更新は`/plugin marketplace update pomesaka-ui-design`で取り込む。
 
 ## Documentation Map
 

@@ -1,9 +1,9 @@
 ---
-name: ui-design-review
+name: review
 description: 画面・部品・UIの変更を、ui-designの文書に照らして実際に描画・操作してレビューする。UIのレビューを頼まれたとき、UIを含む差分やPRを確認するとき、UIの作業を終える前の自己確認に使う。
 ---
 
-# ui-design-review
+# ui-design:review
 
 判断基準は書き写さず、ui-designの文書を正本として読む。採用先で使うときは、作業前にそれらの文書を読める場所(複製・submodule等)を確かめる。
 
