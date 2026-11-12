@@ -62,7 +62,8 @@ h1 { font: var(--weight-heading) 24px / 1.3 var(--font-heading); }
 .specimen .ui-choice { width: 100%; }
 
 .field-error { margin-top: 4px; font: 11px / 1.3 var(--font-control); color: var(--destructive); }
-.feedback-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+/* Wrap whole notices instead of splitting short messages mid-word in narrow panels. */
+.feedback-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 8px; }
 .icon { width: 15px; height: 15px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .content-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .content-sample { min-height: 58px; padding: 9px; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--card); color: var(--card-foreground); font: 12px / 1.5 var(--font-control); }
@@ -105,7 +106,7 @@ h1 { font: var(--weight-heading) 24px / 1.3 var(--font-heading); }
   .button-row .row-label { display: block; margin-bottom: 4px; font-size: 12px; }
   .button-row-cells { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
   .mobile-state-label { display: block; }
-  .selection-grid, .field-grid, .feedback-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .selection-grid, .field-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .content-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .live-row { flex-wrap: wrap; }
   .live-row .ui-field { min-width: 100%; }
