@@ -7,24 +7,34 @@
 //   --text-scale 2      enlarge root font size (rem-based text) to check 200% text
 //   --max-height 2400   clip each screenshot to this height (keeps details readable)
 //   --widths 390,768,1280
+//   --storage-state f   Playwright storage state (cookies, localStorage) for screens behind a login
+//   --scroll <selector> the element that scrolls in an app shell; the viewport is
+//                       grown by its hidden height so the whole content is captured
+// Playwright is loaded from this script's location, then from the current
+// directory; in a workspace where it is not hoisted, run from the package that
+// depends on it or set NODE_PATH to that package's node_modules.
 // One URL per state (for example ?state=error). Prints each file and warns on
 // horizontal scroll and page errors.
+import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { join } from "node:path";
 
-// require() also finds a globally provided Playwright (NODE_PATH), which ESM import does not.
-const require = createRequire(import.meta.url);
+// require() also honors NODE_PATH, which ESM import does not.
 let chromium;
-try {
-  ({ chromium } = require("playwright"));
-} catch {
-  console.error("Playwright is not available. Install it in the project (npm i -D playwright) and run again.");
+for (const base of [import.meta.url, `${process.cwd()}/`]) {
+  try {
+    ({ chromium } = createRequire(base)("playwright"));
+    break;
+  } catch {}
+}
+if (!chromium) {
+  console.error("Playwright is not available. Install it (npm i -D playwright), run from the package that has it, or set NODE_PATH to its node_modules.");
   process.exit(2);
 }
 
 const args = process.argv.slice(2);
-const options = { themes: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280" };
+const options = { themes: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280", "storage-state": "", scroll: "" };
 const positional = [];
 for (let i = 0; i < args.length; i++) {
   const arg = args[i];
@@ -41,13 +51,18 @@ for (let i = 0; i < args.length; i++) {
 }
 const [outDir, ...urls] = positional;
 if (!outDir || urls.length === 0) {
-  console.error("Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280]");
+  console.error("Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280] [--storage-state file] [--scroll selector]");
   process.exit(2);
 }
 const themes = options.themes ? options.themes.split(",").filter((theme) => /^[a-z0-9-]+$/.test(theme)) : [null];
 const widths = options.widths.split(",").map(Number).filter((width) => Number.isInteger(width) && width > 0);
 const textScale = Number(options["text-scale"]);
 const maxHeight = Number(options["max-height"]);
+const storageState = options["storage-state"] || undefined;
+if (storageState && !existsSync(storageState)) {
+  console.error(`Storage state not found: ${storageState}`);
+  process.exit(2);
+}
 
 // File names carry the query so each state is identifiable.
 function slug(url) {
@@ -98,7 +113,8 @@ try {
     for (const theme of themes) {
       for (const width of widths) {
         const label = `${slug(url)} ${theme ?? "default"} ${width}px`;
-        const page = await browser.newPage({ viewport: { width, height: 900 } });
+        const context = await browser.newContext({ viewport: { width, height: 900 }, storageState });
+        const page = await context.newPage();
         page.on("pageerror", (error) => problems.push(`${label}: ${error.message}`));
         await page.goto(url, { waitUntil: "networkidle" });
         if (options.wait) await page.locator(options.wait).first().waitFor({ state: "visible" });
@@ -109,11 +125,18 @@ try {
         await page.waitForTimeout(200);
         const overflow = await page.evaluate(findOverflow);
         if (overflow) problems.push(`${label}: horizontal scroll caused by ${overflow}`);
+        if (options.scroll) {
+          // An app shell keeps the document at viewport height; grow the viewport
+          // by the inner element's hidden part so its content lays out in full.
+          const hidden = await page.locator(options.scroll).first().evaluate((element) => element.scrollHeight - element.clientHeight);
+          await page.setViewportSize({ width, height: Math.min(maxHeight, 900 + Math.max(0, hidden)) });
+          await page.waitForTimeout(200);
+        }
         const height = await page.evaluate(() => document.documentElement.scrollHeight);
         const file = join(outDir, `${slug(url)}-${theme ?? "default"}-${width}${textScale !== 1 ? `-text${textScale}` : ""}.png`);
         await page.screenshot({ path: file, fullPage: true, clip: { x: 0, y: 0, width, height: Math.min(height, maxHeight) } });
         console.log(height > maxHeight ? `${file} (clipped from ${height}px)` : file);
-        await page.close();
+        await context.close();
       }
     }
   }
