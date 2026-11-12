@@ -157,6 +157,30 @@ export function Specimens() {
         </Spec>
       </Section>
 
+      <Section title="上部のナビ帯">
+        <Spec label="現在の項目・通常・ホバー・フォーカス">
+          <header className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-header-border bg-header px-4 py-2 text-header-foreground">
+            <span className="font-heading text-section">サービス名</span>
+            <nav aria-label="ナビ帯の例">
+              <ul className="flex flex-wrap gap-1">
+                {headerItems.map(([label, state]) => (
+                  <li key={label}>
+                    <a
+                      href="#states"
+                      aria-current={state === "current" ? "page" : undefined}
+                      data-preview-state={state === "current" ? undefined : state}
+                      className="inline-flex h-control items-center rounded-field px-3 font-control text-action text-header-muted-foreground outline-none hover:text-header-foreground focus-visible:focus-ring aria-[current=page]:bg-header-accent aria-[current=page]:text-header-accent-foreground"
+                    >
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </header>
+        </Spec>
+      </Section>
+
       <Section title="タブ">
         <Spec label="選択中・ホバー・フォーカス">
           <Tabs defaultValue="overview">
@@ -199,6 +223,13 @@ export function Specimens() {
     </>
   );
 }
+
+const headerItems: [string, string][] = [
+  ["カレンダー", "current"],
+  ["予約", "default"],
+  ["レポート", "hover"],
+  ["設定", "focus"],
+];
 
 const fruits = [
   { value: "apple", label: "りんご" },

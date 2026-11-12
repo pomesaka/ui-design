@@ -37,6 +37,7 @@
 | --- | --- |
 | `destructive-foreground` | destructiveの面に載せる文字・icon |
 | `reading-secondary` / `control-foreground` | 前者は時刻・件数等の読書metadata、後者は独自の面を持たない操作icon・文言。filled操作はその面のforegroundを使う。役割を分けて調整でき、テーマ内の初期値は同値でもよい |
+| `header` / `header-foreground`、`header-muted-foreground`、`header-accent` / `header-accent-foreground`、`header-border` | 上部のナビ帯。`sidebar-*`と同じく帯の面・文字と、現在でない項目の文字、現在の項目の面と文字、帯の境界。現在の項目は`aria-current`と`header-accent`の対で示し、hoverは文字を`header-foreground`へ上げるだけにして現在の項目と区別する |
 | `selected` / `selected-foreground` / `selected-border` | 一覧等の継続した選択の面・文字・縁。主操作や押下中の色と区別する |
 | `success` / `success-foreground`、`warning` / `warning-foreground`、`info` / `info-foreground` | 成功・注意・情報のfeedback。Lumaの既存定義をそのまま移したものではなく、共通契約として加える役割 |
 | `destructive-subtle` / `destructive-subtle-foreground` | 一覧の行等に繰り返し並ぶ、控えめな破壊操作の面と文字。確定に使う`destructive`の塗りと段階を分ける |

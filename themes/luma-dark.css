@@ -45,6 +45,13 @@
   --sidebar-accent-foreground: var(--accent-foreground);
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
+  /* Top navigation bar on the raised surface. */
+  --header: var(--card);
+  --header-foreground: var(--card-foreground);
+  --header-muted-foreground: color-mix(in srgb, var(--header-foreground) 72%, var(--header));
+  --header-accent: var(--accent);
+  --header-accent-foreground: var(--accent-foreground);
+  --header-border: var(--border);
   --material-shadow: color-mix(in srgb, var(--background) 30%, black);
   --selected-border: #66b4ff;
   --success: #93cfaa;

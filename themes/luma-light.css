@@ -46,6 +46,13 @@
   --sidebar-accent-foreground: var(--accent-foreground);
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
+  /* Top navigation bar on the deep green, like the app's own header. */
+  --header: var(--primary);
+  --header-foreground: var(--primary-foreground);
+  --header-muted-foreground: color-mix(in srgb, var(--header-foreground) 72%, var(--header));
+  --header-accent: color-mix(in srgb, var(--header-foreground) 14%, var(--header));
+  --header-accent-foreground: var(--header-foreground);
+  --header-border: color-mix(in srgb, var(--header-foreground) 18%, var(--header));
   --material-shadow: color-mix(in srgb, var(--background) 30%, black);
   --selected-border: #0069d9;
   --success: #2f6245;
