@@ -15,7 +15,7 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 @source "./components";
 ```
 
-4. 複製した`components/`・`tailwind/`・`themes/`は、採用先のlint・formatの対象から外す。書式を変えるとui-designとの差分を取りにくくなる。`tailwind/theme.css`の`@theme inline reference`は、Biome 2.5等の一部のCSS parserが構文エラーにするので、その意味でも対象外にする。
+4. 複製した`components/`・`tailwind/`・`themes/`は、採用先のlint・formatの対象から外す。書式を変えるとui-designとの差分を取りにくくなる。
 5. サービスで値を調整する上書きCSSは、ファイル名を`*theme.css`にするか`themes/`に置く。棚卸し([inventory](../skills/setup/scripts/inventory.mjs))はそこに書いた色を直接指定として数えない。
 
 複製後の変更は採用先の判断で行う。共通にしたい改善はこのrepositoryへ戻す。テーマを`<html>`以外へ付ける場合、popupの`container`へテーマ領域内の要素を渡す。portalはbody直下へ描画され、テーマの値を受け取れないため。

@@ -51,7 +51,7 @@ Lumaの`selection`・`selection-surface`・`selection-edge`の分離は、ここ
 
 - 名前は業務の意味で付け、面と文字を対にする:`<名前>` / `<名前>-foreground`。控えめな面が要れば`<名前>-subtle` / `<名前>-subtle-foreground`も対で足す。共通契約の名前と重ねない。
 - 値はテーマごとに上書きCSS(`*theme.css`)へ書き、基準の色から`color-mix`で導出して上書きに追従させる。
-- Tailwindへは`@theme inline { --color-<名前>: var(--<名前>); }`で対応させる。名前が契約と重ならないので`reference`は要らず、`@theme inline reference`を構文エラーにするparserでも読める(Biome 2.5で確認。Biomeは`css.parser.tailwindDirectives`を有効にする)。
+- Tailwindへは[tokens.css](../tailwind/tokens.css)と同じく`@theme inline reference { --color-<名前>: var(--<名前>); }`で対応させる。
 - contrastは[contrast.mjs](../skills/setup/scripts/contrast.mjs)で確かめる。`X` / `X-foreground`の対は自動で測られる。
 - 色だけで意味を伝えず、文言やiconを併用する。
 
