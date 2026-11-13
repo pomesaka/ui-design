@@ -57,10 +57,7 @@
     "chart-2",
     "chart-3",
     "chart-4",
-    "chart-5",
-    "material-light",
-    "material-surface",
-    "material-foreground"
+    "chart-5"
   ],
   "font": [
     "font-sans",
@@ -128,10 +125,5 @@
     "duration-expand",
     "ease-standard",
     "ease-release"
-  ],
-  "material": [
-    "material-blur",
-    "material-saturation",
-    "material-opacity"
   ]
 }

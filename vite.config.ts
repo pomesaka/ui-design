@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 
-// The catalog and every screen example are separate pages of one dev server.
+// The catalog, the materials and every screen example are separate pages of one dev server.
 const examples = readdirSync("examples", { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
   .map((entry) => `examples/${entry.name}/index.html`);
@@ -26,7 +26,7 @@ export default defineConfig({
   build: {
     outDir: "dist",
     emptyOutDir: true,
-    rolldownOptions: { input: ["catalog/index.html", ...examples] },
+    rolldownOptions: { input: ["catalog/index.html", "materials/index.html", ...examples] },
     // These are local tools, so one bundle per page is fine.
     chunkSizeWarningLimit: 1000,
   },

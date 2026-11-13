@@ -76,10 +76,6 @@
 
   /* Derived: material */
   --material-shadow: color-mix(in srgb, var(--foreground) 60%, black);
-  --material-light: var(--card);
-  --material-surface: var(--card);
-  --material-foreground: var(--foreground);
-
   /* font: system faces; set --font-body to a serif for reading-heavy products */
   --font-sans: ui-sans-serif, system-ui, sans-serif;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
@@ -145,10 +141,4 @@
   --duration-standard: 150ms;
   --duration-expand: 200ms;
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-release: ease-out;
-
-  /* material */
-  --material-blur: 20px;
-  --material-saturation: 140%;
-  --material-opacity: 0.75;
-}
+  --ease-release: ease-out;}

@@ -1,0 +1,281 @@
+/* These materials can load before the app stylesheet, just like Lens. */
+@layer theme, base, components, utilities;
+
+@layer components {
+  .surface {
+    --raised-directional-strength: calc(
+      var(--light-strength, 1) *
+      var(--light-directionality, 0.8165)
+    );
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 0.5px solid transparent;
+    border-radius: inherit;
+    color: var(--material-ink, var(--_ink));
+  }
+
+  .surface::before,
+  .surface::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    content: "";
+    pointer-events: none;
+  }
+
+  .surface::before {
+    z-index: -1;
+  }
+
+  .surface::after {
+    opacity: var(--lens-rim-opacity, 0.8);
+  }
+
+  /* One shared light and layered contact shadows keep these solids
+     in the same environment as Lens, without giving each material a new press.
+     https://www.joshwcomeau.com/css/designing-shadows/#creating-a-consistent-environment */
+
+  /* Satin ivory ceramic: an opaque face, a broad reflection and a rounded
+     shaded shoulder. Vitra's matt ceramic is a material reference, not texture.
+     https://www.vitra.com/en-us/product/details/loiseau-ceramic */
+  .ceramic {
+    border-color: color-mix(
+      in srgb,
+      var(--_shadow) calc(6% + var(--_relief) * 7%),
+      transparent
+    );
+    background-color: var(--material-fill, var(--_surface));
+    box-shadow:
+      inset calc(var(--light-shadow-x, 0.57735) * 1.75px)
+      calc(var(--light-shadow-y, 0.57735) * 1.75px) 1px color-mix(
+        in srgb,
+        var(--_light) calc(var(--light-strength, 1) * 75%),
+        transparent
+      ),
+      inset
+      calc(var(--light-shadow-x, 0.57735) * var(--_relief) * -5px)
+      calc(var(--light-shadow-y, 0.57735) * var(--_relief) * -5px)
+      calc(var(--_relief) * 3px) color-mix(
+        in srgb,
+        var(--_shadow)
+          calc(var(--light-strength, 1) * var(--_relief) * 17%),
+        transparent
+      ),
+      calc(
+        var(--light-shadow-x, 0.57735) *
+        var(--_relief) *
+        1.75px
+      )
+      calc(
+        var(--light-shadow-y, 0.57735) *
+        var(--_relief) *
+        1.75px
+      )
+      1px color-mix(
+        in srgb,
+        var(--_shadow)
+          calc(var(--light-strength, 1) * var(--_relief) * 28%),
+        transparent
+      ),
+      calc(var(--light-shadow-x, 0.57735) * var(--_relief) * 8px)
+      calc(var(--light-shadow-y, 0.57735) * var(--_relief) * 8px)
+      calc(3px + var(--_relief) * 6px)
+      calc(-1px - var(--_relief) * 2px) color-mix(
+        in srgb,
+        var(--_shadow)
+          calc(var(--light-strength, 1) * var(--_relief) * 25%),
+        transparent
+      ),
+      0 0 2px color-mix(in srgb, var(--_shadow) 5%, transparent);
+  }
+
+  .ceramic::before {
+    background: radial-gradient(
+        ellipse 120% 140% at var(--light-x, 23.44%) var(--light-y, 23.44%),
+        color-mix(
+          in srgb,
+          /* Pigment tints the face reflection; the rim still reflects light.
+             A pale reflection would wash out a dark semantic action fill. */
+          color-mix(
+              in srgb,
+              var(--material-fill, var(--_light)) 88%,
+              var(--_light)
+            )
+            calc(var(--light-strength, 1) * 58%),
+          transparent
+        ),
+        transparent 72%
+      ),
+      linear-gradient(
+        var(--light-angle, 135deg),
+        transparent 72%,
+        color-mix(
+          in srgb,
+          var(--_shadow)
+            calc(var(--raised-directional-strength) * 5%),
+          transparent
+        )
+      );
+  }
+
+  .ceramic::after {
+    box-shadow: inset calc(var(--light-shadow-x, 0.57735) * 1px)
+      calc(var(--light-shadow-y, 0.57735) * 1px) 0.5px
+      color-mix(
+        in srgb,
+        var(--_light) calc(var(--light-strength, 1) * 72%),
+        transparent
+      ), inset
+      calc(var(--light-shadow-x, 0.57735) * var(--_relief) * -2px)
+      calc(var(--light-shadow-y, 0.57735) * var(--_relief) * -2px)
+      1px
+      color-mix(
+        in srgb,
+        var(--_shadow)
+          calc(var(--light-strength, 1) * var(--_relief) * 14%),
+        transparent
+      );
+  }
+
+  /* A milky core diffuses light while the outer few pixels admit the backdrop.
+     PH 2/1's layered opal glass is the reference; this surface does not emit light.
+     https://www.louispoulsen.com/en-us/c/indoor-lighting/table-lamps/ph-21-table-lamp */
+  .opal {
+    border-color: color-mix(
+      in srgb,
+      var(--_light) 42%,
+      transparent
+    );
+    background-color: color-mix(
+      in srgb,
+      var(--_surface) 35%,
+      transparent
+    );
+    backdrop-filter: blur(10px) saturate(135%);
+    box-shadow:
+      inset calc(var(--light-shadow-x, 0.57735) * 1.75px)
+      calc(var(--light-shadow-y, 0.57735) * 1.75px) 2px color-mix(
+        in srgb,
+        var(--_light) calc(var(--light-strength, 1) * 72%),
+        transparent
+      ),
+      inset calc(var(--light-shadow-x, 0.57735) * -1.75px)
+      calc(var(--light-shadow-y, 0.57735) * -1.75px) 2px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 15%),
+        transparent
+      ),
+      calc(var(--light-shadow-x, 0.57735) * 1.75px)
+      calc(var(--light-shadow-y, 0.57735) * 1.75px) 2px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 22%),
+        transparent
+      ),
+      calc(var(--light-shadow-x, 0.57735) * 8px)
+      calc(var(--light-shadow-y, 0.57735) * 8px) 10px -4px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 25%),
+        transparent
+      ),
+      0 0 2px color-mix(in srgb, var(--_shadow) 4%, transparent);
+  }
+
+  .opal::before {
+    background: radial-gradient(
+        ellipse 110% 125% at var(--light-x, 23.44%) var(--light-y, 23.44%),
+        color-mix(
+          in srgb,
+          var(--_light) calc(var(--light-strength, 1) * 24%),
+          transparent
+        ),
+        transparent 78%
+      ), /* The centered milky core is opacity, not a second light source. */
+      radial-gradient(
+        ellipse 58% 72% at 50% 50%,
+        color-mix(in srgb, var(--_surface) 94%, transparent),
+        color-mix(in srgb, var(--_surface) 90%, transparent) 40%,
+        color-mix(in srgb, var(--_surface) 70%, transparent) 74%,
+        color-mix(in srgb, var(--_surface) 10%, transparent) 100%
+      );
+  }
+
+  .opal::after {
+    padding: 0.75px;
+    background: linear-gradient(
+      var(--light-angle, 135deg),
+      color-mix(
+        in srgb,
+        var(--_light)
+          calc(var(--raised-directional-strength) * 92%),
+        transparent
+      ),
+      color-mix(
+          in srgb,
+          var(--_light)
+            calc(var(--raised-directional-strength) * 65%),
+          transparent
+        )
+        24%,
+      transparent 47%,
+      transparent 70%,
+      color-mix(
+        in srgb,
+        var(--_light)
+          calc(var(--raised-directional-strength) * 48%),
+        transparent
+      )
+    );
+    -webkit-mask: linear-gradient(var(--_light) 0 0) content-box,
+      linear-gradient(var(--_light) 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(var(--_light) 0 0) content-box,
+      linear-gradient(var(--_light) 0 0);
+    mask-composite: exclude;
+  }
+
+  /* The paper stays flat and matte; a thin shaded edge supplies thickness. */
+  .paper {
+    border-color: color-mix(
+      in srgb,
+      var(--_shadow) 18%,
+      transparent
+    );
+    background-color: var(--_surface);
+    box-shadow: calc(var(--light-shadow-x, 0.57735) * 1.75px)
+      calc(var(--light-shadow-y, 0.57735) * 1.75px) 0
+      color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 24%),
+        transparent
+      ), calc(var(--light-shadow-x, 0.57735) * 3px)
+      calc(var(--light-shadow-y, 0.57735) * 3px) 3px -1px
+      color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 15%),
+        transparent
+      ), 0 0 1px color-mix(in srgb, var(--_shadow) 5%, transparent);
+  }
+
+  .paper::before {
+    background: radial-gradient(
+      ellipse 160% 140% at var(--light-x, 23.44%) var(--light-y, 23.44%),
+      color-mix(
+        in srgb,
+        var(--_light) calc(var(--light-strength, 1) * 9%),
+        transparent
+      ),
+      transparent 80%
+    );
+  }
+
+  .paper::after {
+    box-shadow: inset calc(var(--light-shadow-x, 0.57735) * -1.75px)
+      calc(var(--light-shadow-y, 0.57735) * -1.75px) 0
+      color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 10%),
+        transparent
+      );
+  }
+}

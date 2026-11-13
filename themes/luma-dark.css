@@ -65,10 +65,6 @@
   --chart-3: #e79bcf;
   --chart-4: #e8c16e;
   --chart-5: #f39b83;
-  --material-light: var(--foreground);
-  --material-surface: var(--primary);
-  --material-foreground: var(--primary-foreground);
-
   /* font */
   --font-sans: ui-sans-serif, system-ui, sans-serif;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
@@ -135,10 +131,4 @@
   --duration-standard: 150ms;
   --duration-expand: 200ms;
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-release: ease-out;
-
-  /* material */
-  --material-blur: 22px;
-  --material-saturation: 135%;
-  --material-opacity: 0.72;
-}
+  --ease-release: ease-out;}

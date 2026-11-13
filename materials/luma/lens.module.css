@@ -1,0 +1,308 @@
+/* This module can load before the app stylesheet; keep Preflight below it. */
+@layer theme, base, components, utilities;
+
+@layer components {
+  .surface,
+  .inset {
+    --lens-directional-strength: calc(
+      var(--light-strength, 1) *
+      var(--light-directionality, 0.8165)
+    );
+  }
+
+  /* The rim supplies depth even over a flat reading surface. CSS masks keep
+     this independent of SVG backdrop filters, which Safari cannot render. */
+  .surface {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    -webkit-backdrop-filter: blur(var(--lens-blur, 20px))
+      saturate(var(--lens-saturation, 150%));
+    backdrop-filter: blur(var(--lens-blur, 20px))
+      saturate(var(--lens-saturation, 150%));
+    border: 0.5px solid
+      color-mix(in srgb, var(--_light) 12%, transparent);
+    background-image: linear-gradient(
+      calc(var(--light-angle, 135deg) + 20deg),
+      color-mix(
+        in srgb,
+        var(--_light) calc(var(--lens-directional-strength) * 6%),
+        transparent
+      ),
+      transparent 46%,
+      color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--lens-directional-strength) * 5%),
+        transparent
+      )
+    );
+    box-shadow:
+      inset calc(var(--light-shadow-x, 0.57735) * 1.75px)
+      calc(var(--light-shadow-y, 0.57735) * 1.75px) 2px color-mix(
+        in srgb,
+        var(--_light) calc(var(--light-strength, 1) * 16%),
+        transparent
+      ),
+      inset calc(var(--light-shadow-x, 0.57735) * -1.75px)
+      calc(var(--light-shadow-y, 0.57735) * -1.75px) 3px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 14%),
+        transparent
+      ),
+      inset calc(var(--light-shadow-x, 0.57735) * -5px)
+      calc(var(--light-shadow-y, 0.57735) * -5px) 7px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 8%),
+        transparent
+      ),
+      calc(var(--light-shadow-x, 0.57735) * 16px)
+      calc(var(--light-shadow-y, 0.57735) * 16px) 26px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 22%),
+        transparent
+      ),
+      calc(var(--light-shadow-x, 0.57735) * 5px)
+      calc(var(--light-shadow-y, 0.57735) * 5px) 6px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 12%),
+        transparent
+      ),
+      0 0 2px color-mix(in srgb, var(--_shadow) 4%, transparent);
+  }
+  .surface::before {
+    position: absolute;
+    inset: 1px;
+    /* Keep reflection behind plain children without requiring content wrappers. */
+    z-index: -1;
+    border-radius: inherit;
+    content: "";
+    pointer-events: none;
+    /* Keep the face quiet; the curved rim carries the concentrated reflection. */
+    background: linear-gradient(
+      calc(var(--light-angle, 135deg) + 10deg),
+      color-mix(
+        in srgb,
+        var(--_light) calc(var(--lens-directional-strength) * 8%),
+        transparent
+      ),
+      color-mix(
+          in srgb,
+          var(--_light) calc(var(--lens-directional-strength) * 2%),
+          transparent
+        )
+        25%,
+      transparent 48%,
+      transparent 72%,
+      color-mix(
+        in srgb,
+        var(--_light) calc(var(--lens-directional-strength) * 6%),
+        transparent
+      )
+    );
+  }
+  .surface::after {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    padding: 0.75px;
+    border-radius: inherit;
+    content: "";
+    pointer-events: none;
+    opacity: var(--lens-rim-opacity, 0.55);
+    background: radial-gradient(
+        ellipse 55% 75% at var(--light-x, 23.44%) var(--light-y, 23.44%),
+        color-mix(
+          in srgb,
+          var(--_light) calc(var(--light-strength, 1) * 64%),
+          transparent
+        ),
+        transparent 78%
+      ),
+      linear-gradient(
+        var(--light-angle, 135deg),
+        color-mix(
+          in srgb,
+          var(--_light)
+            calc(var(--lens-directional-strength) * 96%),
+          transparent
+        ),
+        color-mix(
+            in srgb,
+            var(--_light)
+              calc(var(--lens-directional-strength) * 72%),
+            transparent
+          )
+          12%,
+        color-mix(
+            in srgb,
+            var(--_light)
+              calc(var(--lens-directional-strength) * 18%),
+            transparent
+          )
+          27%,
+        transparent 39%,
+        transparent 60%,
+        color-mix(
+            in srgb,
+            var(--_light)
+              calc(var(--lens-directional-strength) * 24%),
+            transparent
+          )
+          76%,
+        color-mix(
+            in srgb,
+            var(--_light)
+              calc(var(--lens-directional-strength) * 82%),
+            transparent
+          )
+          91%,
+        color-mix(
+          in srgb,
+          var(--_light)
+            calc(var(--lens-directional-strength) * 94%),
+          transparent
+        )
+      );
+    -webkit-mask: linear-gradient(var(--_light) 0 0) content-box,
+      linear-gradient(var(--_light) 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(var(--_light) 0 0) content-box,
+      linear-gradient(var(--_light) 0 0);
+    mask-composite: exclude;
+  }
+  .rimmed::after {
+    background: radial-gradient(
+        ellipse 55% 75% at var(--light-x, 23.44%) var(--light-y, 23.44%),
+        color-mix(
+          in srgb,
+          var(--_light) calc(var(--light-strength, 1) * 64%),
+          transparent
+        ),
+        transparent 78%
+      ),
+      linear-gradient(
+        var(--light-angle, 135deg),
+        color-mix(
+          in srgb,
+          var(--_light)
+            calc(var(--lens-directional-strength) * 96%),
+          transparent
+        ),
+        color-mix(
+            in srgb,
+            var(--_light)
+              calc(var(--lens-directional-strength) * 90%),
+            transparent
+          )
+          22%,
+        transparent 44%,
+        transparent 56%,
+        color-mix(
+            in srgb,
+            var(--_light)
+              calc(var(--lens-directional-strength) * 90%),
+            transparent
+          )
+          78%,
+        color-mix(
+          in srgb,
+          var(--_light)
+            calc(var(--lens-directional-strength) * 96%),
+          transparent
+        )
+      );
+  }
+  .inset {
+    position: relative;
+    isolation: isolate;
+    /* The long curved edge catches vertical light; side light is carried by
+       the inset edge shadows rather than a horizontal stripe across the face. */
+    --lens-grazing-strength: calc(
+      var(--light-strength, 1) *
+      max(
+        var(--light-shadow-y, 0.57735),
+        calc(var(--light-shadow-y, 0.57735) * -1)
+      )
+    );
+  }
+  .inset::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    border-radius: inherit;
+    content: "";
+    pointer-events: none;
+    /* A capsule catches grazing light near its curved edge, not as a bright
+       band across the label. Keep that edge reflection tied to the light. */
+    background-image: radial-gradient(
+        ellipse 85% 22% at
+          clamp(-50%, calc(var(--light-x, 23.44%) * 2 - 50%), 150%)
+          clamp(-50%, calc(var(--light-y, 23.44%) * 2 - 50%), 150%),
+        color-mix(
+          in srgb,
+          var(--_light) calc(var(--lens-grazing-strength) * 24%),
+          transparent
+        ),
+        transparent 90%
+      ),
+      linear-gradient(
+        calc(var(--light-angle, 135deg) + 10deg),
+        color-mix(
+          in srgb,
+          var(--_light)
+            calc(var(--lens-directional-strength) * 10%),
+          transparent
+        ),
+        transparent 30%,
+        color-mix(
+            in srgb,
+            var(--_shadow)
+              calc(var(--lens-directional-strength) * 14%),
+            transparent
+          )
+          78%,
+        color-mix(
+          in srgb,
+          var(--_light)
+            calc(var(--lens-directional-strength) * 12%),
+          transparent
+        )
+      );
+    box-shadow:
+      inset calc(var(--light-shadow-x, 0.57735) * 1.25px)
+      calc(var(--light-shadow-y, 0.57735) * 1.25px) 1px color-mix(
+        in srgb,
+        var(--_light) calc(var(--light-strength, 1) * 40%),
+        transparent
+      ),
+      inset calc(var(--light-shadow-x, 0.57735) * -1.25px)
+      calc(var(--light-shadow-y, 0.57735) * -1.25px) 1.5px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 46%),
+        transparent
+      ),
+      inset calc(var(--light-shadow-x, 0.57735) * 3.5px)
+      calc(var(--light-shadow-y, 0.57735) * 3.5px) 6px color-mix(
+        in srgb,
+        var(--_light) calc(var(--light-strength, 1) * 10%),
+        transparent
+      ),
+      inset calc(var(--light-shadow-x, 0.57735) * -3.5px)
+      calc(var(--light-shadow-y, 0.57735) * -3.5px) 6px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 18%),
+        transparent
+      ),
+      calc(var(--light-shadow-x, 0.57735) * 5px)
+      calc(var(--light-shadow-y, 0.57735) * 5px) 7px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 24%),
+        transparent
+      ),
+      0 0 0 0.5px color-mix(
+        in srgb,
+        var(--_light) 20%,
+        transparent
+      );
+  }
+}

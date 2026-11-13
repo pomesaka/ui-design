@@ -1,0 +1,62 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  .surface {
+    --paper-light-gain: 0.16;
+    background-color: var(--paper-surface-color, var(--background));
+    /* Light belongs to the paper beneath the text, so the reading contrast
+       stays intact and each paragraph does not acquire its own spotlight. */
+    background-image: radial-gradient(
+        ellipse 140% 95% at var(--light-x, 23.44%) var(--light-y, 23.44%),
+        color-mix(
+            in srgb,
+            var(--card)
+              calc(var(--light-strength, 1) * var(--paper-light-gain) * 92%),
+            transparent
+          )
+          20%,
+        color-mix(
+            in srgb,
+            var(--card)
+              calc(var(--light-strength, 1) * var(--paper-light-gain) * 72%),
+            transparent
+          )
+          48%,
+        transparent 100%
+      ),
+      linear-gradient(
+        var(--light-angle, 135deg),
+        transparent 65%,
+        color-mix(
+          in srgb,
+          var(--_shadow)
+            calc(
+              var(--light-strength, 1) *
+              var(--light-directionality, 0.8165) *
+              var(--paper-light-gain) *
+              3%
+            ),
+          transparent
+        )
+      );
+    box-shadow: calc(var(--light-shadow-x, 0.57735) * 1.75px)
+      calc(var(--light-shadow-y, 0.57735) * 1.75px) 2px
+      color-mix(
+        in srgb,
+        var(--_shadow)
+          calc(var(--light-strength, 1) * var(--paper-light-gain) * 9%),
+        transparent
+      ), calc(var(--light-shadow-x, 0.57735) * 18px)
+      calc(var(--light-shadow-y, 0.57735) * 18px) 22px -17px
+      color-mix(
+        in srgb,
+        var(--_shadow)
+          calc(var(--light-strength, 1) * var(--paper-light-gain) * 34%),
+        transparent
+      ), 0 0 2px color-mix(in srgb, var(--_shadow) 3%, transparent);
+  }
+
+  .illuminated {
+    --paper-light-gain: 1;
+  }
+}

@@ -1,0 +1,106 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  .photo {
+    position: relative;
+    isolation: isolate;
+    aspect-ratio: 16 / 9;
+  }
+
+  .image,
+  .afterlight {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+
+  .image {
+    position: relative;
+    z-index: 1;
+  }
+
+  .photo[data-layout="content"] {
+    /* Decorate outside the gallery's clipping viewport. Its image ratio,
+       media fallback, controls and focus restoration stay with the gallery. */
+    aspect-ratio: auto;
+  }
+
+  .foreground {
+    position: relative;
+    z-index: 1;
+    display: flow-root;
+  }
+
+  /* Contain mode expects a sized query container around the photograph. */
+  .photo[data-fit="contain"] {
+    aspect-ratio: auto;
+    width: 100%;
+  }
+
+  .photo[data-fit="contain"][data-layout="image"] {
+    display: grid;
+    place-items: center;
+    height: 100%;
+  }
+
+  .photo[data-fit="contain"] .image {
+    width: 100cqw;
+    height: auto;
+    max-width: 100cqw;
+    max-height: 100cqh;
+    object-fit: contain;
+    border-radius: 0;
+  }
+
+  /* Use the photograph's own colours; the foreground stays unfiltered. */
+  .afterlight {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    filter: blur(1rem) saturate(0.75);
+    opacity: 0;
+  }
+
+  .photo[data-fit="contain"] .afterlight {
+    /* Fill the spare space with diffuse colour. A second contained image would
+       be hidden behind the original, leaving almost none of its light visible.
+       The mask reaches zero at every edge so the parent's reading surface,
+       including its paper lighting, shows through without a frame-colour seam. */
+    object-fit: cover;
+    /* The padded reading surface owns this inset; scrolling media only clips
+       its foreground so neighbouring slides cannot paint into that margin. */
+    inset-inline: calc(-1 * var(--photo-afterlight-inset-inline, 0px));
+    width: calc(100% + 2 * var(--photo-afterlight-inset-inline, 0px));
+    max-width: none;
+    border-radius: 0;
+    filter: blur(2rem);
+    mask-image: radial-gradient(
+      ellipse closest-side,
+      black 45%,
+      rgb(0 0 0 / 85%) 60%,
+      rgb(0 0 0 / 40%) 78%,
+      rgb(0 0 0 / 8%) 92%,
+      transparent 100%
+    );
+  }
+
+  .photo[data-enabled="true"] .afterlight {
+    opacity: 0.18;
+  }
+
+  .photo[data-enabled="true"][data-fit="contain"] .afterlight {
+    opacity: 0.8;
+  }
+
+  /* Small thumbnails need a shorter spill to avoid tinting adjacent metadata. */
+  .photo[data-size="thumbnail"] .afterlight {
+    filter: blur(0.25rem) saturate(0.75);
+  }
+
+  .photo[data-enabled="true"][data-size="thumbnail"] .afterlight {
+    opacity: 0.1;
+  }
+}

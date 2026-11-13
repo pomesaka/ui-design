@@ -1,0 +1,20 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  /* The values every material of this family reads, on each host. A project
+     changes the look by setting the --material-* names on the element or an
+     ancestor. The defaults derive from the theme; its color-scheme picks the
+     side of light-dark(). */
+  .material {
+    --_light: var(--material-light, light-dark(var(--card), var(--foreground)));
+    --_shadow: var(--material-shadow);
+    --_surface: var(--material-surface, light-dark(var(--card), var(--primary)));
+    --_ink: var(
+      --material-ink,
+      light-dark(var(--primary), var(--primary-foreground))
+    );
+    /* Pale faces on a light page need less relief than the same face on a dark
+       one. light-dark() takes colors only, so a dark theme sets this to 1. */
+    --_relief: var(--material-relief, 0.45);
+  }
+}

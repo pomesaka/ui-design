@@ -58,7 +58,7 @@ function withoutCommentsAndStrings(text) {
 }
 const assertion = /\bas\s+(?:const\b|[A-Za-z_$][\w$.]*)/;
 const typedFiles = (
-  await Promise.all(["components", "catalog", "examples", "test"].map(async (dir) => (await sourceFiles(dir, { includeTests: true })).map((file) => `${dir}/${file}`)))
+  await Promise.all(["components", "catalog", "examples", "materials", "test"].map(async (dir) => (await sourceFiles(dir, { includeTests: true })).map((file) => `${dir}/${file}`)))
 ).flat().filter((file) => /\.tsx?$/.test(file));
 
 test.each(typedFiles)("%s has no `as` type assertion", async (file) => {

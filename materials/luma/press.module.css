@@ -1,0 +1,99 @@
+@layer theme, base, components, utilities;
+
+@layer components {
+  .pressFeedback {
+    --surface-press-release-duration: 160ms;
+    --surface-press-depth: 1px;
+    transition: box-shadow var(--surface-press-release-duration) ease-out,
+      translate var(--surface-press-release-duration) ease-out;
+  }
+
+  .pressFeedback::before,
+  .pressFeedback::after {
+    transition: opacity var(--surface-press-release-duration) ease-out;
+  }
+
+  .pressFeedback.materialHover:where(
+      :not(:disabled):not([aria-disabled="true"])
+    ) {
+    --lens-rim-opacity: 1;
+  }
+
+  /* Frozen hover samples must also render on touch devices. Keep only native
+     hover behind this media query, with the same material recipe above. */
+  @media (hover: hover) {
+    .pressFeedback:hover:where(:not(:disabled):not([aria-disabled="true"])) {
+      --lens-rim-opacity: 1;
+    }
+  }
+
+  /* Reverse the lit and shaded edges as the surface sinks into the same light.
+     Keep both edges: white-on-white alone disappears on pale fills,
+     while darkening the entire face hides the rim on dark fills. This shared
+     response works without a per-fill variant. Individual translate preserves
+     caller transforms; respond immediately, then ease back after release. */
+  .pressFeedback.materialPressed:where(
+      :not(:disabled):not([aria-disabled="true"])
+    ),
+  .pressFeedback:active:not(:disabled):not([aria-disabled="true"]) {
+    translate: 0 var(--surface-press-depth);
+    --lens-rim-opacity: 0.4;
+    box-shadow:
+      inset calc(var(--light-shadow-x, 0.57735) * 3px)
+      calc(var(--light-shadow-y, 0.57735) * 3px) 3px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 45%),
+        transparent
+      ),
+      inset calc(var(--light-shadow-x, 0.57735) * -2.5px)
+      calc(var(--light-shadow-y, 0.57735) * -2.5px) 2px color-mix(
+        in srgb,
+        var(--_light) calc(var(--light-strength, 1) * 50%),
+        transparent
+      ),
+      calc(var(--light-shadow-x, 0.57735) * 1.75px)
+      calc(var(--light-shadow-y, 0.57735) * 1.75px) 2px color-mix(
+        in srgb,
+        var(--_shadow) calc(var(--light-strength, 1) * 35%),
+        transparent
+      ),
+      0 0 2px color-mix(in srgb, var(--_shadow) 5%, transparent);
+  }
+
+  .pressFeedback.materialPressed:where(
+      :not(:disabled):not([aria-disabled="true"])
+    )::before,
+  .pressFeedback:active:not(:disabled):not([aria-disabled="true"])::before {
+    opacity: 0.5;
+  }
+
+  .pressFeedback.materialPressed:where(
+      :not(:disabled):not([aria-disabled="true"])
+    ),
+  .pressFeedback.materialPressed:where(
+      :not(:disabled):not([aria-disabled="true"])
+    )::before,
+  .pressFeedback.materialPressed:where(
+      :not(:disabled):not([aria-disabled="true"])
+    )::after,
+  .pressFeedback:active:not(:disabled):not([aria-disabled="true"]),
+  .pressFeedback:active:not(:disabled):not([aria-disabled="true"])::before,
+  .pressFeedback:active:not(:disabled):not([aria-disabled="true"])::after {
+    transition-duration: 0ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pressFeedback.materialPressed:where(
+        :not(:disabled):not([aria-disabled="true"])
+      ),
+    .pressFeedback:active:not(:disabled):not([aria-disabled="true"]) {
+      translate: none;
+    }
+
+    .pressFeedback,
+    .pressFeedback::before,
+    .pressFeedback::after {
+      transition: none;
+    }
+  }
+}

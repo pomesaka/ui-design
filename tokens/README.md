@@ -82,6 +82,8 @@ Lumaの`selection`・`selection-surface`・`selection-edge`の分離は、ここ
 | 寸法 | 余白のscale、control・iconのsize。見える形と操作領域を分ける |
 | 形・影 | shadcnの`radius`を土台に、field・card・dialog・drawerの役割別角丸、共通のshadow |
 | 操作状態 | `disabled-opacity`、`press-depth`、`focus-outline-width` / `focus-outline-offset` |
-| 動き・材質 | 共通のduration / easing、部品間で共有する光・影等の値。動作・描画の実装は部品が所有する |
+| 動き | 共通のduration / easing。動作の実装は部品が所有する |
+
+ガラス等の材質の値は共通契約に置かない。[材質](../materials/README.md)が自分の値を持つ。
 
 テーマの確認では、共通契約からの定義漏れ、サービス差分への派生値の追従、面とforeground・境界・focusの可読性、代表部品の各状態と同時状態をカタログで確かめる。
