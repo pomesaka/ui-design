@@ -18,6 +18,8 @@ CSSを読み込み、適用する要素の`data-theme`へファイル名と同�
 <html data-theme="luma-light">
 ```
 
+buildの道具によっては、テーマをTailwindへ通すと`color-mix()`の式が失われる。[移行の型](../docs/migration.md#読み込み)に確かめ方と避け方を置く。
+
 切替は`data-theme`を`luma-dark`へ変更する。テーマは値と`color-scheme`だけを定義し、本文やbuttonへstyleを自動適用しない。対応表はtokenを直接参照するutilityを足す。Tailwind既定の色paletteや文字・角丸のscaleは残る。余白の数値utilityは`space-1`の倍数(`p-3`は`space-3`と同値)になる。テーマ指定を外すことを別テーマへの自動fallbackにしない。
 
 ## サービスで調整する
