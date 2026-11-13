@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+// The themes of themes/, or of the project named by CATALOG_THEMES (vite.config.ts).
+import { themes } from "virtual:project-themes";
 import { Toggle } from "../components/ui/toggle";
 import { AnnouncerProvider } from "../components/ui/announcer";
 import { TooltipProvider } from "../components/ui/tooltip";
@@ -7,12 +9,6 @@ import { Playground } from "./playground";
 import { Specimens } from "./specimens";
 import { TokenList, isColor, useAppliedTokens } from "./tokens";
 
-// Every theme file is loaded and listed, so a new theme appears without edits here.
-const themeFiles = import.meta.glob("../themes/*.css", { eager: true });
-const themes = Object.keys(themeFiles)
-  .map((path) => path.match(/\/([a-z0-9-]+)\.css$/)?.[1])
-  .filter((name): name is string => name !== undefined)
-  .sort();
 
 /** Popups mount inside their theme panel so they read the same tokens. */
 const PortalContext = createContext<HTMLElement | null>(null);
@@ -69,7 +65,7 @@ export function App() {
           <div className={shown.length > 1 ? "grid gap-6 min-[90rem]:grid-cols-2" : "mx-auto grid w-full max-w-[56rem]"}>
             {shown.map((theme) => (
               <ThemePanel key={theme} theme={theme}>
-                {show !== "parts" && <Foundations />}
+                {show !== "parts" && <Foundations theme={theme} />}
                 {show !== "tokens" && <Specimens />}
                 {show !== "tokens" && <Playground theme={theme} />}
               </ThemePanel>

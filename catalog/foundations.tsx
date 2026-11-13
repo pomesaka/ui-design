@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState, type CSSProperties, type ReactNode } 
 import { Button } from "../components/ui/button";
 import { Toggle } from "../components/ui/toggle";
 import { Section } from "./app";
+import { declared } from "virtual:project-themes";
+import { addedKind, type AddedKind } from "./token-usage";
 import { TokenValue, contract, mapping } from "./tokens";
 
 // A kind added to the contract still appears, under its own name, until it is drawn here.
@@ -16,10 +18,16 @@ function Name({ children }: { children: ReactNode }) {
 }
 
 /** Every token of the contract, drawn with the surrounding theme's values. */
-export function Foundations() {
+export function Foundations({ theme }: { theme: string }) {
   const rest = Object.entries(contract).filter(([kind]) => !drawnKinds.has(kind));
+  const added = (declared[theme] ?? []).filter((name) => !contractNames.has(name));
   return (
     <>
+      {added.length > 0 && (
+        <Section title="このテーマが足したtoken">
+          <Added names={added} />
+        </Section>
+      )}
       <Section title="色">
         <Colors names={contract.color ?? []} />
       </Section>
@@ -45,6 +53,56 @@ export function Foundations() {
         </Section>
       ))}
     </>
+  );
+}
+
+const contractNames = new Set(Object.values(contract).flat());
+
+function AddedSample({ name, kind }: { name: string; kind: AddedKind }) {
+  switch (kind) {
+    case "color":
+      return <span aria-hidden className="h-6 w-8 shrink-0 rounded-field border border-border" style={{ background: `var(--${name})` }} />;
+    case "text":
+      return (
+        <span aria-hidden className="w-full leading-none" style={{ fontSize: `var(--${name})` }}>
+          Aa
+        </span>
+      );
+    case "shadow":
+      return <span aria-hidden className="my-1 h-8 w-12 shrink-0 rounded-field bg-card" style={{ boxShadow: `var(--${name})` }} />;
+    case "value":
+      return null;
+  }
+}
+
+/** Tokens outside the contract, each drawn as the kind its name and value suggest (addedKind). */
+function Added({ names }: { names: string[] }) {
+  const [kinds, setKinds] = useState<ReadonlyMap<string, AddedKind>>(new Map());
+  const read = useCallback(
+    (element: HTMLElement | null) => {
+      if (!element) return;
+      const style = getComputedStyle(element);
+      setKinds(new Map(names.map((name) => [name, addedKind(name, style.getPropertyValue(`--${name}`).trim(), (property, value) => CSS.supports(property, value))])));
+    },
+    [names],
+  );
+  // Tokens that share a first word are one role (note-*, board-*).
+  const families = new Map<string, string[]>();
+  for (const name of names) families.set(familyOf(name), [...(families.get(familyOf(name)) ?? []), name]);
+  return (
+    <div ref={read} className={columns}>
+      {[...families.values()].map((group) => (
+        <ul key={group[0]} className="m-0 mb-4 list-none break-inside-avoid p-0">
+          {group.map((name) => (
+            <li key={name} className={`${entry} flex-wrap`}>
+              <AddedSample name={name} kind={kinds.get(name) ?? "value"} />
+              <Name>{name}</Name>
+              {kinds.get(name) !== "color" && <TokenValue name={name} />}
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
   );
 }
 

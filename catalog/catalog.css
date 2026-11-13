@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "../tailwind/tokens.css";
+/* The page around the panels is always luma-light (index.html), also when CATALOG_THEMES loads a project's themes instead of themes/. */
+@import "../themes/luma-light.css";
 @source "../components";
 @source "./";
 

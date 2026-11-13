@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
-import { parseContract, parseMapping, usedTokens } from "./token-usage";
+import { addedKind, parseContract, parseMapping, usedTokens, type AddedKind } from "./token-usage";
 
 const root = new URL("../", import.meta.url);
 const contract = parseContract(await readFile(new URL("tokens/contract.json", root), "utf8"));
@@ -22,4 +22,22 @@ test.each([
 
 test("keeps a type style's line height and weight in the mapping", () => {
   expect(mapping.get("text")?.get("action")).toEqual(["text-action", "text-action-line-height", "weight-control"]);
+});
+
+// Stands in for CSS.supports with the three value shapes the cases use. Colors are keywords: this directory is checked for literal colors.
+const supports = (property: string, value: string) =>
+  ({ color: /^(gold|gray|black)$/, "font-size": /^[\d.]+px$/, "box-shadow": /^\d+ \d+px/ })[property]?.test(value) ?? false;
+
+test.each([
+  ["note-yellow", "gold", "color"],
+  ["board-text-muted", "gray", "color"],
+  ["board-shadow", "black", "color"],
+  ["board-text-s", "12px", "text"],
+  ["board-text-gantt-title", "14px", "text"],
+  ["board-note-shadow", "0 1px 0 black", "shadow"],
+  ["board-gap", "12px", "value"],
+  ["context-shadow", "12px", "value"],
+  ["board-text-family", "serif", "value"],
+] satisfies [string, string, AddedKind][])("draws the added token %s (%s) as %s", (name, value, kind) => {
+  expect(addedKind(name, value, supports)).toBe(kind);
 });

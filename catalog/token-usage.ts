@@ -80,3 +80,18 @@ export function usedTokens(classes: string[], mapping: Mapping, contract: Contra
   }
   return names.filter((name) => found.has(name));
 }
+
+export type AddedKind = "color" | "text" | "shadow" | "value";
+
+/**
+ * How to draw a token a project added outside the contract. Nothing declares
+ * its kind: a color is told by its value alone, a text size and a shadow by
+ * the name together with a value that fits. Anything else shows its value, so
+ * a name that misleads never draws a wrong sample.
+ */
+export function addedKind(name: string, value: string, supports: (property: string, value: string) => boolean): AddedKind {
+  if (supports("color", value)) return "color";
+  if (name.split("-").includes("text") && supports("font-size", value)) return "text";
+  if (name.endsWith("shadow") && supports("box-shadow", value)) return "shadow";
+  return "value";
+}
