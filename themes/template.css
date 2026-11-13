@@ -33,7 +33,10 @@
   --secondary: color-mix(in srgb, var(--primary) 8%, var(--background));
   --secondary-foreground: var(--foreground);
   --muted: color-mix(in srgb, var(--foreground) 5%, var(--background));
-  --muted-foreground: color-mix(in srgb, var(--foreground) 66%, var(--background));
+  /* Sits on the muted surface, which is darker than the page: 72% holds 4.5:1
+   * while foreground on background is about 13:1 or more. A softer base pair
+   * needs a higher share; contrast.mjs reports the pair. */
+  --muted-foreground: color-mix(in srgb, var(--foreground) 72%, var(--background));
   --accent: var(--secondary);
   --accent-foreground: var(--secondary-foreground);
   /* Border separates; input outlines controls and needs 3:1 against the page. */
