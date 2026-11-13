@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Tabs, TabsList, TabsTab } from "../components/ui/tabs";
 import { Toggle } from "../components/ui/toggle";
 import { Section } from "./app";
+import { Uses } from "./tokens";
 
 /**
  * Pinned specimens: one cell per state, no interaction. The control itself is
@@ -50,10 +51,9 @@ const buttonStates: [string, string][] = [
 export function Specimens() {
   return (
     <>
-      <Section title="ボタン">
+      <Section title="ボタン" legend="other">
         {buttonVariants.map(([variant, name]) => (
-          <div key={variant} className="flex flex-col gap-2">
-            <span className="font-control text-caption text-foreground">{name}</span>
+          <Uses key={variant} label={name}>
             <div className="grid grid-cols-3 gap-x-3 gap-y-3 sm:grid-cols-6">
               {buttonStates.map(([state, label]) => (
                 <Spec key={state} label={label}>
@@ -68,11 +68,11 @@ export function Specimens() {
                 </Spec>
               ))}
             </div>
-          </div>
+          </Uses>
         ))}
       </Section>
 
-      <Section title="トグル">
+      <Section title="トグル" legend="all">
         <div className={grid}>
           <Spec label="オフ"><Toggle>お気に入り</Toggle></Spec>
           <Spec label="ホバー"><Toggle data-preview-state="hover">お気に入り</Toggle></Spec>
@@ -83,7 +83,7 @@ export function Specimens() {
         </div>
       </Section>
 
-      <Section title="入力">
+      <Section title="入力" legend="all">
         <div className={grid}>
           <Spec label="通常"><FieldSample /></Spec>
           <Spec label="ホバー"><FieldSample state="hover" /></Spec>
@@ -119,7 +119,7 @@ export function Specimens() {
         </div>
       </Section>
 
-      <Section title="チェック・スイッチ・ラジオ">
+      <Section title="チェック・スイッチ・ラジオ" legend="all">
         <div className={grid}>
           <Spec label="未選択"><Checkbox>通知を受け取る</Checkbox></Spec>
           <Spec label="選択"><Checkbox defaultChecked>通知を受け取る</Checkbox></Spec>
@@ -139,26 +139,26 @@ export function Specimens() {
         </div>
       </Section>
 
-      <Section title="一覧">
+      <Section title="一覧" legend="all">
         <Spec label="行(識別・状態・操作)。狭い幅では縦に積む">
           <List aria-label="メンバーの例">
             <ListItem
               title="阿部 誠"
               description="makoto.abe@example.com"
               meta="最終利用 2日前"
-              actions={<><Button variant="secondary" size="sm">権限を変更</Button><Button variant="secondary" size="sm">削除</Button></>}
+              actions={<><Button variant="secondary" size="sm" data-legend="skip">権限を変更</Button><Button variant="secondary" size="sm" data-legend="skip">削除</Button></>}
             />
             <ListItem
               title="高橋 ルイス・アレハンドロ・フェルナンデス"
               description="luis.alejandro.fernandez.takahashi@long-subsidiary-name.example.co.jp"
               meta="最終利用 4か月前"
-              actions={<Button variant="secondary" size="sm">削除</Button>}
+              actions={<Button variant="secondary" size="sm" data-legend="skip">削除</Button>}
             />
           </List>
         </Spec>
       </Section>
 
-      <Section title="表">
+      <Section title="表" legend="all">
         <Spec label="数値の比較。狭い幅では表だけが横にscrollする">
           <Table caption="サイトごとの1泊のレート">
             <TableHeader>
@@ -181,7 +181,7 @@ export function Specimens() {
         </Spec>
       </Section>
 
-      <Section title="上部のナビ帯">
+      <Section title="上部のナビ帯" legend="all">
         <Spec label="現在の項目・通常・ホバー・フォーカス">
           <header className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-header-border bg-header px-4 py-2 text-header-foreground">
             <span className="font-heading text-section">サービス名</span>
@@ -205,7 +205,7 @@ export function Specimens() {
         </Spec>
       </Section>
 
-      <Section title="タブ">
+      <Section title="タブ" legend="all">
         <Spec label="選択中・ホバー・フォーカス">
           <Tabs defaultValue="overview">
             <TabsList>
@@ -218,13 +218,13 @@ export function Specimens() {
         </Spec>
       </Section>
 
-      <Section title="結果とお知らせ">
+      <Section title="結果とお知らせ" legend="all">
         <p className="font-body text-body text-reading-secondary">
           ページや領域の上部にはBanner、特定の場所の横にはNoticeを置く。どちらも時間で消さない。
         </p>
         <div className="flex flex-col gap-3">
           <Spec label="Banner 失敗(解決まで閉じられない)">
-            <Banner tone="error" title="保存できませんでした" action={<Button variant="secondary" size="sm">再試行</Button>}>
+            <Banner tone="error" title="保存できませんでした" action={<Button variant="secondary" size="sm" data-legend="skip">再試行</Button>}>
               通信が切れました。入力内容は残っています。
             </Banner>
           </Spec>
@@ -234,7 +234,7 @@ export function Specimens() {
             </Banner>
           </Spec>
           <Spec label="Banner システムからのお知らせ">
-            <Banner tone="warning" title="30分後にメンテナンスを開始します" action={<Button variant="ghost" size="sm">詳細</Button>}>
+            <Banner tone="warning" title="30分後にメンテナンスを開始します" action={<Button variant="ghost" size="sm" data-legend="skip">詳細</Button>}>
               作業中の内容は開始前に保存してください。
             </Banner>
           </Spec>
