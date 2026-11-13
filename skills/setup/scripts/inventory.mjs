@@ -6,10 +6,15 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
+const usage = "Usage: node inventory.mjs <project-dir> [--ignore path,path] [--json out.json]";
 const args = process.argv.slice(2);
+if (args.includes("--help")) {
+  console.log(usage);
+  process.exit(0);
+}
 const root = args[0];
 if (!root || root.startsWith("--")) {
-  console.error("Usage: node inventory.mjs <project-dir> [--ignore path,path] [--json out.json]");
+  console.error(usage);
   process.exit(2);
 }
 const option = (name) => {

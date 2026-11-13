@@ -10,31 +10,22 @@
 //   --storage-state f   Playwright storage state (cookies, localStorage) for screens behind a login
 //   --scroll <selector> the element that scrolls in an app shell; the viewport is
 //                       grown by its hidden height so the whole content is captured
-// Playwright is loaded from this script's location, then from the current
-// directory; in a workspace where it is not hoisted, run from the package that
-// depends on it or set NODE_PATH to that package's node_modules.
+//   --channel chrome    use an installed browser instead of Playwright's own Chromium
+// Playwright is found as browser.mjs describes.
 // One URL per state (for example ?state=error). Prints each file and warns on
 // horizontal scroll and page errors.
 import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
-import { createRequire } from "node:module";
 import { join } from "node:path";
+import { launchChromium } from "./browser.mjs";
 
-// require() also honors NODE_PATH, which ESM import does not.
-let chromium;
-for (const base of [import.meta.url, `${process.cwd()}/`]) {
-  try {
-    ({ chromium } = createRequire(base)("playwright"));
-    break;
-  } catch {}
-}
-if (!chromium) {
-  console.error("Playwright is not available. Install it (npm i -D playwright), run from the package that has it, or set NODE_PATH to its node_modules.");
-  process.exit(2);
-}
-
+const usage = "Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280] [--storage-state file] [--scroll selector] [--channel chrome]";
 const args = process.argv.slice(2);
-const options = { themes: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280", "storage-state": "", scroll: "" };
+if (args.includes("--help")) {
+  console.log(usage);
+  process.exit(0);
+}
+const options = { themes: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280", "storage-state": "", scroll: "", channel: "" };
 const positional = [];
 for (let i = 0; i < args.length; i++) {
   const arg = args[i];
@@ -51,7 +42,7 @@ for (let i = 0; i < args.length; i++) {
 }
 const [outDir, ...urls] = positional;
 if (!outDir || urls.length === 0) {
-  console.error("Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280] [--storage-state file] [--scroll selector]");
+  console.error(usage);
   process.exit(2);
 }
 const themes = options.themes ? options.themes.split(",").filter((theme) => /^[a-z0-9-]+$/.test(theme)) : [null];
@@ -106,7 +97,7 @@ function findOverflow() {
 }
 
 await mkdir(outDir, { recursive: true });
-const browser = await chromium.launch();
+const browser = await launchChromium(options.channel || undefined);
 const problems = [];
 try {
   for (const url of urls) {

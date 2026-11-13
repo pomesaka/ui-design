@@ -1,33 +1,25 @@
 // Check text contrast of token pairs as the browser computes them (color-mix
 // and service overrides included), for each theme.
-// Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs bg/fg,bg/fg]
+// Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs bg/fg,bg/fg] [--channel chrome]
+// --channel uses an installed browser instead of Playwright's own Chromium.
 // Pairs: every `X` / `X-foreground` declared in the page's CSS (service roles
 // included), plus secondary text roles on the page and card surfaces.
 // Exits with 1 when a pair is below the minimum.
-import { createRequire } from "node:module";
+import { launchChromium } from "../../review/scripts/browser.mjs";
 
-const require = createRequire(import.meta.url);
-const cwdRequire = createRequire(`${process.cwd()}/`);
-let chromium;
-for (const load of [require, cwdRequire]) {
-  try {
-    ({ chromium } = load("playwright"));
-    break;
-  } catch {}
-}
-if (!chromium) {
-  console.error("Playwright is not available. Install it (npm i -D playwright), run from the package that has it, or set NODE_PATH to its node_modules.");
-  process.exit(2);
-}
-
+const usage = "Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs bg/fg,bg/fg] [--channel chrome]";
 const args = process.argv.slice(2);
+if (args.includes("--help")) {
+  console.log(usage);
+  process.exit(0);
+}
 const url = args[0];
 const option = (name) => {
   const index = args.indexOf(`--${name}`);
   return index > 0 ? args[index + 1] : undefined;
 };
 if (!url || url.startsWith("--")) {
-  console.error("Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs bg/fg,bg/fg]");
+  console.error(usage);
   process.exit(2);
 }
 const themes = (option("themes") ?? "").split(",").filter((theme) => /^[a-z0-9-]+$/.test(theme));
@@ -94,7 +86,7 @@ function measure({ theme, extra }) {
   return results;
 }
 
-const browser = await chromium.launch();
+const browser = await launchChromium(option("channel"));
 let failed = 0;
 try {
   const page = await browser.newPage();
