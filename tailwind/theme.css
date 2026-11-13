@@ -1,6 +1,0 @@
-/* Tailwind v4 mapping for the shared token contract (strict form).
- * Import after `@import "tailwindcss";`, together with one theme CSS per scope.
- * Only contract values remain as utilities. While migrating an existing
- * project screen by screen, import tokens.css alone (see docs/migration.md). */
-@import "./strict.css";
-@import "./tokens.css";

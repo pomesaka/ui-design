@@ -2,25 +2,17 @@
 
 既存の画面を一枚ずつui-designへ移すときの型。導入全体の手順は[setup](../skills/setup/SKILL.md)に置く。
 
-## 移行中と移行後の読み込み
+## 読み込み
 
-移行中は`tailwind/tokens.css`だけを読み込む。Tailwindの既定(palette・`text-sm`・`rounded`等)を残したまま、tokenのutilityが加わる。全画面を移したら`tailwind/theme.css`へ替え、既定を消す。
+`tailwind/tokens.css`を読み込む。Tailwindの既定(palette・`text-sm`・`rounded`等)を残したまま、tokenのutilityが加わる。既定は移行後も残るので、既定paletteのclassが残っていないかは[inventory](../skills/setup/scripts/inventory.mjs)で確かめる。
 
 ```css
-/* 移行中 */
 @import "tailwindcss";
 @import "./tailwind/tokens.css";
 @import "./themes/<テーマ>.css";
-
-/* 移行後 */
-@import "tailwindcss";
-@import "./tailwind/theme.css";
-@import "./themes/<テーマ>.css";
 ```
 
-既定と名前が重なる`shadow-sm`・`shadow-md`・`shadow-lg`、`font-sans`・`font-serif`・`font-mono`、余白の数値utility(`p-3`等は`space-1`の倍数)は、移行中からtokenの値になる。未移行の画面の見た目が変わり得るので、読み込みを変えた直後に主要な画面を撮って確かめる。`rounded`等の既定は移行中は変わらない。
-
-`theme.css`へ替えるのは、[inventory](../skills/setup/scripts/inventory.mjs)の既定paletteのclassが0になってからにする。
+既定と名前が重なる`shadow-sm`・`shadow-md`・`shadow-lg`、`font-sans`・`font-serif`・`font-mono`、余白の数値utility(`p-3`等は`space-1`の倍数)は、読み込んだ時点でtokenの値になる。未移行の画面の見た目が変わり得るので、読み込みを変えた直後に主要な画面を撮って確かめる。`rounded`等の既定は変わらない。
 
 ## 名前の衝突
 

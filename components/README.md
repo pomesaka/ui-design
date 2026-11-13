@@ -10,7 +10,7 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 
 ```css
 @import "tailwindcss";
-@import "./tailwind/theme.css";
+@import "./tailwind/tokens.css";
 @import "./themes/luma-light.css";
 @source "./components";
 ```

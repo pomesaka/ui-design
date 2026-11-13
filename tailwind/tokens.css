@@ -1,6 +1,6 @@
 /* Tailwind v4 utilities for the shared token contract, added next to the
- * Tailwind defaults. Import it alone while migrating screen by screen; import
- * theme.css instead once every screen uses tokens, so defaults disappear.
+ * Tailwind defaults. Import after `@import "tailwindcss";`, together with one
+ * theme CSS per scope.
  * `inline reference` makes utilities read the scoped token directly and emits
  * no :root copies, so a service override on the themed element propagates. */
 @theme inline reference {

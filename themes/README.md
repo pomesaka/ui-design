@@ -5,11 +5,11 @@
 
 ## 使う
 
-CSSを読み込み、適用する要素の`data-theme`へファイル名と同じ名前を指定する。Tailwindで使う場合は[対応表](../tailwind/theme.css)も読み込み、部品は`bg-primary`・`text-caption`・`rounded-field`等のutilityで参照する。
+CSSを読み込み、適用する要素の`data-theme`へファイル名と同じ名前を指定する。Tailwindで使う場合は[対応表](../tailwind/tokens.css)も読み込み、部品は`bg-primary`・`text-caption`・`rounded-field`等のutilityで参照する。
 
 ```css
 @import "tailwindcss";
-@import "./tailwind/theme.css";
+@import "./tailwind/tokens.css";
 @import "./themes/luma-light.css";
 @import "./themes/luma-dark.css";
 ```
@@ -18,7 +18,7 @@ CSSを読み込み、適用する要素の`data-theme`へファイル名と同�
 <html data-theme="luma-light">
 ```
 
-切替は`data-theme`を`luma-dark`へ変更する。テーマは値と`color-scheme`だけを定義し、本文やbuttonへstyleを自動適用しない。対応表はtokenを直接参照するutilityだけを生成し、Tailwind既定の色paletteや文字・角丸・影のscaleを消す。余白の数値utilityは`space-1`の倍数(`p-3`は`space-3`と同値)になる。テーマ指定を外すことを別テーマへの自動fallbackにしない。
+切替は`data-theme`を`luma-dark`へ変更する。テーマは値と`color-scheme`だけを定義し、本文やbuttonへstyleを自動適用しない。対応表はtokenを直接参照するutilityを足す。Tailwind既定の色paletteや文字・角丸のscaleは残る。余白の数値utilityは`space-1`の倍数(`p-3`は`space-3`と同値)になる。テーマ指定を外すことを別テーマへの自動fallbackにしない。
 
 ## サービスで調整する
 
