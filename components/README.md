@@ -15,8 +15,14 @@ React・Tailwind CSS v4・[Base UI](https://base-ui.com)で作った部品の原
 @source "./components";
 ```
 
-4. 複製した`components/`・`tailwind/`・`themes/`は、採用先のlint・formatの対象から外す。書式を変えるとui-designとの差分を取りにくくなる。
-5. サービスで値を調整する上書きCSSは、ファイル名を`*theme.css`にするか`themes/`に置く。棚卸し([inventory](../skills/setup/scripts/inventory.mjs))はそこに書いた色を直接指定として数えない。
+4. 複製した`components/`・`tailwind/`・`themes/`は、採用先のlint・formatの対象から外す。書式を変えるとui-designとの差分を取りにくくなる。`tailwind/tokens.css`は、外さないと読めない道具もある。Biome 2.5は`css.parser.tailwindDirectives: true`でも`@theme inline reference`を読めず、`expected '{' but instead found 'reference'`で止まる(採用先への導入で確認、2026-11)。Biomeでは`biome.json`で外す。
+
+    ```json
+    { "files": { "includes": ["**", "!!**/tailwind"] } }
+    ```
+
+    `tokens.css`から`reference`を消して読ませてはいけない。`--font-body: var(--font-body)`のように同じ名前を指す行が、`:root`に自分を参照する宣言として出力され、値が無効になる。
+5. サービスで値を調整する上書きCSSは、ファイル名を`*theme.css`にするか`themes/`に置く。棚卸し([inventory](../skills/setup/scripts/inventory.mjs))はそこに書いた色を直接指定として数えない。役割を足す`@theme inline reference`をBiomeに読ませたいときは、`@theme inline`に変えてよい。`--color-<名前>: var(--<名前>)`の形ならutilityは`var(--<名前>)`を直接読み、上書きに追従する。ただし手書きのCSSで`var(--color-<名前>)`を参照すると、Tailwindが`:root`に`--color-<名前>: var(--<名前>)`の写しを出す。写しは`:root`で計算されるので、`<html>`以外に付けた別のテーマ領域では`:root`のテーマの値を読む。手書きのCSSでは`var(--<名前>)`を参照する。
 
 複製後の変更は採用先の判断で行う。共通にしたい改善はこのrepositoryへ戻す。テーマを`<html>`以外へ付ける場合、popupの`container`へテーマ領域内の要素を渡す。portalはbody直下へ描画され、テーマの値を受け取れないため。
 
