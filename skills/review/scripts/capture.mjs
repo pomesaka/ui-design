@@ -11,21 +11,24 @@
 //   --scroll <selector> the element that scrolls in an app shell; the viewport is
 //                       grown by its hidden height so the whole content is captured
 //   --channel chrome    use an installed browser instead of Playwright's own Chromium
+//   --until load        when the page counts as loaded: networkidle (default), load or
+//                       domcontentloaded. A page that keeps a connection open (EventSource,
+//                       polling) never goes idle: use load together with --wait
 // Playwright is found as browser.mjs describes.
 // One URL per state (for example ?state=error). Prints each file and warns on
 // horizontal scroll and page errors.
 import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import { launchChromium } from "./browser.mjs";
+import { launchChromium, openPage, untilStates } from "./browser.mjs";
 
-const usage = "Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280] [--storage-state file] [--scroll selector] [--channel chrome]";
+const usage = "Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280] [--storage-state file] [--scroll selector] [--channel chrome] [--until load|domcontentloaded|networkidle]";
 const args = process.argv.slice(2);
 if (args.includes("--help")) {
   console.log(usage);
   process.exit(0);
 }
-const options = { themes: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280", "storage-state": "", scroll: "", channel: "" };
+const options = { themes: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280", "storage-state": "", scroll: "", channel: "", until: "networkidle" };
 const positional = [];
 for (let i = 0; i < args.length; i++) {
   const arg = args[i];
@@ -50,6 +53,10 @@ const widths = options.widths.split(",").map(Number).filter((width) => Number.is
 const textScale = Number(options["text-scale"]);
 const maxHeight = Number(options["max-height"]);
 const storageState = options["storage-state"] || undefined;
+if (!untilStates.includes(options.until)) {
+  console.error(`Unknown --until: ${options.until} (${untilStates.join(", ")})`);
+  process.exit(2);
+}
 if (storageState && !existsSync(storageState)) {
   console.error(`Storage state not found: ${storageState}`);
   process.exit(2);
@@ -107,7 +114,7 @@ try {
         const context = await browser.newContext({ viewport: { width, height: 900 }, storageState });
         const page = await context.newPage();
         page.on("pageerror", (error) => problems.push(`${label}: ${error.message}`));
-        await page.goto(url, { waitUntil: "networkidle" });
+        await openPage(page, url, options.until);
         if (options.wait) await page.locator(options.wait).first().waitFor({ state: "visible" });
         await page.evaluate(({ theme, textScale }) => {
           if (theme) document.documentElement.dataset.theme = theme;

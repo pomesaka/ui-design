@@ -2,12 +2,13 @@
 // and service overrides included), for each theme.
 // Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs bg/fg,bg/fg] [--channel chrome]
 // --channel uses an installed browser instead of Playwright's own Chromium.
+// --until load is for a page that keeps a connection open and never goes idle.
 // Pairs: every `X` / `X-foreground` declared in the page's CSS (service roles
 // included), plus secondary text roles on the page and card surfaces.
 // Exits with 1 when a pair is below the minimum.
-import { launchChromium } from "../../review/scripts/browser.mjs";
+import { launchChromium, openPage, untilStates } from "../../review/scripts/browser.mjs";
 
-const usage = "Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs bg/fg,bg/fg] [--channel chrome]";
+const usage = "Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs bg/fg,bg/fg] [--channel chrome] [--until load|domcontentloaded|networkidle]";
 const args = process.argv.slice(2);
 if (args.includes("--help")) {
   console.log(usage);
@@ -24,6 +25,11 @@ if (!url || url.startsWith("--")) {
 }
 const themes = (option("themes") ?? "").split(",").filter((theme) => /^[a-z0-9-]+$/.test(theme));
 const min = Number(option("min") ?? "4.5");
+const until = option("until") ?? "networkidle";
+if (!untilStates.includes(until)) {
+  console.error(`Unknown --until: ${until} (${untilStates.join(", ")})`);
+  process.exit(2);
+}
 const extraPairs = (option("pairs") ?? "").split(",").filter(Boolean).map((pair) => pair.split("/"));
 const defaultExtra = [
   ["background", "foreground"],
@@ -90,7 +96,7 @@ const browser = await launchChromium(option("channel"));
 let failed = 0;
 try {
   const page = await browser.newPage();
-  await page.goto(url, { waitUntil: "networkidle" });
+  await openPage(page, url, until);
   for (const theme of themes.length > 0 ? themes : [null]) {
     const results = await page.evaluate(measure, { theme, extra: [...defaultExtra, ...extraPairs] });
     console.log(`\n${theme ?? "(page theme)"}`);

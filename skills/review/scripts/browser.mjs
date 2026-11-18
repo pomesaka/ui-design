@@ -21,6 +21,20 @@ function findPlaywright() {
   return null;
 }
 
+/** Values of --until: the page.goto states the scripts accept. */
+export const untilStates = ["networkidle", "load", "domcontentloaded"];
+
+/** Opens the url; a timeout while waiting for an idle network names the way out. */
+export async function openPage(page, url, until) {
+  try {
+    await page.goto(url, { waitUntil: until });
+  } catch (error) {
+    if (until !== "networkidle" || error?.name !== "TimeoutError") throw error;
+    console.error(`${url} did not go idle. A page that keeps a connection open (EventSource, polling) never does: pass --until load, with --wait <selector> where the script has it.`);
+    process.exit(1);
+  }
+}
+
 /**
  * `channel` names an installed browser (chrome, msedge). Without it,
  * Playwright's own Chromium is used, and an installed Chrome when that

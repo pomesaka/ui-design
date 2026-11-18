@@ -20,7 +20,7 @@ description: 画面・部品・UIの変更を、ui-designの文書に照らし�
 ## 手順
 
 1. 利用者ごとのストーリーを書き、[三つの問い](../../docs/composition.md#利用者から始める)を評価の軸にする。確認の範囲を書き出し、以降の手順は範囲に入るものだけを行う。
-2. 描画して撮る。このファイルと同じ場所の`node scripts/capture.mjs <出力先> <URL>... --themes <テーマ,...> --wait <描画完了のselector>`で、範囲に入る幅(既定は390・768・1280px、`--widths`で変える) × 範囲に入るテーマを撮り、全画像を見る。空・失敗・長い内容・大量の件数等の状態はURLを並べて撮る。`--text-scale 2`で文字200%も撮る。ログインが要る画面は`--storage-state`、内側の要素がスクロールする画面は`--scroll <selector>`を使う。
+2. 描画して撮る。このファイルと同じ場所の`node scripts/capture.mjs <出力先> <URL>... --themes <テーマ,...> --wait <描画完了のselector>`で、範囲に入る幅(既定は390・768・1280px、`--widths`で変える) × 範囲に入るテーマを撮り、全画像を見る。空・失敗・長い内容・大量の件数等の状態はURLを並べて撮る。`--text-scale 2`で文字200%も撮る。ログインが要る画面は`--storage-state`、内側の要素がスクロールする画面は`--scroll <selector>`を使う。EventSourceやpolling等で接続を張り続ける画面は通信が止まらずtimeoutするので、`--until load`と`--wait`を付ける。
    - Playwrightは、対象のprojectに無ければ`playwright-cli`が持つものを使う。専用のChromiumが無ければ導入済みのChromeで撮る(`--channel`で指定もできる)。
    - どちらも無くて動かないときは、手元のbrowser操作の道具で同じ幅・テーマ・状態を撮り、横scrollは`document.documentElement.scrollWidth`と`innerWidth`を比べて確かめる。
 3. 操作する。Playwright等で実際に操作し、値で確かめる。keyboardと支援技術の項目は、範囲に含めたときに行う。
