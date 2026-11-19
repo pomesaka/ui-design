@@ -22,6 +22,27 @@ buildの道具によっては、テーマをTailwindへ通すと`color-mix()`の
 
 切替は`data-theme`を`luma-dark`へ変更する。テーマは値と`color-scheme`だけを定義し、本文やbuttonへstyleを自動適用しない。対応表はtokenを直接参照するutilityを足す。Tailwind既定の色paletteや文字・角丸のscaleは残る。余白の数値utilityは`space-1`の倍数(`p-3`は`space-3`と同値)になる。テーマ指定を外すことを別テーマへの自動fallbackにしない。
 
+### OSの明暗に合わせる
+
+テーマは`prefers-color-scheme`を見ないので、OSの明暗に合わせるときは`data-theme`をscriptで切り替える。`<head>`に置くとbodyの描画より前に決まり、最初の描画から合ったテーマになる(採用先の本番buildで確認、2026-11)。`<html>`にはscriptが動かないときの既定を書いておく。
+
+```html
+<html data-theme="luma-light">
+<head>
+  <script>
+    (() => {
+      const dark = matchMedia("(prefers-color-scheme: dark)");
+      const apply = () => {
+        document.documentElement.dataset.theme = dark.matches ? "luma-dark" : "luma-light";
+      };
+      apply();
+      dark.addEventListener("change", apply);
+    })();
+  </script>
+```
+
+利用者がテーマを選べる画面では、選んだ値があればそれを優先し、`change`で上書きしない。
+
 ## サービスで調整する
 
 テーマCSSの後で、同じ要素を対象に値を上書きする。
