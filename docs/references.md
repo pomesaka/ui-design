@@ -29,6 +29,18 @@
 | [Nielsen Norman Group: 10 Usability Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) | 8「Every extra unit of information in an interface competes with the relevant units of information」。10「It's best if the system doesn't need any additional explanation.」 | 言葉が操作と値を埋もれさせる |
 | WCAG 2.2 [1.4.1](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html)・[3.3.2](https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html)・[4.1.2](https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html) | 色だけで伝えない。入力にはlabelか説明を付ける(意図は不要な情報で画面を埋めないこと)。操作の部品の名前を支援技術が読める | 減らさない言葉 |
 
+## 件数が増える一覧と表の出典
+
+[件数が増える一覧と表](composition.md#件数が増える一覧と表)が依拠するもの。
+
+| 資料 | 主張 | 対応する箇所 |
+| --- | --- | --- |
+| [NN/g: Data Tables: Four Major User Tasks](https://www.nngroup.com/articles/data-tables/)(2022) | 表の作業は、探す・比べる・1行を見る編集する・操作する。最初の列は読める識別にし、関係する列を隣に置く。画面より大きい表は見出しの行と列を固定する。離れた列を横scrollで比べさせない | 手段の表、列の決定 |
+| [NN/g: Infinite Scrolling: When to Use It, When to Avoid It](https://www.nngroup.com/articles/infinite-scrolling-tips/)(2022) | 無限scrollは目的なく眺める同種の項目向き。特定の物を探す・比べるには向かない。footerに届かず、戻ると位置を失う。「さらに表示」とページ送りが代わりになり、どれも常に優れるわけではない | 無限scrollを使わない、眺めるときは「さらに表示」 |
+| [GOV.UK Design System: Pagination](https://design-system.service.gov.uk/components/pagination/) | 一ページでは読み込みが遅すぎるか、多くの人が最初の数ページで済むときに分ける。一ページで収まるなら出さない。無限scrollは避ける。絞り込みと並べ替えは全件に効かせる | ページ送りの決定 |
+| [Baymard Institute: Inline Scroll Areas](https://baymard.com/blog/inline-scroll-areas)(2014) | 入れ子のscrollは理解しにくく、範囲の外を覚えさせ、ページのscrollを奪い、切れた中身が無いと思わせる。使うなら最小限にし、切ったことが分かる短縮表示を選ぶ | 縦のscrollは一か所 |
+| [WCAG 2.2 1.4.10 Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow) | 幅320 CSS pxで二方向のscrollを要しない。表や地図は例外だが、例外はほかの部分に及ばない | ページを横にscrollさせない |
+
 ## エージェント向けのデザイン指針・スキル
 
 | 資料 | 内容 | 参考にする点 | 利用条件 |
