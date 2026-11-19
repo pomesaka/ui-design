@@ -41,6 +41,17 @@
 | [Baymard Institute: Inline Scroll Areas](https://baymard.com/blog/inline-scroll-areas)(2014) | 入れ子のscrollは理解しにくく、範囲の外を覚えさせ、ページのscrollを奪い、切れた中身が無いと思わせる。使うなら最小限にし、切ったことが分かる短縮表示を選ぶ | 縦のscrollは一か所 |
 | [WCAG 2.2 1.4.10 Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow) | 幅320 CSS pxで二方向のscrollを要しない。表や地図は例外だが、例外はほかの部分に及ばない | ページを横にscrollさせない |
 
+## エラーの文の出典
+
+[失敗の伝え方](../DESIGN.md#状態と復帰)が依拠するもの。どれも本文を読んで確かめた(2026-11-25)。
+
+| 資料 | 主張 | 対応する箇所 |
+| --- | --- | --- |
+| [SmartHR Design System: エラーメッセージの基本的な考え方](https://smarthr.design/products/contents/error-messages/overview/) | 目的は、利用者がメッセージを見て問題を解決し次の操作に進めること。含めるのは事象・原因・対処で、全部を出せないときは原因 > 対処 > 事象の順 | 原因と直し方、次の操作を一つに決められるか |
+| [NN/g: Error-Message Guidelines](https://www.nngroup.com/articles/error-message-guidelines/)(2023) | 誤りの近くに出す。問題を述べるだけでなく直し方を示す。「An error occurred」のような一般的な文を避ける。人の読める語にし、利用者を責めず、入力を保つ | 操作の近く、避ける文、内部の語を出さない、入力を保つ |
+| [GOV.UK Design System: Error message](https://design-system.service.gov.uk/components/error-message/) | 何が起きたかと直し方を書く。質問やlabelの語をそのまま使う(「Enter your first name」)。「This field is required」「invalid」等を避ける | labelと同じ語ですべきことを書く |
+| [NN/g: 10 Usability Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) 9 | エラーは平易な語で、問題を正確に示し、建設的に直し方を示す | 原因と直し方 |
+
 ## エージェント向けのデザイン指針・スキル
 
 | 資料 | 内容 | 参考にする点 | 利用条件 |
