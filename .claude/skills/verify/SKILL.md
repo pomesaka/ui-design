@@ -33,11 +33,11 @@ bun scripts/check-themes.mjs themes/luma-light.css themes
 
 ```bash
 node skills/setup/scripts/contrast.mjs http://127.0.0.1:48732/catalog/ --themes luma-light,luma-dark
-node skills/setup/scripts/contrast.mjs http://127.0.0.1:48732/catalog/ --themes luma-light,luma-dark --pairs background/border,card/input,background/ring --min 3
+node skills/setup/scripts/contrast.mjs http://127.0.0.1:48732/catalog/ --themes luma-light,luma-dark --pairs background/input,card/input,background/ring,card/ring --min 3
 ```
 
 - Playwrightはこのリポジトリの依存に無い。`skills/review/scripts/browser.mjs`が`playwright-cli`の同梱版を探し、Chromiumが無ければ入っているChromeを使う（`! Playwright's own Chromium is not installed`の行は正常）。
-- 終了コードは、基準を下回る対があれば1、引数の誤りと、ページに無い`--pairs`の名前で2。2つめの例は、luma-lightの`background / border`が1.54なので1で終わる（2026-11-19の時点）。
+- 終了コードは、基準を下回る対があれば1、引数の誤りと、ページに無い`--pairs`の名前で2。`border`は区切り線なので3:1を求めない。`--pairs background/border --min 3`を渡すと、luma-lightは1.54で1になるが、不具合ではない。
 
 ### 依存を入れていない場所で走らせる
 
@@ -47,7 +47,7 @@ node skills/setup/scripts/contrast.mjs http://127.0.0.1:48732/catalog/ --themes 
 mkdir -p /tmp/ui-design-verify/skills/setup /tmp/ui-design-verify/skills/review
 cp -R skills/setup/scripts /tmp/ui-design-verify/skills/setup/
 cp -R skills/review/scripts /tmp/ui-design-verify/skills/review/
-node /tmp/ui-design-verify/skills/setup/scripts/contrast.mjs http://127.0.0.1:48732/catalog/ --themes luma-light --pairs background/border --min 3
+node /tmp/ui-design-verify/skills/setup/scripts/contrast.mjs http://127.0.0.1:48732/catalog/ --themes luma-light --pairs card/input --min 3
 ```
 
 cwdも依存の無い場所にするなら、Bashの呼び出しで作業フォルダを`/tmp/ui-design-verify`にしてから`node skills/setup/scripts/contrast.mjs ...`を打つ。

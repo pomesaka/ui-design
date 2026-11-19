@@ -5,8 +5,8 @@
 // --until load is for a page that keeps a connection open and never goes idle.
 // Without --pairs: every `X` / `X-foreground` declared in the page's CSS
 // (service roles included), plus secondary text roles on the page and card
-// surfaces. With --pairs: only those pairs, so borders can be measured with
-// --min 3 without lowering the bar for text.
+// surfaces. With --pairs: only those pairs, so control outlines and focus can
+// be measured with --min 3 without lowering the bar for text.
 // Exits with 1 when a pair is below the minimum, 2 on bad arguments or a
 // --pairs name the page does not declare.
 import { launchChromium, openPage, untilStates } from "../../review/scripts/browser.mjs";

@@ -25,7 +25,7 @@ export function parsePairs(text) {
   return invalid.length > 0 ? { invalid } : { pairs };
 }
 
-// Requested pairs are measured alone, so a border run with --min 3 does not
+// Requested pairs are measured alone, so an outline run with --min 3 does not
 // judge text pairs by 3. Without a request: every declared `X` / `X-foreground`
 // and the supporting pairs whose both names are declared.
 export function selectPairs(declared, requested) {
