@@ -24,6 +24,7 @@
 
 - 強弱は位置 → 余白 → 文字 → 色の順で付ける。主操作(`primary`)はページ・Dialog等の一つの操作領域に一つ。
 - 文字の段は、ページ見出し`font-heading text-heading`、区画見出し`font-heading text-section`、本文`font-body text-body`、補足`font-control text-caption text-reading-secondary`に限る。labelと操作の文字は部品に任せる。
+- 文字の段は、size・line-heightと一緒に太さも決める。`text-body`・`text-detail`・`text-reading`は太さを`--weight-body`にするので、見出しの要素や`<strong>`に付けると、baseの太さを消して細くなる。見出しは`text-heading`・`text-section`にし、本文の大きさの見出し(cardの題等)が要るときは`[font-weight:var(--weight-heading)]`を足す。強調は、段を付けた要素の中に`<strong>`を置く。
 - 余白はtokenの段(`1`・`2`・`3`・`4`・`6`・`8`・`12`、`panel`・`reading`)から選ぶ。段外の値と任意値は検査で落ちる。既定は次のとおり。
 
 | 関係 | 既定 |

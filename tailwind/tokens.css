@@ -73,7 +73,9 @@
   --font-heading: var(--font-heading);
   --font-control: var(--font-control);
 
-  /* type styles: size, line-height and weight together */
+  /* type styles: size, line-height and weight together.
+   * The weight here is the only place --weight-body takes effect, so the body
+   * styles keep it; on a heading they reset the base weight (docs/composition.md). */
   --text-body: var(--text-body);
   --text-body--line-height: var(--text-body-line-height);
   --text-body--font-weight: var(--weight-body);
