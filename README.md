@@ -13,7 +13,7 @@
 /plugin install ui-design@pomesaka-ui-design
 ```
 
-スキルは`/ui-design:setup`(導入)・`/ui-design:review`(レビュー)として使える。画面の案を作らせるサブエージェントは、`subagent_type`に`ui-design:ui-designer`を渡して呼ぶ。依頼文には、画面の意図・利用者・できること・データ・変えてよいもの・モックを置く場所と形だけを書く。pluginにはこのrepository全体が入り、スキルは同梱の文書を参照する。部品とテーマのソースもこのrepositoryから複製する。更新は`/plugin marketplace update pomesaka-ui-design`で取り込む。
+スキルは`/ui-design:setup`(導入)・`/ui-design:review`(レビュー)として使える。1つの画面を設計してモックにするサブエージェントは、`subagent_type`に`ui-design:ui-designer`を渡して呼ぶ。依頼文には、画面の意図・利用者・できること・データ・完了の後の行き先・変えてよいもの・モックを置く場所と形だけを書く。pluginにはこのrepository全体が入り、スキルは同梱の文書を参照する。部品とテーマのソースもこのrepositoryから複製する。更新は`/plugin marketplace update pomesaka-ui-design`で取り込む。
 
 ## Documentation Map
 
