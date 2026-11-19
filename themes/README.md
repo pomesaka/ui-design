@@ -60,6 +60,11 @@ CSS変数の派生値は定義した要素で計算される。子要素へ基�
 
 ## テーマを追加する
 
-[template.css](template.css)を`<名前>.css`へ複製し、selectorを`[data-theme="<名前>"]`に変えて始める。templateは冒頭の基本の色だけを変えれば残りが導出される中立のlightテーマで、Lumaは作例の一つにすぎない。テーマは`<名前>.css`に`[data-theme="<名前>"]`の単一ruleで全tokenを定義する。他テーマの値の継承を前提にせず、同じ名前を独立した配色や材質・motionで満たす。定義漏れ・余分な名前・未定義参照・循環参照はrepository rootで`bun run check:themes`を実行して確認する。採用先のテーマは、ファイルかディレクトリを渡して`bun <ui-designの場所>/scripts/check-themes.mjs src/themes/`のように確かめる。この検査はCSSの構文・値の型を保証しない。contrastは[contrast.mjs](../skills/setup/scripts/contrast.mjs)で、文字は4.5、境界とfocusは`--min 3`で確かめる。
+[template.css](template.css)を`<名前>.css`へ複製し、selectorを`[data-theme="<名前>"]`に変えて始める。templateは冒頭の基本の色だけを変えれば残りが導出される中立のlightテーマで、Lumaは作例の一つにすぎない。テーマは`<名前>.css`に`[data-theme="<名前>"]`の単一ruleで全tokenを定義する。他テーマの値の継承を前提にせず、同じ名前を独立した配色や材質・motionで満たす。定義漏れ・余分な名前・未定義参照・循環参照はrepository rootで`bun run check:themes`を実行して確認する。採用先のテーマは、ファイルかディレクトリを渡して`bun <ui-designの場所>/scripts/check-themes.mjs src/themes/`のように確かめる。この検査はCSSの構文・値の型を保証しない。contrastは[contrast.mjs](../skills/setup/scripts/contrast.mjs)で確かめる。文字は自動の対を4.5で、境界とfocusは`--pairs`で対を絞って`--min 3`で測る。`--pairs`を渡すと、その対だけを測る。
+
+```sh
+node contrast.mjs <URL> --themes <テーマ>
+node contrast.mjs <URL> --themes <テーマ> --pairs background/border,card/input,background/ring --min 3
+```
 
 Lumaから既存の汎用配色・文字・寸法・focus・押下の値を引き継いだ。lightの入力境界とfocus色は、紙色の上で識別しやすい濃さに補正した。popover・sidebar・chart・feedback・一部の状態色・共通shadowは、契約を埋めるための追加または派生。hover色は元アプリの固定値の単純コピーにせず、サービスが変えた基準色に追従する。部品固有の多層反射・光源追従・reduced motionの動作は部品側が担当する。

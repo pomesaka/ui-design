@@ -1,14 +1,18 @@
-// Check text contrast of token pairs as the browser computes them (color-mix
-// and service overrides included), for each theme.
-// Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs bg/fg,bg/fg] [--channel chrome]
+// Check contrast of surface / foreground token pairs as the browser computes
+// them (color-mix and service overrides included), for each theme.
+// Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs surface/foreground,...] [--channel chrome]
 // --channel uses an installed browser instead of Playwright's own Chromium.
 // --until load is for a page that keeps a connection open and never goes idle.
-// Pairs: every `X` / `X-foreground` declared in the page's CSS (service roles
-// included), plus secondary text roles on the page and card surfaces.
-// Exits with 1 when a pair is below the minimum.
+// Without --pairs: every `X` / `X-foreground` declared in the page's CSS
+// (service roles included), plus secondary text roles on the page and card
+// surfaces. With --pairs: only those pairs, so borders can be measured with
+// --min 3 without lowering the bar for text.
+// Exits with 1 when a pair is below the minimum, 2 on bad arguments or a
+// --pairs name the page does not declare.
 import { launchChromium, openPage, untilStates } from "../../review/scripts/browser.mjs";
+import { findUndeclared, formatHeader, formatLine, meetsMinimum, parsePairs, selectPairs } from "./contrast-pairs.mjs";
 
-const usage = "Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs bg/fg,bg/fg] [--channel chrome] [--until load|domcontentloaded|networkidle]";
+const usage = "Usage: node contrast.mjs <url> --themes a,b [--min 4.5] [--pairs surface/foreground,...] [--channel chrome] [--until load|domcontentloaded|networkidle]";
 const args = process.argv.slice(2);
 if (args.includes("--help")) {
   console.log(usage);
@@ -24,23 +28,26 @@ if (!url || url.startsWith("--")) {
   process.exit(2);
 }
 const themes = (option("themes") ?? "").split(",").filter((theme) => /^[a-z0-9-]+$/.test(theme));
-const min = Number(option("min") ?? "4.5");
+const minOption = option("min") ?? "4.5";
+const min = Number(minOption);
+// Number("") is 0, which would pass every pair.
+if (minOption.trim() === "" || !Number.isFinite(min)) {
+  console.error(`--min takes a number: ${option("min")}`);
+  process.exit(2);
+}
 const until = option("until") ?? "networkidle";
 if (!untilStates.includes(until)) {
   console.error(`Unknown --until: ${until} (${untilStates.join(", ")})`);
   process.exit(2);
 }
-const extraPairs = (option("pairs") ?? "").split(",").filter(Boolean).map((pair) => pair.split("/"));
-const defaultExtra = [
-  ["background", "foreground"],
-  ["background", "reading-secondary"], ["card", "reading-secondary"],
-  ["background", "muted-foreground"], ["card", "muted-foreground"],
-  ["background", "control-foreground"], ["card", "control-foreground"],
-  ["header", "header-muted-foreground"],
-];
+const parsed = option("pairs") === undefined ? undefined : parsePairs(option("pairs"));
+if (parsed?.invalid) {
+  console.error(`--pairs takes surface/foreground,...: ${parsed.invalid.join(", ")}`);
+  process.exit(2);
+}
 
-// Runs in the page: resolve each pair to sRGB through a probe element.
-function measure({ theme, extra }) {
+// Runs in the page: every custom property name declared in its CSS.
+function declaredNames() {
   const names = new Set();
   const collect = (rules) => {
     for (const rule of rules) {
@@ -51,9 +58,11 @@ function measure({ theme, extra }) {
   for (const sheet of document.styleSheets) {
     try { collect(sheet.cssRules); } catch {}
   }
-  const pairs = [...names].filter((name) => names.has(`${name}-foreground`)).map((name) => [name, `${name}-foreground`]);
-  for (const pair of extra) if (names.has(pair[0]) && names.has(pair[1])) pairs.push(pair);
+  return [...names];
+}
 
+// Runs in the page: resolve each pair to sRGB through a probe element.
+function measure({ theme, pairs }) {
   const scope = document.createElement("div");
   if (theme) scope.dataset.theme = theme;
   const probe = document.createElement("span");
@@ -94,20 +103,30 @@ function measure({ theme, extra }) {
 
 const browser = await launchChromium(option("channel"));
 let failed = 0;
+let undeclared = [];
 try {
   const page = await browser.newPage();
   await openPage(page, url, until);
-  for (const theme of themes.length > 0 ? themes : [null]) {
-    const results = await page.evaluate(measure, { theme, extra: [...defaultExtra, ...extraPairs] });
-    console.log(`\n${theme ?? "(page theme)"}`);
-    for (const { surface, text, ratio } of results.sort((a, b) => a.ratio - b.ratio)) {
-      const ok = ratio >= min;
-      if (!ok) failed++;
-      console.log(`${ok ? "  " : "! "}${ratio.toFixed(2).padStart(6)}  ${text} on ${surface}`);
+  const declared = await page.evaluate(declaredNames);
+  const pairs = selectPairs(declared, parsed?.pairs);
+  undeclared = findUndeclared(declared, pairs);
+  if (undeclared.length === 0) {
+    for (const theme of themes.length > 0 ? themes : [null]) {
+      const results = await page.evaluate(measure, { theme, pairs });
+      console.log(`\n${formatHeader(theme)}`);
+      for (const { surface, text, ratio } of results.sort((a, b) => a.ratio - b.ratio)) {
+        const ok = meetsMinimum(ratio, min);
+        if (!ok) failed++;
+        console.log(formatLine([surface, text], ratio, ok));
+      }
     }
   }
 } finally {
   await browser.close();
+}
+if (undeclared.length > 0) {
+  console.error(`--pairs names not declared in the page's CSS: ${undeclared.join(", ")}`);
+  process.exit(2);
 }
 if (failed > 0) {
   console.log(`\n${failed} pair(s) below ${min}`);
