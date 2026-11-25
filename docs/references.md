@@ -15,6 +15,7 @@
 | ペルソナ・シナリオ・Jobs to be Done | 利用者像、利用の流れ、利用者が片付けたい用事から考える方法 | 利用者のストーリー |
 | Jesse James Garrett『The Elements of User Experience』 | 戦略・要件・構造・骨格(interface・navigation・information design)・表層(visual design)の五段。抽象から具体へ、下の段で上の段の選択肢が決まる | 配置を見た目より先に決める順。書籍本文は未読で、二次資料で確認 |
 | ソシオメディア『オブジェクト指向UIデザイン』(技術評論社、2020)・[紹介記事](https://gihyo.jp/book/pickup/2020/0034) | タスク(動詞)でなくオブジェクト(名詞)を起点に画面を構成する | 進め方2の、扱う対象から骨格を作る手順 |
+| [NN/g: Progressive Disclosure](https://www.nngroup.com/articles/progressive-disclosure/) | 最初の表示と後の表示の分け方が肝心で、利用者がよく要るものを最初に出し、残りを後に回す。分け方はタスク分析と利用の頻度で決める。最初の表示に出たものは重要だと受け取られる。段は二つまでが使いやすい | 進め方2の、段ごとに利用者が決めることで情報を振り分ける手順 |
 
 ## 伝える順の出典
 
@@ -25,7 +26,7 @@
 | Don Norman『誰のためのデザイン?』 | 「When simple things need pictures, labels, or instructions, the design has failed.」(1章)。自然な対応付け(mapping)はlabelの必要を減らす。原著の該当箇所は未確認で、複数の読書メモで同じ文を確認 | 言葉は最後の手段 |
 | Steve Krug『超明快 Webユーザビリティ』(Don't Make Me Think) | 第三法則「各ページの言葉を半分に減らし、残りをさらに半分に」。挨拶の文(happy talk)と使い方の説明が、削れる言葉の主な出どころ。説明は読まれず、ページそのものを説明不要にする | 補足の文・使い方の説明を足さない |
 | [Refactoring UI: Labels are a last resort](https://www.refactoringui.com/previews/labels-are-a-last-resort) | 「項目名:値」は全部を同じ強さにする。形や文脈で分かる値は項目名を外し、項目名を値に入れる。残す項目名は控えめにする。入力欄のlabelの話ではない | composition.mdの「項目名:値」の決定 |
-| Robin Williams『ノンデザイナーズ・デザインブック』 | 近接・整列・反復・対比の四原則。関係のある物を近づけて一つのまとまりにする | 1. レイアウト、2. デザイン |
+| Robin Williams『ノンデザイナーズ・デザインブック』 | 近接・整列・反復・対比の四原則。関係のある物を近づけて一つのまとまりにする。同じでない物は、はっきり違えて見せる(対比) | 1. レイアウト、2. デザイン。進め方2の、意味の違う値を同じ形で見せない |
 | [Nielsen Norman Group: 10 Usability Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) | 8「Every extra unit of information in an interface competes with the relevant units of information」。10「It's best if the system doesn't need any additional explanation.」 | 言葉が操作と値を埋もれさせる |
 | WCAG 2.2 [1.4.1](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html)・[3.3.2](https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html)・[4.1.2](https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html) | 色だけで伝えない。入力にはlabelか説明を付ける(意図は不要な情報で画面を埋めないこと)。操作の部品の名前を支援技術が読める | 減らさない言葉 |
 
