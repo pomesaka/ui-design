@@ -14,21 +14,25 @@
 //   --until load        when the page counts as loaded: networkidle (default), load or
 //                       domcontentloaded. A page that keeps a connection open (EventSource,
 //                       polling) never goes idle: use load together with --wait
+//   --rule-gap 48       warn when two horizontal rules (hr, border-top/bottom) at least
+//                       half the viewport wide are nearer than this many px; 0 turns it off
 // Playwright is found as browser.mjs describes.
 // One URL per state (for example ?state=error). Prints each file and warns on
-// horizontal scroll and page errors.
+// horizontal scroll, rules too near each other and page errors. Next to each
+// screenshot, a .txt file holds the text visible on it (page-checks.mjs).
 import { existsSync } from "node:fs";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { launchChromium, openPage, untilStates } from "./browser.mjs";
+import { closeRulePairs, collectRules, visibleText } from "./page-checks.mjs";
 
-const usage = "Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280] [--storage-state file] [--scroll selector] [--channel chrome] [--until load|domcontentloaded|networkidle]";
+const usage = "Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280] [--storage-state file] [--scroll selector] [--channel chrome] [--until load|domcontentloaded|networkidle] [--rule-gap px]";
 const args = process.argv.slice(2);
 if (args.includes("--help")) {
   console.log(usage);
   process.exit(0);
 }
-const options = { themes: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280", "storage-state": "", scroll: "", channel: "", until: "networkidle" };
+const options = { themes: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280", "storage-state": "", scroll: "", channel: "", until: "networkidle", "rule-gap": "48" };
 const positional = [];
 for (let i = 0; i < args.length; i++) {
   const arg = args[i];
@@ -53,6 +57,11 @@ const widths = options.widths.split(",").map(Number).filter((width) => Number.is
 const textScale = Number(options["text-scale"]);
 const maxHeight = Number(options["max-height"]);
 const storageState = options["storage-state"] || undefined;
+const ruleGap = Number(options["rule-gap"]);
+if (!Number.isFinite(ruleGap) || ruleGap < 0) {
+  console.error(`--rule-gap takes a number of px, 0 or more: ${options["rule-gap"]}`);
+  process.exit(2);
+}
 if (!untilStates.includes(options.until)) {
   console.error(`Unknown --until: ${options.until} (${untilStates.join(", ")})`);
   process.exit(2);
@@ -134,6 +143,13 @@ try {
         const file = join(outDir, `${slug(url)}-${theme ?? "default"}-${width}${textScale !== 1 ? `-text${textScale}` : ""}.png`);
         await page.screenshot({ path: file, fullPage: true, clip: { x: 0, y: 0, width, height: Math.min(height, maxHeight) } });
         console.log(height > maxHeight ? `${file} (clipped from ${height}px)` : file);
+        await writeFile(file.replace(/\.png$/, ".txt"), `${await page.evaluate(visibleText)}\n`);
+        if (ruleGap > 0) {
+          for (const { upper, lower, distance } of closeRulePairs(await page.evaluate(collectRules), ruleGap)) {
+            const at = (rule) => `${rule.element} ${rule.edge} (y ${rule.y}, x ${rule.left}-${rule.right})`;
+            problems.push(`${label}: rules ${distance}px apart: ${at(upper)} / ${at(lower)}`);
+          }
+        }
         await context.close();
       }
     }

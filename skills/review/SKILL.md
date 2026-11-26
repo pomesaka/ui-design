@@ -21,6 +21,8 @@ description: 画面・部品・UIの変更を、ui-designの文書に照らし�
 
 1. 利用者ごとのストーリーを書き、[三つの問い](../../docs/composition.md#利用者から始める)を評価の軸にする。確認の範囲を書き出し、以降の手順は範囲に入るものだけを行う。
 2. 描画して撮る。このファイルと同じ場所の`node scripts/capture.mjs <出力先> <URL>... --themes <テーマ,...> --wait <描画完了のselector>`で、範囲に入る幅(既定は390・768・1280px、`--widths`で変える) × 範囲に入るテーマを撮り、全画像を見る。空・失敗・長い内容・想定の最大件数等の状態はURLを並べて撮る。`--text-scale 2`で文字200%も撮る。ログインが要る画面は`--storage-state`、内側の要素がスクロールする画面は`--scroll <selector>`を使う。EventSourceやpolling等で接続を張り続ける画面は通信が止まらずtimeoutするので、`--until load`と`--wait`を付ける。
+   - 撮った画像ごとに、同じ名前の`.txt`へ見えている文字を書き出す(手順5で使う)。
+   - 画面の幅の半分以上ある横の罫(`hr`、border-top・border-bottom)が48px未満で並ぶと、`rules 12px apart`の形で2本の要素と座標を警告する。罫が二重に見えないか、中身の無い帯になっていないかを、その座標の画像で確かめる。間隔の基準は`--rule-gap <px>`で変え、`0`で止める。左右にも縁がある要素(カード、入力欄)は箱として数えない。
    - Playwrightは、対象のprojectに無ければ`playwright-cli`が持つものを使う。専用のChromiumが無ければ導入済みのChromeで撮る(`--channel`で指定もできる)。
    - どちらも無くて動かないときは、手元のbrowser操作の道具で同じ幅・テーマ・状態を撮り、横scrollは`document.documentElement.scrollWidth`と`innerWidth`を比べて確かめる。
 3. 操作する。Playwright等で実際に操作し、値で確かめる。keyboardと支援技術の項目は、範囲に含めたときに行う。
@@ -29,7 +31,7 @@ description: 画面・部品・UIの変更を、ui-designの文書に照らし�
    - 想定の最大件数で、目的の行に届くか([件数が増える一覧と表](../../docs/composition.md#件数が増える一覧と表))。ページの中に縦にscrollする要素が無いかを、`overflow-y`が`auto`か`scroll`で`scrollHeight > clientHeight`の要素を数えて確かめる。
    - `reducedMotion: "reduce"`で開いても、同じ操作が同じ結果に届くか。animationの完了を待たないと操作できない箇所がないか。
 4. コードを見る。部品の使いどころ、variant、tokenの対の組合せ、token外の値、`as`による型の断定。このrepository内なら`bun run check`も実行する。
-5. 画面の文字を棚卸しする。手順2で描画した状態ごとに、見える文字を全部書き出す(見出し、label、副label、補足、空の状態、ボタン、エラーと断り)。Playwrightなら状態ごとに`document.body.innerText`を取ると漏れない。
+5. 画面の文字を棚卸しする。手順2で描画した状態ごとに、見える文字を全部書き出す(見出し、label、副label、補足、空の状態、ボタン、エラーと断り)。手順2の`.txt`を使い、操作で出した状態はこのファイルと同じ場所の`scripts/page-checks.mjs`の`visibleText`を`page.evaluate(visibleText)`で取る。`document.body.innerText`は、高さ0に畳んだ開閉の中身、`inert`と`aria-hidden="true"`の要素、閉じた`select`の全optionまで拾うので使わない。
    - エラーと断り以外は、一つずつ[画面の言葉の確認](../../docs/composition.md#確認)の問いで「消す / 見せ方に移す / 残す」に判定する。残すものには、伝えたいことと、レイアウトとデザインで試して伝わらなかった理由を書く。言えないものは「消す」か「見せ方に移す」にする。
    - エラーと断りは、一つずつ[失敗の伝え方](../../DESIGN.md#状態と復帰)の基準で見る。原因と直し方があり、それだけで次の操作を一つに決められるか。起こせる失敗(空の送信、通信の失敗、権限なし)は実際に起こして文を出す。
 6. 文書の決定と[避けるもの](../../docs/composition.md#避けるもの)に照らす。文書で決まっていない判断は、指摘ではなく提案として分ける。
