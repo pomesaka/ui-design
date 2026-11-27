@@ -3,6 +3,10 @@
 //   node capture.mjs <out-dir> <url> [<url> ...] [options]
 // Options:
 //   --themes a,b        set data-theme on <html> (theme names = files in themes/)
+//   --color-scheme light,dark
+//                       open each page with this prefers-color-scheme (Playwright's
+//                       colorScheme: light, dark or no-preference), for a product whose
+//                       CSS or script follows the OS instead of data-theme
 //   --wait <selector>   wait until this selector is visible before capturing
 //   --text-scale 2      enlarge root font size (rem-based text) to check 200% text
 //   --max-height 2400   clip each screenshot to this height (keeps details readable)
@@ -14,6 +18,10 @@
 //   --until load        when the page counts as loaded: networkidle (default), load or
 //                       domcontentloaded. A page that keeps a connection open (EventSource,
 //                       polling) never goes idle: use load together with --wait
+//   --before f.mjs      a module whose default export, async (page, { url, theme,
+//                       colorScheme, width }) => void, runs before each capture, after
+//                       --wait and the theme are applied: for a
+//                       state no URL reaches (an open dialog or menu, a filled form)
 //   --rule-gap 48       warn when two horizontal rules (hr, border-top/bottom) at least
 //                       half the viewport wide are nearer than this many px; 0 turns it off
 // Playwright is found as browser.mjs describes.
@@ -22,17 +30,18 @@
 // screenshot, a .txt file holds the text visible on it (page-checks.mjs).
 import { existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { launchChromium, openPage, untilStates } from "./browser.mjs";
 import { closeRulePairs, collectRules, visibleText } from "./page-checks.mjs";
 
-const usage = "Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280] [--storage-state file] [--scroll selector] [--channel chrome] [--until load|domcontentloaded|networkidle] [--rule-gap px]";
+const usage = "Usage: node capture.mjs <out-dir> <url> [<url> ...] [--themes a,b] [--color-scheme light,dark] [--before file.mjs] [--wait selector] [--text-scale 2] [--max-height px] [--widths 390,768,1280] [--storage-state file] [--scroll selector] [--channel chrome] [--until load|domcontentloaded|networkidle] [--rule-gap px]";
 const args = process.argv.slice(2);
 if (args.includes("--help")) {
   console.log(usage);
   process.exit(0);
 }
-const options = { themes: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280", "storage-state": "", scroll: "", channel: "", until: "networkidle", "rule-gap": "48" };
+const options = { themes: "", "color-scheme": "", before: "", wait: "", "text-scale": "1", "max-height": "2400", widths: "390,768,1280", "storage-state": "", scroll: "", channel: "", until: "networkidle", "rule-gap": "48" };
 const positional = [];
 for (let i = 0; i < args.length; i++) {
   const arg = args[i];
@@ -53,6 +62,19 @@ if (!outDir || urls.length === 0) {
   process.exit(2);
 }
 const themes = options.themes ? options.themes.split(",").filter((theme) => /^[a-z0-9-]+$/.test(theme)) : [null];
+// --themes and --color-scheme multiply instead of excluding each other. data-theme
+// names a theme; colorScheme is what the page's media queries and matchMedia see.
+// A product uses one, the other, or both (a head script that picks data-theme from
+// matchMedia, as themes/README.md shows, or a brand theme whose CSS also follows
+// the OS), and capture.mjs cannot tell which from outside. With both, the data-theme
+// set here replaces the one such a script chose, so pass only --color-scheme there.
+const colorSchemeNames = ["light", "dark", "no-preference"];
+const colorSchemes = options["color-scheme"] ? options["color-scheme"].split(",") : [null];
+const unknownScheme = colorSchemes.find((scheme) => scheme !== null && !colorSchemeNames.includes(scheme));
+if (unknownScheme !== undefined) {
+  console.error(`Unknown --color-scheme: ${unknownScheme} (${colorSchemeNames.join(", ")})`);
+  process.exit(2);
+}
 const widths = options.widths.split(",").map(Number).filter((width) => Number.isInteger(width) && width > 0);
 const textScale = Number(options["text-scale"]);
 const maxHeight = Number(options["max-height"]);
@@ -69,6 +91,19 @@ if (!untilStates.includes(options.until)) {
 if (storageState && !existsSync(storageState)) {
   console.error(`Storage state not found: ${storageState}`);
   process.exit(2);
+}
+let before = null;
+if (options.before) {
+  const path = resolve(options.before);
+  if (!existsSync(path)) {
+    console.error(`--before module not found: ${options.before}`);
+    process.exit(2);
+  }
+  before = (await import(pathToFileURL(path).href)).default;
+  if (typeof before !== "function") {
+    console.error(`--before module has no default export function: ${options.before}`);
+    process.exit(2);
+  }
 }
 
 // File names carry the query so each state is identifiable.
@@ -118,39 +153,43 @@ const problems = [];
 try {
   for (const url of urls) {
     for (const theme of themes) {
-      for (const width of widths) {
-        const label = `${slug(url)} ${theme ?? "default"} ${width}px`;
-        const context = await browser.newContext({ viewport: { width, height: 900 }, storageState });
-        const page = await context.newPage();
-        page.on("pageerror", (error) => problems.push(`${label}: ${error.message}`));
-        await openPage(page, url, options.until);
-        if (options.wait) await page.locator(options.wait).first().waitFor({ state: "visible" });
-        await page.evaluate(({ theme, textScale }) => {
-          if (theme) document.documentElement.dataset.theme = theme;
-          if (textScale !== 1) document.documentElement.style.fontSize = `${textScale * 100}%`;
-        }, { theme, textScale });
-        await page.waitForTimeout(200);
-        const overflow = await page.evaluate(findOverflow);
-        if (overflow) problems.push(`${label}: horizontal scroll caused by ${overflow}`);
-        if (options.scroll) {
-          // An app shell keeps the document at viewport height; grow the viewport
-          // by the inner element's hidden part so its content lays out in full.
-          const hidden = await page.locator(options.scroll).first().evaluate((element) => element.scrollHeight - element.clientHeight);
-          await page.setViewportSize({ width, height: Math.min(maxHeight, 900 + Math.max(0, hidden)) });
+      for (const colorScheme of colorSchemes) {
+        for (const width of widths) {
+          const name = `${slug(url)}-${theme ?? "default"}${colorScheme ? `-${colorScheme}` : ""}-${width}`;
+          const label = `${slug(url)} ${theme ?? "default"}${colorScheme ? ` ${colorScheme}` : ""} ${width}px`;
+          const context = await browser.newContext({ viewport: { width, height: 900 }, storageState, colorScheme: colorScheme ?? undefined });
+          const page = await context.newPage();
+          page.on("pageerror", (error) => problems.push(`${label}: ${error.message}`));
+          await openPage(page, url, options.until);
+          if (options.wait) await page.locator(options.wait).first().waitFor({ state: "visible" });
+          await page.evaluate(({ theme, textScale }) => {
+            if (theme) document.documentElement.dataset.theme = theme;
+            if (textScale !== 1) document.documentElement.style.fontSize = `${textScale * 100}%`;
+          }, { theme, textScale });
+          if (before) await before(page, { url, theme, colorScheme, width });
           await page.waitForTimeout(200);
-        }
-        const height = await page.evaluate(() => document.documentElement.scrollHeight);
-        const file = join(outDir, `${slug(url)}-${theme ?? "default"}-${width}${textScale !== 1 ? `-text${textScale}` : ""}.png`);
-        await page.screenshot({ path: file, fullPage: true, clip: { x: 0, y: 0, width, height: Math.min(height, maxHeight) } });
-        console.log(height > maxHeight ? `${file} (clipped from ${height}px)` : file);
-        await writeFile(file.replace(/\.png$/, ".txt"), `${await page.evaluate(visibleText)}\n`);
-        if (ruleGap > 0) {
-          for (const { upper, lower, distance } of closeRulePairs(await page.evaluate(collectRules), ruleGap)) {
-            const at = (rule) => `${rule.element} ${rule.edge} (y ${rule.y}, x ${rule.left}-${rule.right})`;
-            problems.push(`${label}: rules ${distance}px apart: ${at(upper)} / ${at(lower)}`);
+          const overflow = await page.evaluate(findOverflow);
+          if (overflow) problems.push(`${label}: horizontal scroll caused by ${overflow}`);
+          if (options.scroll) {
+            // An app shell keeps the document at viewport height; grow the viewport
+            // by the inner element's hidden part so its content lays out in full.
+            const hidden = await page.locator(options.scroll).first().evaluate((element) => element.scrollHeight - element.clientHeight);
+            await page.setViewportSize({ width, height: Math.min(maxHeight, 900 + Math.max(0, hidden)) });
+            await page.waitForTimeout(200);
           }
+          const height = await page.evaluate(() => document.documentElement.scrollHeight);
+          const file = join(outDir, `${name}${textScale !== 1 ? `-text${textScale}` : ""}.png`);
+          await page.screenshot({ path: file, fullPage: true, clip: { x: 0, y: 0, width, height: Math.min(height, maxHeight) } });
+          console.log(height > maxHeight ? `${file} (clipped from ${height}px)` : file);
+          await writeFile(file.replace(/\.png$/, ".txt"), `${await page.evaluate(visibleText)}\n`);
+          if (ruleGap > 0) {
+            for (const { upper, lower, distance } of closeRulePairs(await page.evaluate(collectRules), ruleGap)) {
+              const at = (rule) => `${rule.element} ${rule.edge} (y ${rule.y}, x ${rule.left}-${rule.right})`;
+              problems.push(`${label}: rules ${distance}px apart: ${at(upper)} / ${at(lower)}`);
+            }
+          }
+          await context.close();
         }
-        await context.close();
       }
     }
   }

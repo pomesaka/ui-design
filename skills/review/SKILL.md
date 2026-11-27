@@ -20,7 +20,7 @@ description: 画面・部品・UIの変更を、ui-designの文書に照らし�
 ## 手順
 
 1. 利用者ごとのストーリーを書き、[三つの問い](../../docs/composition.md#利用者から始める)を評価の軸にする。確認の範囲を書き出し、以降の手順は範囲に入るものだけを行う。
-2. 描画して撮る。このファイルと同じ場所の`node scripts/capture.mjs <出力先> <URL>... --themes <テーマ,...> --wait <描画完了のselector>`で、範囲に入る幅(既定は390・768・1280px、`--widths`で変える) × 範囲に入るテーマを撮り、全画像を見る。空・失敗・長い内容・想定の最大件数等の状態はURLを並べて撮る。`--text-scale 2`で文字200%も撮る。ログインが要る画面は`--storage-state`、内側の要素がスクロールする画面は`--scroll <selector>`を使う。EventSourceやpolling等で接続を張り続ける画面は通信が止まらずtimeoutするので、`--until load`と`--wait`を付ける。
+2. 描画して撮る。このファイルと同じ場所の`node scripts/capture.mjs <出力先> <URL>... --themes <テーマ,...> --wait <描画完了のselector>`で、範囲に入る幅(既定は390・768・1280px、`--widths`で変える) × 範囲に入るテーマを撮り、全画像を見る。空・失敗・長い内容・想定の最大件数等の状態はURLを並べて撮る。`--text-scale 2`で文字200%も撮る。ログインが要る画面は`--storage-state`、内側の要素がスクロールする画面は`--scroll <selector>`を使う。明暗を`data-theme`でなく`prefers-color-scheme`で変える画面は`--color-scheme light,dark`で撮り(`--themes`と掛け合わせて撮れ、名前に明暗が入る)、URLで出せない状態(開いたdialogやmenu、入力した後)は、`page`を受け取る関数をdefault exportするモジュールを`--before <ファイル>`に渡し、撮る前に操作させる。EventSourceやpolling等で接続を張り続ける画面は通信が止まらずtimeoutするので、`--until load`と`--wait`を付ける。
    - 撮った画像ごとに、同じ名前の`.txt`へ見えている文字を書き出す(手順5で使う)。
    - 画面の幅の半分以上ある横の罫(`hr`、border-top・border-bottom)が48px未満で並ぶと、`rules 12px apart`の形で2本の要素と座標を警告する。罫が二重に見えないか、中身の無い帯になっていないかを、その座標の画像で確かめる。間隔の基準は`--rule-gap <px>`で変え、`0`で止める。左右にも縁がある要素(カード、入力欄)は箱として数えない。
    - Playwrightは、対象のprojectに無ければ`playwright-cli`が持つものを使う。専用のChromiumが無ければ導入済みのChromeで撮る(`--channel`で指定もできる)。
